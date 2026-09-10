@@ -128,7 +128,6 @@ function render() {
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === `view-${state.view}`));
   const items = getEnrichedItems();
   if (state.view === 'backlog') renderBacklog(items);
-  if (state.view === 'kanban') renderKanban(items);
   if (state.view === 'timeline') renderTimeline(items);
   if (state.view === 'dashboard') renderDashboard(items);
   if (state.view === 'capacity') renderCapacity(items);
@@ -211,47 +210,8 @@ function renderBacklog(items) {
 }
 
 /* ============================================================
-   Kanban view
+   Carte de demande (réutilisée par la vue Roadmap)
    ============================================================ */
-function renderKanban(items) {
-  const filtered = applyFilters(items);
-  const board = document.getElementById('kanban-board');
-  const cols = [...STATUT_PIPELINE, ...STATUT_HORS_FLUX];
-  board.innerHTML = cols.map(statut => {
-    const colItems = filtered.filter(i => i.statut === statut).sort((a, b) => (a.rang ?? 9999) - (b.rang ?? 9999));
-    return `
-      <div class="kanban-col" data-statut="${escapeHtml(statut)}">
-        <div class="kanban-col-header" style="--c:${STATUT_COLORS[statut]}">
-          <span>${escapeHtml(statut)}</span>
-          <span class="kanban-count">${colItems.length}</span>
-        </div>
-        <div class="kanban-col-body" data-dropzone="${escapeHtml(statut)}">
-          ${colItems.map(cardHtml).join('')}
-        </div>
-      </div>`;
-  }).join('');
-
-  board.querySelectorAll('.kanban-card').forEach(card => {
-    card.addEventListener('click', () => openDrawer(card.dataset.id));
-    card.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('text/plain', card.dataset.id);
-      card.classList.add('dragging');
-    });
-    card.addEventListener('dragend', () => card.classList.remove('dragging'));
-  });
-  board.querySelectorAll('[data-dropzone]').forEach(zone => {
-    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-    zone.addEventListener('drop', e => {
-      e.preventDefault();
-      zone.classList.remove('dragover');
-      const id = e.dataTransfer.getData('text/plain');
-      const item = state.items.find(i => i.id === id);
-      if (item) { item.statut = zone.dataset.dropzone; saveData(); render(); }
-    });
-  });
-}
-
 function cardHtml(it) {
   return `
     <div class="kanban-card" draggable="true" data-id="${it.id}">
