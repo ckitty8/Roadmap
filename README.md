@@ -15,10 +15,11 @@ Aucune installation, aucun serveur requis : c'est une application 100% statique 
 - **Recommandé** (évite certaines restrictions de sécurité navigateur) : servir le dossier via
   un petit serveur local, par exemple :
   ```bash
-  cd roadmap-app
   python3 -m http.server 8080
   # puis ouvrir http://localhost:8080
   ```
+- **En ligne** : le dépôt est déployé automatiquement sur Vercel à chaque push sur `main`
+  (déploiement statique, aucune configuration nécessaire).
 
 Les données sont stockées dans le navigateur (`localStorage`) : elles persistent d'une session
 à l'autre sur le même poste, mais ne sont pas partagées entre plusieurs utilisateurs. Utilisez
@@ -71,12 +72,11 @@ dans l'application. Le bouton **Réinitialiser** restaure ce jeu de démonstrati
 ## Structure du projet
 
 ```
-roadmap-app/
-├── index.html   # structure de la page
-├── style.css    # thème visuel (dense, orienté grand écran)
-├── data.js      # référentiels métier (listes, couleurs, jeu de démonstration)
-├── app.js       # logique applicative (état, calculs, rendu, interactions)
-└── README.md
+index.html   # structure de la page
+style.css    # thème visuel (dense, orienté grand écran)
+data.js      # référentiels métier (listes, couleurs, jeu de démonstration)
+app.js       # logique applicative (état, calculs, rendu, interactions)
+README.md
 ```
 
 Aucune dépendance externe : tout fonctionne hors-ligne, y compris sans connexion réseau.
