@@ -83,6 +83,16 @@
 
     <div style="padding:26px 32px 48px;display:flex;flex-direction:column;gap:26px">
 
+      <sc-if value="{{ hasLoadError }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 16px;border-radius:10px;background:#FAE9EA;border:1px solid #F0C7CA;color:#7A2A2F;font-size:13px">
+          <span>{{ loadError }}</span>
+          <div style="display:flex;gap:8px;flex-shrink:0">
+            <button onClick="{{ onRetryLoad }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 12px;border-radius:7px;font-size:12.5px;font-weight:600;background:#7A2A2F;color:#FFF">Réessayer</button>
+            <button onClick="{{ onDismissLoadError }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 12px;border-radius:7px;font-size:12.5px;font-weight:600;border:1px solid #7A2A2F;color:#7A2A2F">Fermer</button>
+          </div>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;flex-direction:column;gap:26px">
 
@@ -629,11 +639,73 @@ const DEFAULT_FIELDS = [
 const TEAM_BY_LABEL = { 'Produit':'produit', 'Data':'data', 'Plateforme':'plateforme', 'Mobile':'mobile' };
 const PRIO_BY_LABEL = { 'Haute':'haute', 'Moyenne':'moyenne', 'Basse':'basse' };
 
+const DATA_API_URL = 'https://ep-proud-mountain-b4xgwgub.apirest.c-6.us-east-2.aws.neon.tech/neondb/rest/v1';
+
+async function apiRequest(path, options) {
+  const opts = Object.assign({}, options);
+  opts.headers = Object.assign({ 'Content-Type': 'application/json' }, options && options.headers);
+  const res = await fetch(DATA_API_URL + path, opts);
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    throw new Error('Neon Data API ' + (opts.method || 'GET') + ' ' + path + ' -> ' + res.status + ' ' + body);
+  }
+  if (res.status === 204) return null;
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+const api = {
+  list: (table, query) => apiRequest('/' + table + (query ? '?' + query : '')),
+  insert: (table, row) => apiRequest('/' + table, { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(row) }),
+  update: (table, filter, patch) => apiRequest('/' + table + '?' + filter, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(patch) }),
+  remove: (table, filter) => apiRequest('/' + table + '?' + filter, { method: 'DELETE', headers: { Prefer: 'return=minimal' } })
+};
+
 class Component extends DCLogic {
   state = { view: 'dashboard', team: 'produit', quarter: 'T4 2026', selId: null, query: '', projects: PROJECTS,
             requests: REQUESTS, reqFilter: 'tous', reqQuery: '', reqSelId: null,
             fields: DEFAULT_FIELDS, adminEditKey: null, adminDraft: null, newField: null,
-            teams: TEAMS, newTeam: null, teamEditId: null, teamDraft: null, adminTab: 'teams' };
+            teams: TEAMS, newTeam: null, teamEditId: null, teamDraft: null, adminTab: 'teams',
+            loading: true, loadError: null };
+
+  componentDidMount() {
+    this.loadAll();
+  }
+
+  async loadAll() {
+    try {
+      const [teamRows, projectRows, requestRows, fieldRows] = await Promise.all([
+        api.list('teams', 'select=*&order=name.asc'),
+        api.list('projects', 'select=*,key_results(*),tickets(*)'),
+        api.list('requests', 'select=*&order=id.desc'),
+        api.list('request_fields', 'select=*&order=position.asc')
+      ]);
+      const teams = (teamRows || []).map(t => ({
+        id: t.id, name: t.name, lead: t.lead, capacity: t.capacity, load: t.load, dot: t.dot
+      }));
+      const projects = (projectRows || []).map(p => ({
+        id: p.id, name: p.name, team: p.team_id, quarter: p.quarter, owner: p.owner,
+        progress: p.progress, status: p.status, due: p.due, drift: p.drift,
+        krs: (p.key_results || []).slice().sort((a, b) => a.position - b.position).map(k => ({
+          label: k.label, cur: Number(k.cur), target: Number(k.target), unit: k.unit || '', invert: k.invert
+        })),
+        tickets: (p.tickets || []).map(t => ({ id: t.id, title: t.title, done: t.done }))
+      }));
+      const requests = (requestRows || []).map(r => ({
+        id: r.id, title: r.title, requester: r.requester, team: r.team_id, priority: r.priority,
+        status: r.status, date: r.date, effort: r.effort, note: r.note, extra: r.extra || {}
+      }));
+      const fields = (fieldRows && fieldRows.length) ? fieldRows.map(f => ({
+        key: f.key, label: f.label, type: f.type, required: f.required, locked: f.locked,
+        options: f.options || undefined, placeholder: f.placeholder || '', help: f.help || ''
+      })) : DEFAULT_FIELDS;
+      this.setState(s => ({
+        teams, projects, requests, fields, loading: false, loadError: null,
+        team: teams.some(t => t.id === s.team) ? s.team : (teams[0] ? teams[0].id : s.team)
+      }));
+    } catch (e) {
+      this.setState({ loading: false, loadError: 'Connexion à la base impossible : ' + (e && e.message ? e.message : e) });
+    }
+  }
 
   blankForm() {
     const f = {};
@@ -667,16 +739,20 @@ class Component extends DCLogic {
     });
     this.setState(s => ({ requests: [rec].concat(s.requests), form: this.blankForm(), formError: null,
                           formOpen: false, reqSelId: rec.id, reqFilter: 'tous' }));
+    api.insert('requests', { id: rec.id, title: rec.title, requester: rec.requester, team_id: rec.team,
+      priority: rec.priority, status: rec.status, date: rec.date, effort: rec.effort, note: rec.note, extra: rec.extra
+    }).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
 
   setNewTeam(k, v) { this.setState(s => ({ newTeam: Object.assign({ name:'', lead:'', capacity:'40' }, s.newTeam, { [k]: v }), teamError: null })); }
   addTeam() {
     const n = this.state.newTeam || {};
-    if (!String(n.name || '').trim()) { this.setState({ teamError: 'Nom d\u2019équipe requis.' }); return; }
+    if (!String(n.name || '').trim()) { this.setState({ teamError: 'Nom d’équipe requis.' }); return; }
     const dots = ['#B79BE0','#7FB8A6','#E0B27F','#9BB2E0','#D69BB0','#8FC7C0','#C3A87A'];
     const t = { id: 'eq' + Date.now(), name: String(n.name).trim(), lead: String(n.lead || '').trim() || 'À désigner',
                 capacity: parseInt(n.capacity, 10) || 40, load: 0, dot: dots[this.state.teams.length % dots.length] };
     this.setState(s => ({ teams: s.teams.concat([t]), newTeam: null, teamError: null }));
+    api.insert('teams', t).catch(e => this.setState({ teamError: String(e.message || e) }));
   }
   deleteTeam(id) {
     const usedP = this.state.projects.filter(p => p.team === id).length;
@@ -692,6 +768,7 @@ class Component extends DCLogic {
       const teams = s.teams.filter(t => t.id !== id);
       return { teams, teamError: null, team: s.team === id ? (teams[0] || {}).id : s.team };
     });
+    api.remove('teams', 'id=eq.' + encodeURIComponent(id)).catch(e => this.setState({ teamError: String(e.message || e) }));
   }
   startEditTeam(id) {
     const t = this.state.teams.find(x => x.id === id);
@@ -701,10 +778,14 @@ class Component extends DCLogic {
   saveTeam() {
     const d = this.state.teamDraft, id = this.state.teamEditId;
     if (!d || !d.name.trim()) return;
+    const patch = { name: d.name.trim(), lead: d.lead.trim() || 'À désigner',
+      capacity: parseInt(d.capacity, 10) || null, load: parseInt(d.load, 10) || 0 };
     this.setState(s => ({ teamEditId: null, teamDraft: null, teams: s.teams.map(t => t.id !== id ? t : Object.assign({}, t, {
-      name: d.name.trim(), lead: d.lead.trim() || 'À désigner',
-      capacity: parseInt(d.capacity, 10) || t.capacity, load: parseInt(d.load, 10) || 0
+      name: patch.name, lead: patch.lead, capacity: patch.capacity || t.capacity, load: patch.load
     })) }));
+    const apiPatch = Object.assign({}, patch);
+    if (!apiPatch.capacity) delete apiPatch.capacity;
+    api.update('teams', 'id=eq.' + encodeURIComponent(id), apiPatch).catch(e => this.setState({ teamError: String(e.message || e) }));
   }
 
   startEditField(key) {
@@ -718,22 +799,37 @@ class Component extends DCLogic {
   saveField() {
     const d = this.state.adminDraft, key = this.state.adminEditKey;
     if (!d || !d.label.trim()) return;
-    this.setState(s => ({ adminEditKey: null, adminDraft: null, fields: s.fields.map(f => f.key !== key ? f : Object.assign({}, f, {
-      label: d.label.trim(), type: f.locked ? f.type : d.type, required: d.required,
+    const patch = {
+      label: d.label.trim(), required: d.required,
       help: d.help.trim(), placeholder: d.placeholder.trim(),
-      options: d.type === 'select' ? d.options.split(',').map(o => o.trim()).filter(Boolean) : undefined
+      options: d.type === 'select' ? d.options.split(',').map(o => o.trim()).filter(Boolean) : null
+    };
+    this.setState(s => ({ adminEditKey: null, adminDraft: null, fields: s.fields.map(f => f.key !== key ? f : Object.assign({}, f, {
+      label: patch.label, type: f.locked ? f.type : d.type, required: patch.required,
+      help: patch.help, placeholder: patch.placeholder,
+      options: patch.options || undefined
     })) }));
+    const field = this.state.fields.find(f => f.key === key);
+    const apiPatch = Object.assign({}, patch, { type: field && field.locked ? field.type : d.type });
+    api.update('request_fields', 'key=eq.' + encodeURIComponent(key), apiPatch).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
   deleteField(key) {
     this.setState(s => ({ fields: s.fields.filter(f => f.key !== key), adminEditKey: s.adminEditKey === key ? null : s.adminEditKey }));
+    api.remove('request_fields', 'key=eq.' + encodeURIComponent(key)).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
   moveField(key, dir) {
+    let swapped = null;
     this.setState(s => {
       const arr = s.fields.slice(), i = arr.findIndex(f => f.key === key), j = i + dir;
       if (i < 0 || j < 0 || j >= arr.length) return {};
       const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+      swapped = [{ key: arr[i].key, position: i }, { key: arr[j].key, position: j }];
       return { fields: arr };
     });
+    if (swapped) {
+      Promise.all(swapped.map(row => api.update('request_fields', 'key=eq.' + encodeURIComponent(row.key), { position: row.position })))
+        .catch(e => this.setState({ loadError: String(e.message || e) }));
+    }
   }
   setNew(k, v) { this.setState(s => ({ newField: Object.assign({ label:'', type:'text', required:false, help:'', placeholder:'', options:'' }, s.newField, { [k]: v }) })); }
   addField() {
@@ -743,11 +839,18 @@ class Component extends DCLogic {
       required: !!n.required, locked: false, help: (n.help || '').trim(), placeholder: (n.placeholder || '').trim(),
       options: (n.type === 'select') ? (n.options || '').split(',').map(o => o.trim()).filter(Boolean) : undefined };
     if (fl.type === 'select' && (!fl.options || !fl.options.length)) { this.setState({ newError: true }); return; }
+    const position = this.state.fields.length;
     this.setState(s => ({ fields: s.fields.concat([fl]), newField: null, newError: false, form: null }));
+    api.insert('request_fields', {
+      key: fl.key, position, label: fl.label, type: fl.type, required: fl.required, locked: fl.locked,
+      help: fl.help, placeholder: fl.placeholder, options: fl.options || null
+    }).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
   setReqStatus(id, key) {
     this.setState(s => ({ requests: s.requests.map(r => r.id === id ? Object.assign({}, r, { status: key }) : r) }));
+    api.update('requests', 'id=eq.' + encodeURIComponent(id), { status: key }).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
+
 
   visible() {
     return this.state.projects.filter(p => p.quarter === this.state.quarter);
@@ -773,14 +876,20 @@ class Component extends DCLogic {
   }
   setStatus(id, key) {
     this.setState(s => ({ projects: s.projects.map(p => p.id === id ? Object.assign({}, p, { status: key }) : p) }));
+    api.update('projects', 'id=eq.' + encodeURIComponent(id), { status: key }).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
   setProgress(id, v) {
     this.setState(s => ({ projects: s.projects.map(p => p.id === id ? Object.assign({}, p, { progress: v }) : p) }));
+    api.update('projects', 'id=eq.' + encodeURIComponent(id), { progress: v }).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
   toggleTicket(id, tid) {
+    const project = this.state.projects.find(p => p.id === id);
+    const ticket = project && project.tickets.find(t => t.id === tid);
+    const nextDone = ticket ? !ticket.done : true;
     this.setState(s => ({ projects: s.projects.map(p => p.id !== id ? p : Object.assign({}, p, {
       tickets: p.tickets.map(t => t.id === tid ? Object.assign({}, t, { done: !t.done }) : t)
     })) }));
+    api.update('tickets', 'id=eq.' + encodeURIComponent(tid), { done: nextDone }).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
 
   renderVals() {
@@ -1055,6 +1164,9 @@ class Component extends DCLogic {
     ];
 
     return {
+      hasLoadError: !!st.loadError, loadError: st.loadError || '',
+      onDismissLoadError: () => this.setState({ loadError: null }),
+      onRetryLoad: () => { this.setState({ loadError: null }); this.loadAll(); },
       isDashboard, isTeam, isRequests, navItems, teamNav, quarters, kpis, rows, capacity, alerts,
       teamTabs, teamStats, teamProjects, sel, statusOptions, query: st.query,
       requests, reqFilters, reqStats, reqQuery: st.reqQuery,
