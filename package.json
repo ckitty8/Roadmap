@@ -1,0 +1,7 @@
+{
+  "name": "roadmap-app",
+  "private": true,
+  "dependencies": {
+    "@neondatabase/serverless": "*"
+  }
+}
