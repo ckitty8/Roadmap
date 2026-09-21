@@ -602,47 +602,8 @@ const STATUS = {
   off_track:{ label: 'En retard',   color: '#B3383F', bg: '#FAE9EA' },
   done:     { label: 'Terminé',     color: '#4A2E6B', bg: '#F0EAF8' }
 };
-const TEAMS = [
-  { id: 'produit',   name: 'Produit',    lead: 'Inès M.',   capacity: 48, load: 44, dot: '#B79BE0' },
-  { id: 'data',      name: 'Data',       lead: 'Yacine B.', capacity: 32, load: 37, dot: '#7FB8A6' },
-  { id: 'plateforme',name: 'Plateforme', lead: 'Sofia R.',  capacity: 56, load: 41, dot: '#E0B27F' },
-  { id: 'mobile',    name: 'Mobile',     lead: 'Théo L.',   capacity: 40, load: 39, dot: '#9BB2E0' }
-];
-const PROJECTS = [
-  { id:'p1', name:'Refonte de l\u2019onboarding', team:'produit', quarter:'T4 2026', owner:'Inès M.', progress:72, status:'on_track', due:'12 déc.', drift:0,
-    krs:[{label:'Activation J7',cur:38,target:45,unit:'%'},{label:'Temps d\u2019inscription',cur:3.4,target:2,unit:'min',invert:true}],
-    tickets:[{id:'PRD-214',title:'Écran de bienvenue',done:true},{id:'PRD-221',title:'Import de contacts',done:true},{id:'PRD-233',title:'Checklist de démarrage',done:false},{id:'PRD-240',title:'Tracking analytics',done:false}] },
-  { id:'p2', name:'Facturation multi-devises', team:'produit', quarter:'T4 2026', owner:'Marc D.', progress:41, status:'at_risk', due:'20 déc.', drift:9,
-    krs:[{label:'Devises supportées',cur:3,target:8,unit:''},{label:'Erreurs de conversion',cur:1.2,target:0.2,unit:'%',invert:true}],
-    tickets:[{id:'PRD-301',title:'Modèle de taux de change',done:true},{id:'PRD-308',title:'Arrondis comptables',done:false},{id:'PRD-312',title:'Export FEC',done:false}] },
-  { id:'p3', name:'Entrepôt de données v2', team:'data', quarter:'T4 2026', owner:'Yacine B.', progress:58, status:'at_risk', due:'05 déc.', drift:14,
-    krs:[{label:'Tables migrées',cur:62,target:110,unit:''},{label:'Fraîcheur des données',cur:6,target:1,unit:'h',invert:true}],
-    tickets:[{id:'DAT-88',title:'Pipeline d\u2019ingestion',done:true},{id:'DAT-93',title:'Modèle sémantique',done:false},{id:'DAT-97',title:'Tests de cohérence',done:false}] },
-  { id:'p4', name:'Scoring de churn', team:'data', quarter:'T4 2026', owner:'Leïla F.', progress:88, status:'on_track', due:'28 nov.', drift:-3,
-    krs:[{label:'Précision du modèle',cur:0.81,target:0.85,unit:''},{label:'Comptes scorés',cur:9200,target:10000,unit:''}],
-    tickets:[{id:'DAT-120',title:'Feature store',done:true},{id:'DAT-124',title:'Backtest 12 mois',done:true},{id:'DAT-129',title:'Mise en production',done:false}] },
-  { id:'p5', name:'Migration Kubernetes', team:'plateforme', quarter:'T4 2026', owner:'Sofia R.', progress:34, status:'off_track', due:'18 déc.', drift:22,
-    krs:[{label:'Services migrés',cur:11,target:34,unit:''},{label:'Disponibilité',cur:99.4,target:99.9,unit:'%'}],
-    tickets:[{id:'PLT-45',title:'Cluster de préproduction',done:true},{id:'PLT-51',title:'Secrets & IAM',done:false},{id:'PLT-58',title:'Runbooks d\u2019astreinte',done:false},{id:'PLT-60',title:'Bascule du trafic',done:false}] },
-  { id:'p6', name:'Observabilité unifiée', team:'plateforme', quarter:'T4 2026', owner:'Hugo P.', progress:95, status:'done', due:'14 nov.', drift:-6,
-    krs:[{label:'Services instrumentés',cur:31,target:34,unit:''},{label:'MTTR',cur:22,target:20,unit:'min',invert:true}],
-    tickets:[{id:'PLT-70',title:'Traces distribuées',done:true},{id:'PLT-74',title:'Alertes SLO',done:true}] },
-  { id:'p7', name:'Paiement in-app', team:'mobile', quarter:'T4 2026', owner:'Théo L.', progress:63, status:'on_track', due:'10 déc.', drift:2,
-    krs:[{label:'Taux de conversion',cur:4.1,target:6,unit:'%'},{label:'Crashs sur le tunnel',cur:0.9,target:0.3,unit:'%',invert:true}],
-    tickets:[{id:'MOB-12',title:'SDK StoreKit',done:true},{id:'MOB-19',title:'Restauration d\u2019achat',done:false},{id:'MOB-23',title:'Reçus serveur',done:false}] },
-  { id:'p8', name:'Mode hors-ligne', team:'mobile', quarter:'T4 2026', owner:'Anna V.', progress:27, status:'at_risk', due:'22 déc.', drift:11,
-    krs:[{label:'Écrans disponibles hors-ligne',cur:6,target:22,unit:''},{label:'Conflits de synchro',cur:3.8,target:1,unit:'%',invert:true}],
-    tickets:[{id:'MOB-40',title:'Cache local chiffré',done:true},{id:'MOB-44',title:'File de synchronisation',done:false},{id:'MOB-49',title:'Résolution de conflits',done:false}] },
-  { id:'p9', name:'Espace client self-service', team:'produit', quarter:'T1 2027', owner:'Inès M.', progress:12, status:'on_track', due:'14 mars', drift:0,
-    krs:[{label:'Tickets support évités',cur:80,target:600,unit:'/mois'}],
-    tickets:[{id:'PRD-350',title:'Cadrage & parcours',done:true},{id:'PRD-355',title:'Maquettes',done:false}] },
-  { id:'p10', name:'Catalogue temps réel', team:'data', quarter:'T1 2027', owner:'Yacine B.', progress:8, status:'on_track', due:'27 mars', drift:0,
-    krs:[{label:'Latence de propagation',cur:45,target:5,unit:'s',invert:true}],
-    tickets:[{id:'DAT-150',title:'POC streaming',done:false}] },
-  { id:'p11', name:'Design system mobile', team:'mobile', quarter:'T3 2026', owner:'Anna V.', progress:100, status:'done', due:'19 sept.', drift:-4,
-    krs:[{label:'Composants publiés',cur:48,target:45,unit:''}],
-    tickets:[{id:'MOB-02',title:'Tokens de couleur',done:true},{id:'MOB-06',title:'Documentation',done:true}] }
-];
+const TEAMS = [];
+const PROJECTS = [];
 
 const REQ_STATUS = {
   nouveau:   { label: 'Nouveau',    color: '#4A2E6B', bg: '#F0EAF8' },
@@ -655,20 +616,7 @@ const PRIORITY = {
   moyenne:{ label: 'Moyenne',color: '#B9762A', bg: '#FBF0E2' },
   basse:  { label: 'Basse',  color: '#6B6478', bg: '#F1EFF5' }
 };
-const REQUESTS = [
-  { id:'DEM-118', title:'Export comptable mensuel automatisé', requester:'Direction financière', team:'produit',    priority:'haute',   status:'nouveau', date:'18 sept.', effort:8,  note:'Réclamé par trois clients grands comptes lors de la revue trimestrielle.' },
-  { id:'DEM-117', title:'Alertes de dépassement de quota', requester:'Support', team:'plateforme', priority:'haute',   status:'analyse', date:'17 sept.', effort:5,  note:'Génère environ 40 tickets par mois côté support.' },
-  { id:'DEM-115', title:'Tableau de bord client en marque blanche', requester:'Commerce', team:'produit',    priority:'moyenne', status:'analyse', date:'15 sept.', effort:21, note:'Bloquant sur deux appels d\u2019offres en cours.' },
-  { id:'DEM-113', title:'Connecteur Salesforce bidirectionnel', requester:'Commerce', team:'data',       priority:'haute',   status:'accepte', date:'12 sept.', effort:13, note:'Planifié sur T1 2027 avec l\u2019équipe Data.' },
-  { id:'DEM-110', title:'Authentification SSO SAML', requester:'Sécurité', team:'plateforme', priority:'haute',   status:'accepte', date:'09 sept.', effort:8,  note:'Prérequis de conformité pour le secteur public.' },
-  { id:'DEM-108', title:'Notifications push personnalisables', requester:'Marketing', team:'mobile',     priority:'moyenne', status:'nouveau', date:'08 sept.', effort:5,  note:'À arbitrer avec le mode hors-ligne, même équipe.' },
-  { id:'DEM-104', title:'Historique des modifications sur 24 mois', requester:'Juridique', team:'data',       priority:'moyenne', status:'analyse', date:'04 sept.', effort:13, note:'Impact sur le coût de stockage à chiffrer.' },
-  { id:'DEM-101', title:'Thème sombre sur l\u2019application mobile', requester:'Communauté', team:'mobile',     priority:'basse',   status:'nouveau', date:'01 sept.', effort:3,  note:'Demande récurrente sur le forum utilisateurs.' },
-  { id:'DEM-097', title:'Widget de recherche global', requester:'Support', team:'produit',    priority:'basse',   status:'refuse',  date:'28 août',  effort:8,  note:'Reporté : recouvre partiellement l\u2019espace self-service.' },
-  { id:'DEM-094', title:'API publique v2', requester:'Partenaires', team:'plateforme', priority:'moyenne', status:'analyse', date:'25 août',  effort:21, note:'Dépend de la migration Kubernetes.' },
-  { id:'DEM-090', title:'Rapport hebdomadaire par e-mail', requester:'Direction', team:'data',       priority:'basse',   status:'accepte', date:'21 août',  effort:3,  note:'Livré en marge du scoring de churn.' },
-  { id:'DEM-085', title:'Import de données via CSV', requester:'Onboarding', team:'produit',    priority:'moyenne', status:'refuse',  date:'14 août',  effort:5,  note:'Couvert par le connecteur Salesforce.' }
-];
+const REQUESTS = [];
 
 const DEFAULT_FIELDS = [
   { key:'title',     label:'Intitulé de la demande', type:'text',     required:true,  locked:true,  placeholder:'Ex. Export comptable automatisé', help:'Titre affiché dans la liste' },
