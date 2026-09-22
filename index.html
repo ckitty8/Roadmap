@@ -647,7 +647,7 @@ async function apiRequest(path, options) {
   const res = await fetch(DATA_API_URL + path, opts);
   if (!res.ok) {
     const body = await res.text().catch(() => '');
-    throw new Error('Neon Data API ' + (opts.method || 'GET') + ' ' + path + ' -> ' + res.status + ' ' + body);
+    throw new Error('API ' + (opts.method || 'GET') + ' ' + path + ' -> ' + res.status + ' ' + body);
   }
   if (res.status === 204) return null;
   const text = await res.text();

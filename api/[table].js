@@ -1,6 +1,13 @@
 const { neon } = require('@neondatabase/serverless');
 
-const sql = neon(process.env.DATABASE_URL);
+let sqlInstance = null;
+function getSql() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL is not set on this deployment. Add it in Vercel -> Project -> Settings -> Environment Variables, then redeploy.');
+  }
+  if (!sqlInstance) sqlInstance = neon(process.env.DATABASE_URL);
+  return sqlInstance;
+}
 
 // Per-table config: primary key column, allowed columns for insert/update
 // (whitelisted so column names can be safely concatenated into SQL text),
@@ -78,6 +85,8 @@ module.exports = async (req, res) => {
   }
 
   try {
+    const sql = getSql();
+
     if (req.method === 'GET') {
       if (table === 'projects') {
         const [projects, krs, tks] = await Promise.all([
