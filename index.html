@@ -1194,7 +1194,7 @@ class Component extends DCLogic {
           caret: open ? '▾' : '▸',
           open: open,
           onClick: () => this.setState({ reqSelId: open ? null : r.id }),
-          extras: Object.keys(r.extra || {}).map(k => ({ label: k, value: r.extra[k] })),
+          extras: Object.keys(r.extra || {}).map(k => ({ label: k, value: (r.extra[k] === null || r.extra[k] === '') ? '—' : r.extra[k] })),
           statusValue: r.status,
           onStatusChange: (e) => this.setReqStatus(r.id, e.target.value),
           stopClick: (e) => e.stopPropagation(),
