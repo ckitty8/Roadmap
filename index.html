@@ -527,6 +527,75 @@
               </sc-if>
             </div>
           </section>
+
+          <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:hidden">
+            <div style="padding:15px 18px;border-bottom:1px solid #EFECF4">
+              <h2 style="margin:0;font-size:14.5px;font-weight:700">Référentiels</h2>
+              <p style="margin:4px 0 0;font-size:12px;color:#8B8299">Listes de valeurs utilisées par les champs à choix (statut, priorité, planification…). Une colonne du fichier = un référentiel.</p>
+            </div>
+            <div style="padding:15px 18px;border-bottom:1px solid #EFECF4">
+              <label style="display:flex;flex-direction:column;gap:5px;max-width:420px">
+                <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Référentiel</span>
+                <select value="{{ refSelectedKey }}" onChange="{{ onSelectRef }}" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;outline:none;background:#FFFFFF;cursor:pointer">
+                  <sc-for list="{{ refKeys }}" as="k" hint-placeholder-count="10">
+                    <option value="{{ k.value }}">{{ k.label }}</option>
+                  </sc-for>
+                </select>
+              </label>
+            </div>
+            <sc-for list="{{ refRows }}" as="r" hint-placeholder-count="5">
+              <div style="border-bottom:1px solid #F2EFF7;background:{{ r.rowBg }};padding:13px 18px">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                  <span style="font-size:11px;color:#A79FB5;width:30px;flex:none">{{ r.code }}</span>
+                  <div style="min-width:0;flex:1 1 200px">
+                    <div style="font-size:13.5px;font-weight:600">{{ r.label }}</div>
+                  </div>
+                  <span style="font-size:11px;color:#A79FB5;flex:none;white-space:nowrap">Ordre {{ r.position }}</span>
+                  <div style="display:flex;gap:10px;align-items:center;flex:none">
+                    <button onClick="{{ r.onToggle }}" style="all:unset;box-sizing:border-box;cursor:pointer;width:34px;height:19px;border-radius:20px;background:{{ r.toggleBg }};position:relative;flex:none">
+                      <span style="position:absolute;top:2px;left:{{ r.toggleLeft }};width:15px;height:15px;border-radius:50%;background:#FFFFFF;transition:left .15s"></span>
+                    </button>
+                    <button onClick="{{ r.onEdit }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid #DDD7E6;color:#4A2E6B;background:#FFFFFF" style-hover="background:#F5F1FB">Modifier</button>
+                    <button onClick="{{ r.onDelete }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid #EDD8DA;color:#B3383F;background:#FFFFFF" style-hover="background:#FAE9EA">Supprimer</button>
+                  </div>
+                </div>
+                <sc-if value="{{ r.editing }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px;margin-top:13px;align-items:end">
+                    <label style="display:flex;flex-direction:column;gap:5px">
+                      <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Code</span>
+                      <input value="{{ r.draftCode }}" onChange="{{ r.onDraftCode }}" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;outline:none" />
+                    </label>
+                    <label style="display:flex;flex-direction:column;gap:5px">
+                      <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Libellé</span>
+                      <input value="{{ r.draftLabel }}" onChange="{{ r.onDraftLabel }}" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;outline:none" />
+                    </label>
+                    <label style="display:flex;flex-direction:column;gap:5px">
+                      <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Ordre</span>
+                      <input type="number" value="{{ r.draftPosition }}" onChange="{{ r.onDraftPosition }}" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;outline:none" />
+                    </label>
+                    <div style="display:flex;gap:8px">
+                      <button onClick="{{ r.onSave }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#4A2E6B;color:#FFFFFF" style-hover="background:#3A2354">Enregistrer</button>
+                      <button onClick="{{ r.onCancel }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;padding:8px 12px;border-radius:8px;font-size:12.5px;color:#6B6478">Annuler</button>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <div style="padding:16px 18px;background:#FBFAFD;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px;align-items:end">
+              <label style="display:flex;flex-direction:column;gap:5px">
+                <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Code</span>
+                <input value="{{ newRefCode }}" onChange="{{ onNewRefCode }}" placeholder="Ex. 13" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;outline:none;background:#FFFFFF" />
+              </label>
+              <label style="display:flex;flex-direction:column;gap:5px">
+                <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Libellé</span>
+                <input value="{{ newRefLabel }}" onChange="{{ onNewRefLabel }}" placeholder="Ex. Nouvelle valeur" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;outline:none;background:#FFFFFF" />
+              </label>
+              <button onClick="{{ onAddRef }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#4A2E6B;color:#FFFFFF" style-hover="background:#3A2354">Ajouter la valeur</button>
+            </div>
+            <sc-if value="{{ newRefError }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:0 18px 15px;background:#FBFAFD;font-size:12.5px;color:#B3383F">Indiquez un libellé pour la nouvelle valeur.</div>
+            </sc-if>
+          </section>
         </div>
       </sc-if>
     </div>
@@ -665,6 +734,7 @@ class Component extends DCLogic {
             requests: REQUESTS, reqFilter: 'tous', reqQuery: '', reqSelId: null,
             fields: DEFAULT_FIELDS, adminEditKey: null, adminDraft: null, newField: null,
             teams: TEAMS, newTeam: null, teamEditId: null, teamDraft: null, adminTab: 'teams',
+            referentiels: [], refSelected: null, refEditId: null, refDraft: null, newRef: null, newRefError: false,
             loading: true, loadError: null };
 
   componentDidMount() {
@@ -673,11 +743,12 @@ class Component extends DCLogic {
 
   async loadAll() {
     try {
-      const [teamRows, projectRows, requestRows, fieldRows] = await Promise.all([
+      const [teamRows, projectRows, requestRows, fieldRows, refRows] = await Promise.all([
         api.list('teams', 'select=*&order=name.asc'),
         api.list('projects', 'select=*,key_results(*),tickets(*)'),
         api.list('requests', 'select=*&order=id.desc'),
-        api.list('request_fields', 'select=*&order=position.asc')
+        api.list('request_fields', 'select=*&order=position.asc'),
+        api.list('referentiels', 'select=*')
       ]);
       const teams = (teamRows || []).map(t => ({
         id: t.id, name: t.name, lead: t.lead, capacity: t.capacity, load: t.load, dot: t.dot
@@ -698,12 +769,31 @@ class Component extends DCLogic {
         key: f.key, label: f.label, type: f.type, required: f.required, locked: f.locked,
         options: f.options || undefined, placeholder: f.placeholder || '', help: f.help || ''
       })) : DEFAULT_FIELDS;
+      const referentiels = (refRows || []).map(r => ({
+        id: r.id, referentiel: r.referentiel, code: r.code || '',
+        position: Number(r.position) || 0, label: r.label, active: !!r.active
+      }));
+      const refKeys = Array.from(new Set(referentiels.map(r => r.referentiel))).sort();
       this.setState(s => ({
-        teams, projects, requests, fields, loading: false, loadError: null,
-        team: teams.some(t => t.id === s.team) ? s.team : (teams[0] ? teams[0].id : s.team)
+        teams, projects, requests, fields, referentiels, loading: false, loadError: null,
+        team: teams.some(t => t.id === s.team) ? s.team : (teams[0] ? teams[0].id : s.team),
+        refSelected: refKeys.includes(s.refSelected) ? s.refSelected : (refKeys[0] || null)
       }));
     } catch (e) {
       this.setState({ loading: false, loadError: 'Connexion à la base impossible : ' + (e && e.message ? e.message : e) });
+    }
+  }
+
+  async loadReferentiels() {
+    try {
+      const refRows = await api.list('referentiels', 'select=*');
+      const referentiels = (refRows || []).map(r => ({
+        id: r.id, referentiel: r.referentiel, code: r.code || '',
+        position: Number(r.position) || 0, label: r.label, active: !!r.active
+      }));
+      this.setState({ referentiels });
+    } catch (e) {
+      this.setState({ loadError: String(e.message || e) });
     }
   }
 
@@ -851,6 +941,48 @@ class Component extends DCLogic {
     api.update('requests', 'id=eq.' + encodeURIComponent(id), { status: key }).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
 
+  selectRef(key) {
+    this.setState({ refSelected: key, refEditId: null, refDraft: null, newRef: null, newRefError: false });
+  }
+  toggleRefActive(id, current) {
+    this.setState(s => ({ referentiels: s.referentiels.map(r => r.id === id ? Object.assign({}, r, { active: !current }) : r) }));
+    api.update('referentiels', 'id=eq.' + encodeURIComponent(id), { active: !current }).catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  startEditRef(id) {
+    const r = this.state.referentiels.find(x => x.id === id);
+    if (!r) return;
+    this.setState({ refEditId: id, refDraft: { code: r.code || '', label: r.label, position: String(r.position) } });
+  }
+  setRefDraft(k, v) { this.setState(s => ({ refDraft: Object.assign({}, s.refDraft, { [k]: v }) })); }
+  cancelEditRef() { this.setState({ refEditId: null, refDraft: null }); }
+  saveRef() {
+    const d = this.state.refDraft, id = this.state.refEditId;
+    if (!d || !d.label.trim()) return;
+    const patch = { code: d.code.trim(), label: d.label.trim(), position: parseInt(d.position, 10) || 0 };
+    this.setState(s => ({ refEditId: null, refDraft: null, referentiels: s.referentiels.map(r => r.id !== id ? r : Object.assign({}, r, patch)) }));
+    api.update('referentiels', 'id=eq.' + encodeURIComponent(id), patch).catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  deleteRef(id) {
+    this.setState(s => ({ referentiels: s.referentiels.filter(r => r.id !== id) }));
+    api.remove('referentiels', 'id=eq.' + encodeURIComponent(id)).catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  setNewRef(k, v) { this.setState(s => ({ newRef: Object.assign({ code: '', label: '' }, s.newRef, { [k]: v }), newRefError: false })); }
+  async addRef() {
+    const n = this.state.newRef;
+    if (!n || !String(n.label || '').trim()) { this.setState({ newRefError: true }); return; }
+    const key = this.state.refSelected;
+    if (!key) return;
+    const siblings = this.state.referentiels.filter(r => r.referentiel === key);
+    const maxPos = siblings.reduce((m, r) => Math.max(m, Number(r.position) || 0), 0);
+    const row = { referentiel: key, code: String(n.code || '').trim(), position: maxPos + 10, label: String(n.label).trim(), active: true };
+    this.setState({ newRef: null, newRefError: false });
+    try {
+      await api.insert('referentiels', row);
+      await this.loadReferentiels();
+    } catch (e) {
+      this.setState({ loadError: String(e.message || e) });
+    }
+  }
 
   visible() {
     return this.state.projects.filter(p => p.quarter === this.state.quarter);
@@ -1155,6 +1287,30 @@ class Component extends DCLogic {
     });
     const nt = st.newTeam || { name:'', lead:'', capacity:'40' };
 
+    const refKeysList = Array.from(new Set(st.referentiels.map(r => r.referentiel))).sort();
+    const refSelectedKey = st.refSelected || refKeysList[0] || '';
+    const refKeys = refKeysList.map(k => ({ value: k, label: k }));
+    const rd = st.refDraft;
+    const refRows = st.referentiels.filter(r => r.referentiel === refSelectedKey)
+      .slice().sort((a, b) => a.position - b.position)
+      .map(r => ({
+        id: r.id, code: r.code, label: r.label, position: r.position,
+        editing: st.refEditId === r.id,
+        rowBg: st.refEditId === r.id ? '#FAF8FD' : '#FFFFFF',
+        toggleBg: r.active ? '#4A2E6B' : '#DDD7E6',
+        toggleLeft: r.active ? '17px' : '2px',
+        draftCode: rd ? rd.code : '', draftLabel: rd ? rd.label : '', draftPosition: rd ? rd.position : '',
+        onToggle: () => this.toggleRefActive(r.id, r.active),
+        onEdit: () => this.startEditRef(r.id),
+        onDelete: () => this.deleteRef(r.id),
+        onDraftCode: (e) => this.setRefDraft('code', e.target.value),
+        onDraftLabel: (e) => this.setRefDraft('label', e.target.value),
+        onDraftPosition: (e) => this.setRefDraft('position', e.target.value),
+        onSave: () => this.saveRef(),
+        onCancel: () => this.cancelEditRef()
+      }));
+    const nr = st.newRef || { code: '', label: '' };
+
     const pending = reqCounts.nouveau + reqCounts.analyse;
     const reqStats = [
       { label: 'À arbitrer', value: pending, hint: 'nouvelles + en analyse', color: pending > 0 ? '#B9762A' : '#2E7D5B' },
@@ -1173,6 +1329,12 @@ class Component extends DCLogic {
       quartersShown: (isRequests || isAdmin) ? [] : quarters,
       formControls, statusSelectOptions, isAdmin,
       adminFields, typeOptions, adminTeams,
+      refKeys, refSelectedKey, refRows,
+      onSelectRef: (e) => this.selectRef(e.target.value),
+      newRefCode: nr.code, newRefLabel: nr.label, newRefError: !!st.newRefError,
+      onNewRefCode: (e) => this.setNewRef('code', e.target.value),
+      onNewRefLabel: (e) => this.setNewRef('label', e.target.value),
+      onAddRef: () => this.addRef(),
       adminNavBg: isAdmin ? '#45305F' : 'transparent',
       adminNavFg: isAdmin ? '#FFFFFF' : '#C9C0DA',
       onAdminNav: () => this.setState({ view: 'admin' }),

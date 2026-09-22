@@ -49,6 +49,12 @@ const TABLES = {
     columns: ['key', 'position', 'label', 'type', 'required', 'locked', 'options', 'placeholder', 'help'],
     jsonb: ['options'],
     order: 'position ASC'
+  },
+  referentiels: {
+    pk: 'id',
+    columns: ['referentiel', 'code', 'position', 'label', 'active'],
+    jsonb: [],
+    order: 'referentiel ASC, position ASC'
   }
 };
 
