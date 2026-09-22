@@ -308,9 +308,41 @@
                 </button>
               </sc-for>
             </div>
-            <input value="{{ reqQuery }}" onChange="{{ onReqQuery }}" placeholder="Rechercher une demande…" style="border:1px solid #E6E2EC;border-radius:8px;padding:8px 11px;font-size:12.5px;font-family:inherit;color:#1A1626;outline:none;width:230px;max-width:100%;box-sizing:border-box;background:#FFFFFF" />
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <div style="display:inline-flex;border:1px solid #DDD7E6;border-radius:9px;overflow:hidden">
+                <button onClick="{{ onSetReqViewListe }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:7px 12px;font-size:12px;font-weight:600;background:{{ reqViewIsListe ? '#4A2E6B' : '#FFFFFF' }};color:{{ reqViewIsListe ? '#FFFFFF' : '#4A2E6B' }}">Liste</button>
+                <button onClick="{{ onSetReqViewTableau }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:7px 12px;font-size:12px;font-weight:600;background:{{ reqViewIsTableau ? '#4A2E6B' : '#FFFFFF' }};color:{{ reqViewIsTableau ? '#FFFFFF' : '#4A2E6B' }}">Tableau (colonnes A à AB)</button>
+              </div>
+              <input value="{{ reqQuery }}" onChange="{{ onReqQuery }}" placeholder="Rechercher une demande…" style="border:1px solid #E6E2EC;border-radius:8px;padding:8px 11px;font-size:12.5px;font-family:inherit;color:#1A1626;outline:none;width:230px;max-width:100%;box-sizing:border-box;background:#FFFFFF" />
+            </div>
           </div>
 
+          <sc-if value="{{ reqViewIsTableau }}" hint-placeholder-val="{{ false }}">
+            <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:auto;max-height:75vh">
+              <table style="border-collapse:collapse;width:max-content;min-width:100%;font-size:11.5px">
+                <thead>
+                  <tr>
+                    <th style="position:sticky;left:0;top:0;z-index:3;text-align:left;white-space:nowrap;padding:9px 12px;background:#FBFAFD;border-bottom:1px solid #EFECF4;border-right:1px solid #EFECF4;font-size:10.5px;letter-spacing:0.05em;text-transform:uppercase;color:#8B8299">ID</th>
+                    <sc-for list="{{ tableColumns }}" as="c" hint-placeholder-count="28">
+                      <th style="position:sticky;top:0;z-index:2;text-align:left;white-space:nowrap;padding:9px 12px;background:#FBFAFD;border-bottom:1px solid #EFECF4;font-size:10.5px;letter-spacing:0.05em;text-transform:uppercase;color:#8B8299">{{ c.label }}</th>
+                    </sc-for>
+                  </tr>
+                </thead>
+                <tbody>
+                  <sc-for list="{{ tableRows }}" as="r" hint-placeholder-count="8">
+                    <tr>
+                      <td style="position:sticky;left:0;z-index:1;white-space:nowrap;padding:8px 12px;background:#FFFFFF;border-bottom:1px solid #F2EFF7;border-right:1px solid #EFECF4;font-variant-numeric:tabular-nums;color:#A79FB5">{{ r.id }}</td>
+                      <sc-for list="{{ r.cells }}" as="cell" hint-placeholder-count="28">
+                        <td style="white-space:nowrap;padding:8px 12px;border-bottom:1px solid #F2EFF7;color:#1A1626;max-width:280px;overflow:hidden;text-overflow:ellipsis">{{ cell.value }}</td>
+                      </sc-for>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </section>
+          </sc-if>
+
+          <sc-if value="{{ reqViewIsListe }}" hint-placeholder-val="{{ true }}">
           <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:hidden">
             <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1fr) minmax(76px,96px) minmax(84px,104px) minmax(60px,72px);gap:12px;padding:11px 18px;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#8B8299;border-bottom:1px solid #EFECF4;background:#FBFAFD">
               <div>Demande</div><div>Priorité</div><div>Statut</div><div style="text-align:right">Reçue</div>
@@ -361,6 +393,7 @@
               </div>
             </sc-for>
           </section>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -696,6 +729,14 @@ const PRIORITY = {
   basse:  { label: 'Basse',  color: '#6B6478', bg: '#F1EFF5' }
 };
 const REQUESTS = [];
+const EXTRA_COLUMNS = [
+  'Demandeur', 'Parcours', 'Catégorie métier', 'Mois de la demande', 'US', 'Thématique',
+  'Demande', 'Commentaires', 'Etat', 'Priorité demandeur', 'Strategique',
+  'Impact client (1,2,3)', 'Impact collaborateur (1,2,3)', 'Planification', 'Score',
+  'Cadrage AMOA', 'Rang traitement DSI', 'Statut', 'Complexité (1,2,3,4,5)',
+  'Pris en charge par la DSI', 'Chiffrage DSI (JH)', 'Atterrissage chiffrage', 'SPRINT DSI',
+  'Avancement dév', 'Estimé MEP', 'Statut Recette', 'Date de MEP', 'Statut MEP'
+];
 
 const DEFAULT_FIELDS = [
   { key:'title',     label:'Intitulé de la demande', type:'text',     required:true,  locked:true,  placeholder:'Ex. Export comptable automatisé', help:'Titre affiché dans la liste' },
@@ -731,7 +772,7 @@ const api = {
 
 class Component extends DCLogic {
   state = { view: 'dashboard', team: 'produit', quarter: 'T4 2026', selId: null, query: '', projects: PROJECTS,
-            requests: REQUESTS, reqFilter: 'tous', reqQuery: '', reqSelId: null,
+            requests: REQUESTS, reqFilter: 'tous', reqQuery: '', reqSelId: null, reqView: 'liste',
             fields: DEFAULT_FIELDS, adminEditKey: null, adminDraft: null, newField: null,
             teams: TEAMS, newTeam: null, teamEditId: null, teamDraft: null, adminTab: 'teams',
             referentiels: [], refSelected: null, refEditId: null, refDraft: null, newRef: null, newRefError: false,
@@ -1208,6 +1249,19 @@ class Component extends DCLogic {
         };
       });
 
+    const tableColumns = EXTRA_COLUMNS.map(label => ({ label }));
+    const tableRows = reqAll
+      .filter(r => st.reqFilter === 'tous' || r.status === st.reqFilter)
+      .filter(r => !rq || r.title.toLowerCase().includes(rq) || r.requester.toLowerCase().includes(rq) || r.id.toLowerCase().includes(rq))
+      .sort((a, b) => prioRank[a.priority] - prioRank[b.priority])
+      .map(r => ({
+        id: r.id,
+        cells: EXTRA_COLUMNS.map(col => {
+          const v = (r.extra || {})[col];
+          return { value: (v === null || v === undefined || v === '') ? '—' : String(v) };
+        })
+      }));
+
     const form = st.form || this.blankForm();
     const formControls = st.fields.map(fl => ({
       key: fl.key, label: fl.label, help: fl.help || '', required: fl.required ? '*' : '',
@@ -1326,6 +1380,11 @@ class Component extends DCLogic {
       isDashboard, isTeam, isRequests, navItems, teamNav, quarters, kpis, rows, capacity, alerts,
       teamTabs, teamStats, teamProjects, sel, statusOptions, query: st.query,
       requests, reqFilters, reqStats, reqQuery: st.reqQuery,
+      tableColumns, tableRows,
+      reqViewIsListe: st.reqView !== 'tableau',
+      reqViewIsTableau: st.reqView === 'tableau',
+      onSetReqViewListe: () => this.setState({ reqView: 'liste' }),
+      onSetReqViewTableau: () => this.setState({ reqView: 'tableau' }),
       quartersShown: (isRequests || isAdmin) ? [] : quarters,
       formControls, statusSelectOptions, isAdmin,
       adminFields, typeOptions, adminTeams,
