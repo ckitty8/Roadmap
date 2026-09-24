@@ -36,6 +36,10 @@
         <span style="font-size:12px;opacity:.85">▦</span>
         <span>Congés & capacité</span>
       </button>
+      <button onClick="{{ onPlanningAdminNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;margin-top:8px;padding:8px 10px;border-radius:9px;font-size:13px;background:{{ planningAdminNavBg }};color:{{ planningAdminNavFg }}">
+        <span style="font-size:12px;opacity:.85">⚙</span>
+        <span>Administration</span>
+      </button>
     </nav>
 
     <nav style="display:flex;flex-direction:column;gap:2px">
@@ -568,16 +572,18 @@
       <sc-if value="{{ isPlanning }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:20px">
 
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <sc-for list="{{ planTabs }}" as="t" hint-placeholder-count="4">
-              <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
-            </sc-for>
-            <select value="{{ planEquipeFiltre }}" onChange="{{ onPlanEquipeFiltre }}" style="margin-left:auto;box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
-              <sc-for list="{{ planEquipeFilterOptions }}" as="o" hint-placeholder-count="2">
-                <option value="{{ o.value }}">{{ o.label }}</option>
+          <sc-if value="{{ isPlanEquipesNot }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <sc-for list="{{ planTabs }}" as="t" hint-placeholder-count="4">
+                <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
               </sc-for>
-            </select>
-          </div>
+              <select value="{{ planEquipeFiltre }}" onChange="{{ onPlanEquipeFiltre }}" style="margin-left:auto;box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
+                <sc-for list="{{ planEquipeFilterOptions }}" as="o" hint-placeholder-count="2">
+                  <option value="{{ o.value }}">{{ o.label }}</option>
+                </sc-for>
+              </select>
+            </div>
+          </sc-if>
 
           <sc-if value="{{ isPlanGrille }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;flex-direction:column;gap:14px">
@@ -1959,10 +1965,15 @@ class Component extends DCLogic {
       weight: st.view === n.key ? 700 : 500,
       onClick: () => this.setState({ view: n.key })
     }));
-    const onPlanningNav = () => this.setState({ view: 'planning' });
-    const planningNavBg = isPlanning ? '#4A2E6B' : 'transparent';
-    const planningNavFg = isPlanning ? '#FFFFFF' : '#C9C0DA';
-    const planningNavWeight = isPlanning ? 700 : 500;
+    const isPlanningAdminActive = isPlanning && st.planningView === 'equipes';
+    const isPlanningDataActive = isPlanning && st.planningView !== 'equipes';
+    const onPlanningNav = () => this.setState({ view: 'planning', planningView: st.planningView === 'equipes' ? 'grille' : st.planningView });
+    const planningNavBg = isPlanningDataActive ? '#4A2E6B' : 'transparent';
+    const planningNavFg = isPlanningDataActive ? '#FFFFFF' : '#C9C0DA';
+    const planningNavWeight = isPlanningDataActive ? 700 : 500;
+    const onPlanningAdminNav = () => this.setState({ view: 'planning', planningView: 'equipes' });
+    const planningAdminNavBg = isPlanningAdminActive ? '#45305F' : 'transparent';
+    const planningAdminNavFg = isPlanningAdminActive ? '#FFFFFF' : '#C9C0DA';
 
     const teamNav = st.teams.map(t => ({
       name: t.name, dot: t.dot,
@@ -2342,8 +2353,7 @@ class Component extends DCLogic {
     const planTabsDef = [
       { key: 'grille', label: 'Planning' },
       { key: 'conges', label: 'Jours de congés' },
-      { key: 'capacite', label: 'Capacité' },
-      { key: 'equipes', label: 'Équipes & personnes' }
+      { key: 'capacite', label: 'Capacité' }
     ];
     const planTabs = planTabsDef.map(t => ({
       label: t.label,
@@ -2356,6 +2366,7 @@ class Component extends DCLogic {
     const isPlanConges = st.planningView === 'conges';
     const isPlanCapacite = st.planningView === 'capacite';
     const isPlanEquipes = st.planningView === 'equipes';
+    const isPlanEquipesNot = !isPlanEquipes;
 
     const planSpeciauxByDate = {};
     st.planJoursSpeciaux.forEach(s => { planSpeciauxByDate[s.date] = s; });
@@ -2534,7 +2545,8 @@ class Component extends DCLogic {
       onRetryLoad: () => { this.setState({ loadError: null }); this.loadAll(); },
       isDashboard, isTeam, isRequests, isMep, isPlanning, navItems, teamNav, quarters, kpis, rows, capacity, alerts,
       onPlanningNav, planningNavBg, planningNavFg, planningNavWeight,
-      planTabs, isPlanGrille, isPlanConges, isPlanCapacite, isPlanEquipes,
+      onPlanningAdminNav, planningAdminNavBg, planningAdminNavFg,
+      planTabs, isPlanGrille, isPlanConges, isPlanCapacite, isPlanEquipes, isPlanEquipesNot,
       planEquipeFilterOptions, planEquipeFiltre: String(st.planEquipeFiltre),
       onPlanEquipeFiltre: (e) => this.setState({ planEquipeFiltre: e.target.value }),
       planMoisLabel, onPlanPrevMonth: () => this.planNavMonth(-1), onPlanNextMonth: () => this.planNavMonth(1),
@@ -2621,9 +2633,11 @@ class Component extends DCLogic {
       onFormNote: (e) => this.setField('note', e.target.value),
       onSubmitRequest: () => this.submitRequest(),
       onReqQuery: (e) => this.setState({ reqQuery: e.target.value }),
-      crumb: isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Administration · Équipes et champs' : (isMep ? 'Suivi MEP · CDO, VISTA, PPM, V4, VI3P' : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter)))),
-      title: isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name)))),
-      subtitle: isPlanning
+      crumb: isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Administration · Équipes et champs' : (isMep ? 'Suivi MEP · CDO, VISTA, PPM, V4, VI3P' : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter))))),
+      title: isPlanEquipes ? 'Administration' : (isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name))))),
+      subtitle: isPlanEquipes
+        ? 'Gérez les équipes, projets et personnes qui apparaissent dans le planning des congés.'
+        : (isPlanning
         ? 'Congés et présences par personne, jour par jour, et capacité/vélocité par sprint.'
         : (isAdmin
         ? 'Gérez les équipes suivies et les champs du formulaire de demande. Les modifications s\u2019appliquent immédiatement à la navigation, au dashboard et à la saisie.'
@@ -2633,7 +2647,7 @@ class Component extends DCLogic {
         ? 'Toutes les demandes reçues des autres services, leur priorité, l\u2019équipe pressentie et leur état d\u2019arbitrage.'
         : (isDashboard
         ? 'État des initiatives des quatre équipes, avancement, écart aux dates cibles et charge disponible.'
-        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.')))),
+        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.'))))),
       onQuery: (e) => this.setState({ query: e.target.value }),
       onProgress: (e) => selRaw && this.setProgress(selRaw.id, Number(e.target.value)),
       closeDrawer: () => this.setState({ selId: null })
