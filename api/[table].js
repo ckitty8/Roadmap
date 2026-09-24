@@ -55,6 +55,12 @@ const TABLES = {
     columns: ['referentiel', 'code', 'position', 'label', 'active'],
     jsonb: [],
     order: 'referentiel ASC, position ASC'
+  },
+  mep_releases: {
+    pk: 'id',
+    columns: ['name', 'date', 'team'],
+    jsonb: [],
+    order: 'date ASC'
   }
 };
 

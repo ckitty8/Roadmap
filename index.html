@@ -414,6 +414,118 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ isMep }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:22px">
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px">
+            <sc-for list="{{ mepTeamStats }}" as="s" hint-placeholder-count="5">
+              <div style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;padding:15px 17px">
+                <div style="display:flex;align-items:center;gap:7px">
+                  <span style="width:9px;height:9px;border-radius:50%;background:{{ s.color }};flex:none"></span>
+                  <div style="font-size:11.5px;letter-spacing:0.05em;text-transform:uppercase;color:#8B8299">{{ s.label }}</div>
+                </div>
+                <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em;margin-top:7px;color:#1A1626">{{ s.total }}</div>
+                <div style="font-size:11.5px;color:#6B6478;margin-top:4px">mises en production</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:auto;max-height:60vh">
+            <table style="border-collapse:collapse;width:max-content;min-width:100%;font-size:12px">
+              <thead>
+                <tr>
+                  <th style="position:sticky;left:0;top:0;z-index:3;text-align:left;padding:9px 12px;background:#FBFAFD;border-bottom:1px solid #EFECF4;border-right:1px solid #EFECF4;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#8B8299;white-space:nowrap">Équipe</th>
+                  <sc-for list="{{ mepColumnTotals }}" as="c" hint-placeholder-count="10">
+                    <th style="position:sticky;top:0;z-index:2;text-align:center;padding:9px 10px;background:{{ c.todayBg }};color:{{ c.todayFg }};border-bottom:1px solid #EFECF4;font-size:10px;font-weight:700;white-space:nowrap">{{ c.label }}</th>
+                  </sc-for>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ mepTable }}" as="row" hint-placeholder-count="5">
+                  <tr>
+                    <td style="position:sticky;left:0;z-index:1;background:#FFFFFF;border-bottom:1px solid #F2EFF7;border-right:1px solid #EFECF4;padding:9px 12px;white-space:nowrap">
+                      <span style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:12.5px"><span style="width:9px;height:9px;border-radius:50%;background:{{ row.color }};flex:none"></span>{{ row.label }}</span>
+                    </td>
+                    <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="10">
+                      <td style="text-align:center;padding:6px;border-bottom:1px solid #F2EFF7">
+                        <sc-if value="{{ cell.hasCount }}" hint-placeholder-val="{{ false }}">
+                          <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;font-weight:700;font-size:12px;background:{{ cell.bg }};color:{{ cell.color }};border:{{ cell.border }}">{{ cell.count }}</span>
+                        </sc-if>
+                      </td>
+                    </sc-for>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </section>
+
+          <div style="display:flex;align-items:center;gap:16px;font-size:11px;color:#6B6478">
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:5px;background:#E6E2EC;display:inline-block"></span>MEP réalisée</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:5px;border:2px dashed #C9BEE0;display:inline-block;box-sizing:border-box"></span>MEP à venir</span>
+          </div>
+
+          <h2 style="margin:0;font-size:14.5px;font-weight:700">Ajouter une mise en production</h2>
+
+          <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:grid;grid-template-columns:2fr 150px 140px auto;gap:10px;align-items:end">
+              <label style="display:flex;flex-direction:column;gap:5px">
+                <span style="font-size:11px;font-weight:700;color:#6B6478;text-transform:uppercase;letter-spacing:.03em">Nom</span>
+                <input value="{{ mepNewName }}" onChange="{{ onMepNewName }}" placeholder="Ex. Refonte du parcours réservation" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#1A1626;outline:none" />
+              </label>
+              <label style="display:flex;flex-direction:column;gap:5px">
+                <span style="font-size:11px;font-weight:700;color:#6B6478;text-transform:uppercase;letter-spacing:.03em">Équipe</span>
+                <select value="{{ mepNewTeam }}" onChange="{{ onMepNewTeam }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#1A1626;outline:none;cursor:pointer">
+                  <sc-for list="{{ mepTeamOptions }}" as="o" hint-placeholder-count="5">
+                    <option value="{{ o.value }}">{{ o.label }}</option>
+                  </sc-for>
+                </select>
+              </label>
+              <label style="display:flex;flex-direction:column;gap:5px">
+                <span style="font-size:11px;font-weight:700;color:#6B6478;text-transform:uppercase;letter-spacing:.03em">Date</span>
+                <input type="date" value="{{ mepNewDate }}" onChange="{{ onMepNewDate }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#1A1626;outline:none" />
+              </label>
+              <button onClick="{{ onAddMep }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;cursor:pointer;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;background:#4A2E6B;color:#FFFFFF">Ajouter</button>
+            </div>
+            <sc-if value="{{ mepNewError }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:12px;color:#B3383F">Merci de renseigner un nom et une date.</span>
+            </sc-if>
+          </section>
+
+          <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:hidden">
+            <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1fr) 110px 130px auto;gap:12px;padding:11px 18px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#8B8299;border-bottom:1px solid #EFECF4;background:#FBFAFD">
+              <div>Nom</div><div>Équipe</div><div>Date</div><div></div>
+            </div>
+            <sc-for list="{{ mepList }}" as="r" hint-placeholder-count="6">
+              <div style="border-bottom:1px solid #F2EFF7;padding:10px 18px;display:grid;grid-template-columns:minmax(0,1fr) 110px 130px auto;gap:12px;align-items:center">
+                <sc-if value="{{ r.editing }}" hint-placeholder-val="{{ false }}">
+                  <input value="{{ r.draftName }}" onChange="{{ r.onDraftName }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:6px 9px;font-size:12.5px;font-family:inherit;color:#1A1626;outline:none" />
+                  <select value="{{ r.draftTeam }}" onChange="{{ r.onDraftTeam }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:6px 9px;font-size:12px;font-family:inherit;color:#1A1626;outline:none;cursor:pointer">
+                    <sc-for list="{{ mepTeamOptions }}" as="o" hint-placeholder-count="5">
+                      <option value="{{ o.value }}">{{ o.label }}</option>
+                    </sc-for>
+                  </select>
+                  <input type="date" value="{{ r.draftDate }}" onChange="{{ r.onDraftDate }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:6px 9px;font-size:12px;font-family:inherit;color:#1A1626;outline:none" />
+                  <div style="display:flex;gap:8px;justify-self:end">
+                    <button onClick="{{ r.onSave }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:700;color:#2E7D5B">Enregistrer</button>
+                    <button onClick="{{ r.onCancel }}" style="all:unset;cursor:pointer;font-size:12px;color:#8B8299">Annuler</button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ r.notEditing }}" hint-placeholder-val="{{ true }}">
+                  <span style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</span>
+                  <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px"><span style="width:8px;height:8px;border-radius:50%;background:{{ r.teamColor }};flex:none"></span>{{ r.team }}</span>
+                  <span style="font-size:12px;color:#6B6478">{{ r.date }}</span>
+                  <div style="display:flex;gap:12px;justify-self:end">
+                    <button onClick="{{ r.onEdit }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:#4A2E6B">Modifier</button>
+                    <button onClick="{{ r.onDelete }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:#B3383F">Supprimer</button>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </section>
+
+        </div>
+      </sc-if>
+
       <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:24px">
 
@@ -775,6 +887,36 @@ const CORE_MIRROR_COLUMNS = {
   'Commentaires': 'note'
 };
 
+const MEP_TEAMS = [
+  { key: 'CDO', color: '#4A2E6B' },
+  { key: 'VISTA', color: '#2E7D5B' },
+  { key: 'PPM', color: '#B9762A' },
+  { key: 'V4', color: '#2E6B8A' },
+  { key: 'VI3P', color: '#A34A7A' }
+];
+const MEP_MONTHS_FR = ['Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'];
+function mepParseDate(v) {
+  if (v instanceof Date) return v;
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v || ''));
+  return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null;
+}
+function mepMonthKey(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
+function mepMonthLabel(d) { return MEP_MONTHS_FR[d.getMonth()] + ' ' + d.getFullYear(); }
+function mepDateInputValue(v) {
+  const d = mepParseDate(v);
+  if (!d) return '';
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function mepDateDisplay(v) {
+  const d = mepParseDate(v);
+  return d ? (d.getDate() + ' ' + MEP_MONTHS_FR[d.getMonth()].toLowerCase() + ' ' + d.getFullYear()) : '—';
+}
+function hexToRgba(hex, a) {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.substring(0, 2), 16), g = parseInt(h.substring(2, 4), 16), b = parseInt(h.substring(4, 6), 16);
+  return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+}
+
 const DEFAULT_FIELDS = [
   { key:'title',     label:'Intitulé de la demande', type:'text',     required:true,  locked:true,  placeholder:'Ex. Export comptable automatisé', help:'Titre affiché dans la liste' },
   { key:'requester', label:'Demandeur',              type:'text',     required:true,  locked:true,  placeholder:'Service ou personne', help:'Service à l\u2019origine de la demande' },
@@ -814,6 +956,8 @@ class Component extends DCLogic {
             fields: DEFAULT_FIELDS, adminEditKey: null, adminDraft: null, newField: null,
             teams: TEAMS, newTeam: null, teamEditId: null, teamDraft: null, adminTab: 'teams',
             referentiels: [], refSelected: null, refEditId: null, refDraft: null, newRef: null, newRefError: false,
+            mepReleases: [], mepEditId: null, mepDraft: null,
+            mepNewName: '', mepNewDate: '', mepNewTeam: 'CDO', mepNewError: false,
             loading: true, loadError: null };
 
   componentDidMount() {
@@ -822,12 +966,13 @@ class Component extends DCLogic {
 
   async loadAll() {
     try {
-      const [teamRows, projectRows, requestRows, fieldRows, refRows] = await Promise.all([
+      const [teamRows, projectRows, requestRows, fieldRows, refRows, mepRows] = await Promise.all([
         api.list('teams', 'select=*&order=name.asc'),
         api.list('projects', 'select=*,key_results(*),tickets(*)'),
         api.list('requests', 'select=*&order=id.desc'),
         api.list('request_fields', 'select=*&order=position.asc'),
-        api.list('referentiels', 'select=*')
+        api.list('referentiels', 'select=*'),
+        api.list('mep_releases', 'select=*&order=date.asc')
       ]);
       const teams = (teamRows || []).map(t => ({
         id: t.id, name: t.name, lead: t.lead, capacity: t.capacity, load: t.load, dot: t.dot
@@ -853,8 +998,9 @@ class Component extends DCLogic {
         position: Number(r.position) || 0, label: r.label, active: !!r.active
       }));
       const refKeys = Array.from(new Set(referentiels.map(r => r.referentiel))).sort();
+      const mepReleases = (mepRows || []).map(r => ({ id: r.id, name: r.name, date: r.date, team: r.team }));
       this.setState(s => ({
-        teams, projects, requests, fields, referentiels, loading: false, loadError: null,
+        teams, projects, requests, fields, referentiels, mepReleases, loading: false, loadError: null,
         team: teams.some(t => t.id === s.team) ? s.team : (teams[0] ? teams[0].id : s.team),
         refSelected: refKeys.includes(s.refSelected) ? s.refSelected : (refKeys[0] || null)
       }));
@@ -1097,6 +1243,46 @@ class Component extends DCLogic {
     }
   }
 
+  async loadMepReleases() {
+    try {
+      const rows = await api.list('mep_releases', 'select=*&order=date.asc');
+      this.setState({ mepReleases: (rows || []).map(r => ({ id: r.id, name: r.name, date: r.date, team: r.team })) });
+    } catch (e) {
+      this.setState({ loadError: String(e.message || e) });
+    }
+  }
+  startEditMep(id) {
+    const r = this.state.mepReleases.find(x => x.id === id);
+    if (!r) return;
+    this.setState({ mepEditId: id, mepDraft: { name: r.name, date: mepDateInputValue(r.date), team: r.team } });
+  }
+  setMepDraft(k, v) { this.setState(s => ({ mepDraft: Object.assign({}, s.mepDraft, { [k]: v }) })); }
+  cancelEditMep() { this.setState({ mepEditId: null, mepDraft: null }); }
+  saveMep() {
+    const d = this.state.mepDraft, id = this.state.mepEditId;
+    if (!d || !d.name.trim() || !d.date) return;
+    const patch = { name: d.name.trim(), date: d.date, team: d.team };
+    this.setState(s => ({ mepEditId: null, mepDraft: null, mepReleases: s.mepReleases.map(r => r.id !== id ? r : Object.assign({}, r, patch)) }));
+    api.update('mep_releases', 'id=eq.' + encodeURIComponent(id), patch).catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  deleteMep(id) {
+    this.setState(s => ({ mepReleases: s.mepReleases.filter(r => r.id !== id) }));
+    api.remove('mep_releases', 'id=eq.' + encodeURIComponent(id)).catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  async addMep() {
+    const name = (this.state.mepNewName || '').trim();
+    const date = this.state.mepNewDate;
+    const team = this.state.mepNewTeam || MEP_TEAMS[0].key;
+    if (!name || !date) { this.setState({ mepNewError: true }); return; }
+    this.setState({ mepNewName: '', mepNewDate: '', mepNewError: false });
+    try {
+      await api.insert('mep_releases', { name, date, team });
+      await this.loadMepReleases();
+    } catch (e) {
+      this.setState({ loadError: String(e.message || e) });
+    }
+  }
+
   visible() {
     return this.state.projects.filter(p => p.quarter === this.state.quarter);
   }
@@ -1146,10 +1332,12 @@ class Component extends DCLogic {
 
     const isRequests = st.view === 'requests';
     const isAdmin = st.view === 'admin';
+    const isMep = st.view === 'mep';
     const navDefs = [
       { key: 'dashboard', label: 'Dashboard', icon: '◧' },
       { key: 'team', label: 'Vue par équipe', icon: '◔' },
-      { key: 'requests', label: 'Demandes', icon: '☰' }
+      { key: 'requests', label: 'Demandes', icon: '☰' },
+      { key: 'mep', label: 'Suivi MEP', icon: '▤' }
     ];
     const navItems = navDefs.map(n => ({
       label: n.label, icon: n.icon,
@@ -1467,11 +1655,69 @@ class Component extends DCLogic {
       { label: 'Priorité haute', value: reqAll.filter(r => r.priority === 'haute' && r.status !== 'refuse').length, hint: 'en attente ou engagées', color: '#B3383F' }
     ];
 
+    const mepToday = new Date();
+    const mepTodayKey = mepMonthKey(mepToday);
+    const mepRows = st.mepReleases.map(r => Object.assign({}, r, { _d: mepParseDate(r.date) })).filter(r => r._d);
+    let mepMin = mepToday, mepMax = mepToday;
+    mepRows.forEach(r => { if (r._d < mepMin) mepMin = r._d; if (r._d > mepMax) mepMax = r._d; });
+    const mepColumns = [];
+    {
+      let cy = mepMin.getFullYear(), cm = mepMin.getMonth();
+      const endY = mepMax.getFullYear(), endM = mepMax.getMonth();
+      let guard = 0;
+      while ((cy < endY || (cy === endY && cm <= endM)) && guard < 60) {
+        const d = new Date(cy, cm, 1);
+        const key = mepMonthKey(d);
+        mepColumns.push({ key, label: mepMonthLabel(d), isToday: key === mepTodayKey });
+        cm++; if (cm > 11) { cm = 0; cy++; }
+        guard++;
+      }
+    }
+    const mepTable = MEP_TEAMS.map(team => {
+      const cells = mepColumns.map(col => {
+        const count = mepRows.filter(r => r.team === team.key && mepMonthKey(r._d) === col.key).length;
+        const future = col.key > mepTodayKey;
+        return {
+          count: count || '',
+          hasCount: count > 0,
+          bg: count > 0 ? (future ? '#FFFFFF' : hexToRgba(team.color, count >= 2 ? 0.32 : 0.16)) : 'transparent',
+          color: count > 0 ? team.color : 'transparent',
+          border: count > 0 && future ? ('2px dashed ' + team.color) : '1px solid transparent'
+        };
+      });
+      return { key: team.key, label: team.key, color: team.color, total: mepRows.filter(r => r.team === team.key).length, cells };
+    });
+    const mepColumnTotals = mepColumns.map(col => ({
+      label: col.label,
+      todayBg: col.isToday ? '#F0EAF8' : '#FBFAFD',
+      todayFg: col.isToday ? '#4A2E6B' : '#8B8299'
+    }));
+    const mepTeamOptions = MEP_TEAMS.map(t => ({ value: t.key, label: t.key }));
+    const mepList = st.mepReleases.slice().sort((a, b) => (a.date < b.date ? 1 : -1)).map(r => {
+      const editing = st.mepEditId === r.id;
+      const team = MEP_TEAMS.find(t => t.key === r.team) || { color: '#8B8299' };
+      const d = st.mepDraft || {};
+      return {
+        id: r.id, name: r.name, date: mepDateDisplay(r.date), team: r.team, teamColor: team.color,
+        editing, notEditing: !editing,
+        draftName: editing ? d.name : r.name,
+        draftDate: editing ? d.date : mepDateInputValue(r.date),
+        draftTeam: editing ? d.team : r.team,
+        onEdit: () => this.startEditMep(r.id),
+        onDelete: () => this.deleteMep(r.id),
+        onSave: () => this.saveMep(),
+        onCancel: () => this.cancelEditMep(),
+        onDraftName: (e) => this.setMepDraft('name', e.target.value),
+        onDraftDate: (e) => this.setMepDraft('date', e.target.value),
+        onDraftTeam: (e) => this.setMepDraft('team', e.target.value)
+      };
+    });
+
     return {
       hasLoadError: !!st.loadError, loadError: st.loadError || '',
       onDismissLoadError: () => this.setState({ loadError: null }),
       onRetryLoad: () => { this.setState({ loadError: null }); this.loadAll(); },
-      isDashboard, isTeam, isRequests, navItems, teamNav, quarters, kpis, rows, capacity, alerts,
+      isDashboard, isTeam, isRequests, isMep, navItems, teamNav, quarters, kpis, rows, capacity, alerts,
       teamTabs, teamStats, teamProjects, sel, statusOptions, query: st.query,
       requests, reqFilters, reqStats, reqQuery: st.reqQuery,
       tableColumns, tableRows,
@@ -1479,7 +1725,13 @@ class Component extends DCLogic {
       reqViewIsTableau: st.reqView === 'tableau',
       onSetReqViewListe: () => this.setState({ reqView: 'liste' }),
       onSetReqViewTableau: () => this.setState({ reqView: 'tableau' }),
-      quartersShown: (isRequests || isAdmin) ? [] : quarters,
+      mepTable, mepTeamStats: mepTable, mepColumnTotals, mepTeamOptions, mepList,
+      mepNewName: st.mepNewName, mepNewDate: st.mepNewDate, mepNewTeam: st.mepNewTeam, mepNewError: st.mepNewError,
+      onMepNewName: (e) => this.setState({ mepNewName: e.target.value, mepNewError: false }),
+      onMepNewDate: (e) => this.setState({ mepNewDate: e.target.value, mepNewError: false }),
+      onMepNewTeam: (e) => this.setState({ mepNewTeam: e.target.value }),
+      onAddMep: () => this.addMep(),
+      quartersShown: (isRequests || isAdmin || isMep) ? [] : quarters,
       formControls, statusSelectOptions, isAdmin,
       adminFields, typeOptions, adminTeams,
       refKeys, refSelectedKey, refRows,
@@ -1527,15 +1779,17 @@ class Component extends DCLogic {
       onFormNote: (e) => this.setField('note', e.target.value),
       onSubmitRequest: () => this.submitRequest(),
       onReqQuery: (e) => this.setState({ reqQuery: e.target.value }),
-      crumb: isAdmin ? 'Administration · Équipes et champs' : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter)),
-      title: isAdmin ? 'Administration' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name)),
+      crumb: isAdmin ? 'Administration · Équipes et champs' : (isMep ? 'Suivi MEP · CDO, VISTA, PPM, V4, VI3P' : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter))),
+      title: isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name))),
       subtitle: isAdmin
         ? 'Gérez les équipes suivies et les champs du formulaire de demande. Les modifications s\u2019appliquent immédiatement à la navigation, au dashboard et à la saisie.'
+        : (isMep
+        ? 'Les mises en production de CDO, VISTA, PPM, V4 et VI3P, avec leur nom et leur date.'
         : (isRequests
         ? 'Toutes les demandes reçues des autres services, leur priorité, l\u2019équipe pressentie et leur état d\u2019arbitrage.'
         : (isDashboard
         ? 'État des initiatives des quatre équipes, avancement, écart aux dates cibles et charge disponible.'
-        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.')),
+        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.'))),
       onQuery: (e) => this.setState({ query: e.target.value }),
       onProgress: (e) => selRaw && this.setProgress(selRaw.id, Number(e.target.value)),
       closeDrawer: () => this.setState({ selId: null })
