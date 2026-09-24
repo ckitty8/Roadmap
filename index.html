@@ -524,7 +524,7 @@
               <button onClick="{{ onAddMep }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;cursor:pointer;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;background:#003CC8;color:#FFFFFF">Ajouter</button>
             </div>
             <sc-if value="{{ mepNewError }}" hint-placeholder-val="{{ false }}">
-              <span style="font-size:12px;color:#B3383F">Merci de renseigner un nom et une date.</span>
+              <span style="font-size:12px;color:#B3383F">Merci de renseigner un nom, une équipe et une date.</span>
             </sc-if>
           </section>
 
@@ -1261,13 +1261,6 @@ const CORE_MIRROR_COLUMNS = {
   'Commentaires': 'note'
 };
 
-const MEP_TEAMS = [
-  { key: 'CDO', color: '#003CC8' },
-  { key: 'VISTA', color: '#2E7D5B' },
-  { key: 'PPM', color: '#B9762A' },
-  { key: 'V4', color: '#2E6B8A' },
-  { key: 'VI3P', color: '#A34A7A' }
-];
 const MEP_MONTHS_FR = ['Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'];
 function mepParseDate(v) {
   if (v instanceof Date) return v;
@@ -1379,7 +1372,7 @@ class Component extends DCLogic {
             teams: TEAMS, newTeam: null, teamEditId: null, teamDraft: null, adminTab: 'teams',
             referentiels: [], refSelected: null, refEditId: null, refDraft: null, newRef: null, newRefError: false,
             mepReleases: [], mepEditId: null, mepDraft: null,
-            mepNewName: '', mepNewDate: '', mepNewTeam: 'CDO', mepNewUrl: '', mepNewError: false,
+            mepNewName: '', mepNewDate: '', mepNewTeam: '', mepNewUrl: '', mepNewError: false,
             planningView: 'grille',
             planEquipes: [], planProjets: [], planMembres: [], planJours: [], planJoursSpeciaux: [],
             planSprints: [], planRepartition: [],
@@ -1723,9 +1716,10 @@ class Component extends DCLogic {
   async addMep() {
     const name = (this.state.mepNewName || '').trim();
     const date = this.state.mepNewDate;
-    const team = this.state.mepNewTeam || MEP_TEAMS[0].key;
+    const firstEquipe = this.state.planEquipes[0];
+    const team = this.state.mepNewTeam || (firstEquipe ? firstEquipe.nom : '');
     const url = (this.state.mepNewUrl || '').trim() || null;
-    if (!name || !date) { this.setState({ mepNewError: true }); return; }
+    if (!name || !date || !team) { this.setState({ mepNewError: true }); return; }
     this.setState({ mepNewName: '', mepNewDate: '', mepNewUrl: '', mepNewError: false });
     try {
       await api.insert('mep_releases', { name, date, team, url });
@@ -2320,37 +2314,38 @@ class Component extends DCLogic {
         guard++;
       }
     }
-    const mepTable = MEP_TEAMS.map(team => {
+    const mepTable = st.planEquipes.map(team => {
       const cells = mepColumns.map(col => {
         const future = col.key > mepTodayKey;
         const entries = mepRows
-          .filter(r => r.team === team.key && mepMonthKey(r._d) === col.key)
+          .filter(r => r.team === team.nom && mepMonthKey(r._d) === col.key)
           .map(r => ({
             name: r.name,
             date: mepDateDisplay(r.date),
             url: r.url || '',
             hasUrl: !!r.url,
             noUrl: !r.url,
-            bg: future ? '#FFFFFF' : hexToRgba(team.color, 0.14),
-            border: future ? ('1.5px dashed ' + team.color) : '1px solid transparent',
-            color: team.color
+            bg: future ? '#FFFFFF' : hexToRgba(team.couleur, 0.14),
+            border: future ? ('1.5px dashed ' + team.couleur) : '1px solid transparent',
+            color: team.couleur
           }));
         return { entries };
       });
-      return { key: team.key, label: team.key, color: team.color, total: mepRows.filter(r => r.team === team.key).length, cells };
+      return { key: team.id, label: team.nom, color: team.couleur, total: mepRows.filter(r => r.team === team.nom).length, cells };
     });
     const mepColumnTotals = mepColumns.map(col => ({
       label: col.label,
       todayBg: col.isToday ? '#E5EFFC' : '#F8FAFC',
       todayFg: col.isToday ? '#003CC8' : '#808A99'
     }));
-    const mepTeamOptions = MEP_TEAMS.map(t => ({ value: t.key, label: t.key }));
+    const mepTeamOptions = st.planEquipes.map(e => ({ value: e.nom, label: e.nom }));
+    const mepTeamNamesLabel = st.planEquipes.length ? st.planEquipes.map(e => e.nom).join(', ') : 'aucune équipe';
     const mepList = st.mepReleases.slice().sort((a, b) => (a.date < b.date ? 1 : -1)).map(r => {
       const editing = st.mepEditId === r.id;
-      const team = MEP_TEAMS.find(t => t.key === r.team) || { color: '#808A99' };
+      const team = st.planEquipes.find(e => e.nom === r.team) || { couleur: '#808A99' };
       const d = st.mepDraft || {};
       return {
-        id: r.id, name: r.name, date: mepDateDisplay(r.date), team: r.team, teamColor: team.color,
+        id: r.id, name: r.name, date: mepDateDisplay(r.date), team: r.team, teamColor: team.couleur,
         url: r.url || '', hasUrl: !!r.url, noUrl: !r.url,
         editing, notEditing: !editing,
         draftName: editing ? d.name : r.name,
@@ -2597,7 +2592,7 @@ class Component extends DCLogic {
       reqViewIsTableau: st.reqView === 'tableau',
       onSetReqViewListe: () => this.setState({ reqView: 'liste' }),
       onSetReqViewTableau: () => this.setState({ reqView: 'tableau' }),
-      mepTable, mepTeamStats: mepTable, mepColumnTotals, mepTeamOptions, mepList,
+      mepTable, mepTeamStats: mepTable, mepColumnTotals, mepTeamOptions, mepList, mepTeamNamesLabel,
       mepNewName: st.mepNewName, mepNewDate: st.mepNewDate, mepNewTeam: st.mepNewTeam, mepNewUrl: st.mepNewUrl, mepNewError: st.mepNewError,
       onMepNewName: (e) => this.setState({ mepNewName: e.target.value, mepNewError: false }),
       onMepNewDate: (e) => this.setState({ mepNewDate: e.target.value, mepNewError: false }),
@@ -2653,7 +2648,7 @@ class Component extends DCLogic {
       onFormNote: (e) => this.setField('note', e.target.value),
       onSubmitRequest: () => this.submitRequest(),
       onReqQuery: (e) => this.setState({ reqQuery: e.target.value }),
-      crumb: isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Administration · Champs du formulaire' : (isMep ? 'Suivi MEP · CDO, VISTA, PPM, V4, VI3P' : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter)))))),
+      crumb: isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Administration · Champs du formulaire' : (isMep ? 'Suivi MEP · ' + mepTeamNamesLabel : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter)))))),
       title: isAdminGeneral ? 'Administration générale' : (isPlanEquipes ? 'Administration' : (isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name)))))),
       subtitle: isAdminGeneral
         ? 'Créez et gérez les équipes utilisées par le Planning et par la Roadmap.'
@@ -2664,7 +2659,7 @@ class Component extends DCLogic {
         : (isAdmin
         ? 'Gérez les champs du formulaire de demande. Les modifications s\u2019appliquent immédiatement à la navigation, au dashboard et à la saisie.'
         : (isMep
-        ? 'Les mises en production de CDO, VISTA, PPM, V4 et VI3P, avec leur nom et leur date.'
+        ? 'Les mises en production des équipes (' + mepTeamNamesLabel + '), avec leur nom et leur date.'
         : (isRequests
         ? 'Toutes les demandes reçues des autres services, leur priorité, l\u2019équipe pressentie et leur état d\u2019arbitrage.'
         : (isDashboard
