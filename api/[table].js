@@ -16,7 +16,7 @@ function getSql() {
 const TABLES = {
   teams: {
     pk: 'id',
-    columns: ['id', 'name', 'lead', 'capacity', 'load', 'dot'],
+    columns: ['name', 'lead', 'capacity', 'load', 'dot'],
     jsonb: [],
     order: 'name ASC'
   },
@@ -61,12 +61,6 @@ const TABLES = {
     columns: ['name', 'date', 'team', 'url'],
     jsonb: [],
     order: 'date ASC'
-  },
-  planning_equipes: {
-    pk: 'id',
-    columns: ['nom', 'couleur'],
-    jsonb: [],
-    order: 'nom ASC'
   },
   planning_projets: {
     pk: 'id',
