@@ -61,6 +61,48 @@ const TABLES = {
     columns: ['name', 'date', 'team', 'url'],
     jsonb: [],
     order: 'date ASC'
+  },
+  planning_equipes: {
+    pk: 'id',
+    columns: ['nom', 'couleur'],
+    jsonb: [],
+    order: 'nom ASC'
+  },
+  planning_projets: {
+    pk: 'id',
+    columns: ['equipe_id', 'nom'],
+    jsonb: [],
+    order: 'nom ASC'
+  },
+  planning_membres: {
+    pk: 'id',
+    columns: ['equipe_id', 'projet_id', 'nom', 'role', 'jours_travailles_client'],
+    jsonb: [],
+    order: 'nom ASC'
+  },
+  planning_jours: {
+    pk: 'id',
+    columns: ['membre_id', 'date', 'valeur', 'type'],
+    jsonb: [],
+    order: 'date ASC'
+  },
+  planning_jours_speciaux: {
+    pk: 'id',
+    columns: ['date', 'libelle', 'type'],
+    jsonb: [],
+    order: 'date ASC'
+  },
+  planning_sprints: {
+    pk: 'id',
+    columns: ['nom', 'date_debut', 'date_fin', 'ordre'],
+    jsonb: [],
+    order: 'ordre ASC'
+  },
+  planning_repartition_taches: {
+    pk: 'id',
+    columns: ['nom', 'pourcentage', 'ordre'],
+    jsonb: [],
+    order: 'ordre ASC'
   }
 };
 
@@ -123,9 +165,9 @@ module.exports = async (req, res) => {
       const { cols, values } = pickColumns(body, config);
       if (!cols.length) { res.status(400).json({ message: 'No valid columns in body' }); return; }
       const placeholders = cols.map((_, i) => '$' + (i + 1)).join(', ');
-      const text = 'INSERT INTO ' + table + ' (' + cols.join(', ') + ') VALUES (' + placeholders + ')';
-      await sql.query(text, values);
-      res.status(201).json({});
+      const text = 'INSERT INTO ' + table + ' (' + cols.join(', ') + ') VALUES (' + placeholders + ') RETURNING ' + config.pk;
+      const inserted = await sql.query(text, values);
+      res.status(201).json((inserted && inserted[0]) || {});
       return;
     }
 

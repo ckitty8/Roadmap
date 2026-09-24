@@ -31,13 +31,21 @@
     </div>
 
     <nav style="display:flex;flex-direction:column;gap:2px">
-      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#9A8CB4;padding:0 8px 8px">Pilotage</div>
+      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#9A8CB4;padding:0 8px 8px">Roadmap</div>
       <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="2">
         <button onClick="{{ nav.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ nav.weight }};background:{{ nav.bg }};color:{{ nav.fg }}">
           <span style="font-size:12px;opacity:.85">{{ nav.icon }}</span>
           <span>{{ nav.label }}</span>
         </button>
       </sc-for>
+    </nav>
+
+    <nav style="display:flex;flex-direction:column;gap:2px">
+      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#9A8CB4;padding:0 8px 8px">Planning</div>
+      <button onClick="{{ onPlanningNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ planningNavWeight }};background:{{ planningNavBg }};color:{{ planningNavFg }}">
+        <span style="font-size:12px;opacity:.85">▦</span>
+        <span>Congés & capacité</span>
+      </button>
     </nav>
 
     <div style="display:flex;flex-direction:column;gap:2px">
@@ -557,6 +565,320 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ isPlanning }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:20px">
+
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ planTabs }}" as="t" hint-placeholder-count="4">
+              <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
+            </sc-for>
+            <select value="{{ planEquipeFiltre }}" onChange="{{ onPlanEquipeFiltre }}" style="margin-left:auto;box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
+              <sc-for list="{{ planEquipeFilterOptions }}" as="o" hint-placeholder-count="2">
+                <option value="{{ o.value }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+          </div>
+
+          <sc-if value="{{ isPlanGrille }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+                <div style="display:flex;align-items:center;gap:1px;border:1px solid #E6E2EC;border-radius:8px;background:#FFFFFF;padding:4px">
+                  <button onClick="{{ onPlanPrevMonth }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;color:#4A2E6B">‹</button>
+                  <span style="min-width:130px;text-align:center;font-size:13px;font-weight:600">{{ planMoisLabel }}</span>
+                  <button onClick="{{ onPlanNextMonth }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;color:#4A2E6B">›</button>
+                </div>
+                <sc-for list="{{ planLegend }}" as="l" hint-placeholder-count="2">
+                  <button onClick="{{ l.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #E6E2EC;border-radius:8px;font-size:12px;color:#6B6478">
+                    <span style="width:11px;height:11px;border-radius:3px;background:{{ l.couleur }};display:inline-block"></span>{{ l.label }}
+                  </button>
+                </sc-for>
+                <p style="margin:0;font-size:11.5px;color:#8B8299;max-width:44ch">Cliquez sur une case, tapez 0 (congé), 0,5 (demi-journée) ou laissez vide (travaillé) puis Entrée. Pour colorer, cliquez sur la case puis sur une légende.</p>
+              </div>
+
+              <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:auto">
+                <table style="border-collapse:collapse;font-size:11.5px;width:100%">
+                  <thead>
+                    <tr>
+                      <th style="position:sticky;left:0;z-index:2;background:#FBFAFD;min-width:160px;text-align:left;padding:8px 12px;border-bottom:1px solid #E6E2EC;border-right:1px solid #E6E2EC">Personne</th>
+                      <sc-for list="{{ planGrilleHeaderCols }}" as="c" hint-placeholder-count="28">
+                        <th title="{{ c.titre }}" style="width:30px;padding:5px 0;text-align:center;font-weight:600;border-bottom:1px solid #E6E2EC;border-right:1px solid #F2EFF7;background:{{ c.bg }};color:{{ c.fg }}">
+                          <div style="font-family:monospace">{{ c.jour }}</div>
+                          <div style="font-size:9.5px;color:#8B8299">{{ c.dow }}</div>
+                        </th>
+                      </sc-for>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ planGrilleRows }}" as="r" hint-placeholder-count="5">
+                      <tr>
+                        <td style="position:sticky;left:0;z-index:1;background:#FFFFFF;padding:7px 12px;border-bottom:1px solid #F2EFF7;border-right:1px solid #E6E2EC">
+                          <div style="font-weight:600">{{ r.nom }}</div>
+                          <div style="font-size:10.5px;color:#8B8299">{{ r.equipeNom }}</div>
+                        </td>
+                        <sc-for list="{{ r.cells }}" as="cell" hint-placeholder-count="28">
+                          <td title="{{ cell.titre }}" style="padding:0;text-align:center;border-bottom:1px solid #F2EFF7;border-right:1px solid #F2EFF7;background:{{ cell.bg }}">
+                            <sc-if value="{{ cell.editing }}" hint-placeholder-val="{{ false }}">
+                              <input value="{{ cell.draft }}" onChange="{{ cell.onChangeDraft }}" onBlur="{{ cell.onBlurCommit }}" onKeyDown="{{ cell.onKeyDownCell }}" style="all:unset;box-sizing:border-box;width:30px;height:26px;text-align:center;font-family:monospace;font-size:11px" />
+                            </sc-if>
+                            <sc-if value="{{ cell.notEditing }}" hint-placeholder-val="{{ true }}">
+                              <button onClick="{{ cell.onStart }}" style="all:unset;box-sizing:border-box;cursor:pointer;width:30px;height:26px;display:block;text-align:center;font-family:monospace;font-size:11px;font-weight:600">{{ cell.displayText }}</button>
+                            </sc-if>
+                          </td>
+                        </sc-for>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </section>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isPlanConges }}" hint-placeholder-val="{{ false }}">
+            <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:auto">
+              <div style="padding:15px 18px;border-bottom:1px solid #EFECF4">
+                <h2 style="margin:0;font-size:14.5px;font-weight:700">Jours de congés</h2>
+                <p style="margin:4px 0 0;font-size:12px;color:#8B8299">Jours travaillés / non travaillés par mois (« Trav. / Non trav. »), calculé automatiquement depuis le planning.</p>
+              </div>
+              <table style="border-collapse:collapse;font-size:11.5px;width:100%">
+                <thead>
+                  <tr>
+                    <th style="position:sticky;left:0;background:#FBFAFD;text-align:left;min-width:140px;padding:8px 12px;border-bottom:1px solid #E6E2EC">Personne</th>
+                    <sc-for list="{{ planMoisCourtsList }}" as="m" hint-placeholder-count="12">
+                      <th style="padding:8px 6px;text-align:center;font-weight:600;border-bottom:1px solid #E6E2EC;border-left:1px solid #F2EFF7">{{ m.label }}</th>
+                    </sc-for>
+                    <th style="padding:8px 6px;text-align:center;font-weight:700;border-bottom:1px solid #E6E2EC;border-left:1px solid #E6E2EC;background:#FBFAFD">Total trav.</th>
+                    <th style="padding:8px 6px;text-align:center;font-weight:700;border-bottom:1px solid #E6E2EC;background:#FBFAFD">Total congés</th>
+                    <th style="padding:8px 6px;text-align:center;font-weight:700;border-bottom:1px solid #E6E2EC;border-left:1px solid #E6E2EC;background:#FBFAFD">Trav. client</th>
+                    <th style="padding:8px 6px;text-align:center;font-weight:700;border-bottom:1px solid #E6E2EC;background:#FBFAFD">À prendre</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <sc-for list="{{ planCongesRows }}" as="r" hint-placeholder-count="5">
+                    <tr>
+                      <td style="position:sticky;left:0;background:#FFFFFF;padding:7px 12px;font-weight:600;border-bottom:1px solid #F2EFF7">{{ r.nom }}</td>
+                      <sc-for list="{{ r.mois }}" as="m" hint-placeholder-count="12">
+                        <td style="padding:6px;text-align:center;font-family:monospace;border-bottom:1px solid #F2EFF7;border-left:1px solid #F2EFF7">{{ m.text }}</td>
+                      </sc-for>
+                      <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;border-bottom:1px solid #F2EFF7;border-left:1px solid #E6E2EC;background:#FBFAFD">{{ r.totalTravaille }}</td>
+                      <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;border-bottom:1px solid #F2EFF7;background:#FBFAFD">{{ r.totalConges }}</td>
+                      <td style="padding:0;text-align:center;border-bottom:1px solid #F2EFF7;border-left:1px solid #E6E2EC;background:#FBFAFD">
+                        <input value="{{ r.joursClientDraft }}" onBlur="{{ r.onJoursClientBlur }}" placeholder="—" style="all:unset;box-sizing:border-box;width:100%;height:28px;text-align:center;font-family:monospace;font-size:11.5px" />
+                      </td>
+                      <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;border-bottom:1px solid #F2EFF7;background:#FBFAFD">{{ r.aPrendre }}</td>
+                    </tr>
+                  </sc-for>
+                  <tr>
+                    <td style="position:sticky;left:0;background:#F5F1FB;padding:7px 12px;font-weight:700;border-top:1px solid #E6E2EC">Total</td>
+                    <sc-for list="{{ planCongesTotal.mois }}" as="m" hint-placeholder-count="12">
+                      <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;background:#F5F1FB;border-top:1px solid #E6E2EC;border-left:1px solid #E6E2EC">{{ m.text }}</td>
+                    </sc-for>
+                    <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;background:#F5F1FB;border-top:1px solid #E6E2EC;border-left:1px solid #E6E2EC">{{ planCongesTotal.totalTravaille }}</td>
+                    <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;background:#F5F1FB;border-top:1px solid #E6E2EC">{{ planCongesTotal.totalConges }}</td>
+                    <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;background:#F5F1FB;border-top:1px solid #E6E2EC;border-left:1px solid #E6E2EC">{{ planCongesTotal.totalJoursClient }}</td>
+                    <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;background:#F5F1FB;border-top:1px solid #E6E2EC">{{ planCongesTotal.totalAPrendre }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </sc-if>
+
+          <sc-if value="{{ isPlanCapacite }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:18px">
+              <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:auto">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;border-bottom:1px solid #EFECF4">
+                  <div>
+                    <h2 style="margin:0;font-size:14.5px;font-weight:700">Capacité par sprint</h2>
+                    <p style="margin:4px 0 0;font-size:12px;color:#8B8299">Jours-homme disponibles par personne sur la période de chaque sprint (jours ouvrés − congés validés).</p>
+                  </div>
+                  <button onClick="{{ onPlanAjouterSprint }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#4A2E6B;color:#FFFFFF">+ Sprint</button>
+                </div>
+                <table style="border-collapse:collapse;font-size:11.5px;width:100%">
+                  <thead>
+                    <tr>
+                      <th style="position:sticky;left:0;background:#FBFAFD;text-align:left;min-width:140px;padding:8px 12px;border-bottom:1px solid #E6E2EC">Personne</th>
+                      <sc-for list="{{ planSprintCols }}" as="s" hint-placeholder-count="12">
+                        <th style="min-width:120px;padding:6px 8px;text-align:center;font-weight:600;border-bottom:1px solid #E6E2EC;border-left:1px solid #F2EFF7">
+                          <sc-if value="{{ s.editing }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;flex-direction:column;gap:3px">
+                              <input value="{{ s.draftNom }}" onChange="{{ s.onDraftNom }}" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:5px;padding:3px 5px;font-size:11px;text-align:center;font-family:inherit" />
+                              <input type="date" value="{{ s.draftDebut }}" onChange="{{ s.onDraftDebut }}" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:5px;padding:2px 3px;font-size:9.5px" />
+                              <input type="date" value="{{ s.draftFin }}" onChange="{{ s.onDraftFin }}" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:5px;padding:2px 3px;font-size:9.5px" />
+                              <div style="display:flex;gap:4px;justify-content:center">
+                                <button onClick="{{ s.onSave }}" style="all:unset;box-sizing:border-box;cursor:pointer;font-size:10px;font-weight:700;color:#4A2E6B">OK</button>
+                                <button onClick="{{ s.onCancel }}" style="all:unset;box-sizing:border-box;cursor:pointer;font-size:10px;color:#8B8299">Annuler</button>
+                              </div>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ s.notEditing }}" hint-placeholder-val="{{ true }}">
+                            <button onClick="{{ s.onEdit }}" style="all:unset;box-sizing:border-box;cursor:pointer;font-weight:600;font-size:11.5px;display:block;margin:0 auto">{{ s.label }}</button>
+                            <button onClick="{{ s.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;display:block;margin:2px auto 0;font-size:9.5px;color:#B3383F">Suppr.</button>
+                          </sc-if>
+                        </th>
+                      </sc-for>
+                      <th style="padding:6px 8px;text-align:center;font-weight:700;border-bottom:1px solid #E6E2EC;border-left:1px solid #E6E2EC;background:#FBFAFD">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ planCapaciteRows }}" as="r" hint-placeholder-count="5">
+                      <tr>
+                        <td style="position:sticky;left:0;background:#FFFFFF;padding:7px 12px;font-weight:600;border-bottom:1px solid #F2EFF7">{{ r.nom }}</td>
+                        <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="12">
+                          <td title="{{ c.titre }}" style="padding:6px;text-align:center;font-family:monospace;border-bottom:1px solid #F2EFF7;border-left:1px solid #F2EFF7">{{ c.value }}</td>
+                        </sc-for>
+                        <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;border-bottom:1px solid #F2EFF7;border-left:1px solid #E6E2EC;background:#FBFAFD">{{ r.total }}</td>
+                      </tr>
+                    </sc-for>
+                    <tr>
+                      <td style="position:sticky;left:0;background:#F5F1FB;padding:7px 12px;font-weight:700;border-top:1px solid #E6E2EC">Total équipe</td>
+                      <sc-for list="{{ planCapaciteTotalRow.cells }}" as="c" hint-placeholder-count="12">
+                        <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;background:#F5F1FB;border-top:1px solid #E6E2EC;border-left:1px solid #F2EFF7">{{ c.value }}</td>
+                      </sc-for>
+                      <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;background:#F5F1FB;border-top:1px solid #E6E2EC;border-left:1px solid #E6E2EC">{{ planCapaciteTotalRow.total }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+
+              <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:auto">
+                <div style="padding:15px 18px;border-bottom:1px solid #EFECF4">
+                  <h2 style="margin:0;font-size:14.5px;font-weight:700">% de répartition des tâches</h2>
+                  <p style="margin:4px 0 0;font-size:12px;color:#8B8299">Pourcentage éditable par type · jours-homme par sprint = % × capacité totale de l'équipe sur le sprint. Total actuel : {{ planRepartitionTotalPct }} %</p>
+                </div>
+                <table style="border-collapse:collapse;font-size:11.5px;width:100%">
+                  <thead>
+                    <tr>
+                      <th style="position:sticky;left:0;background:#FBFAFD;text-align:left;min-width:140px;padding:8px 12px;border-bottom:1px solid #E6E2EC">Type de tâche</th>
+                      <th style="padding:6px 8px;text-align:center;font-weight:600;border-bottom:1px solid #E6E2EC;border-left:1px solid #F2EFF7">%</th>
+                      <sc-for list="{{ planSprintCols }}" as="s" hint-placeholder-count="12">
+                        <th style="min-width:70px;padding:6px 8px;text-align:center;font-weight:600;border-bottom:1px solid #E6E2EC;border-left:1px solid #F2EFF7">{{ s.label }}</th>
+                      </sc-for>
+                      <th style="padding:6px 8px;text-align:center;font-weight:700;border-bottom:1px solid #E6E2EC;border-left:1px solid #E6E2EC;background:#FBFAFD">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ planRepartitionRows }}" as="r" hint-placeholder-count="7">
+                      <tr>
+                        <td style="position:sticky;left:0;background:#FFFFFF;padding:7px 12px;font-weight:600;border-bottom:1px solid #F2EFF7">{{ r.nom }}</td>
+                        <td style="padding:0;text-align:center;border-bottom:1px solid #F2EFF7;border-left:1px solid #F2EFF7">
+                          <input value="{{ r.pourcentage }}" onBlur="{{ r.onPourcentageBlur }}" style="all:unset;box-sizing:border-box;width:44px;height:28px;text-align:center;font-family:monospace;font-size:11.5px" />
+                        </td>
+                        <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="12">
+                          <td style="padding:6px;text-align:center;font-family:monospace;border-bottom:1px solid #F2EFF7;border-left:1px solid #F2EFF7">{{ c.value }}</td>
+                        </sc-for>
+                        <td style="padding:6px;text-align:center;font-family:monospace;font-weight:700;border-bottom:1px solid #F2EFF7;border-left:1px solid #E6E2EC;background:#FBFAFD">{{ r.total }}</td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </section>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isPlanEquipes }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:18px">
+
+              <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:hidden">
+                <div style="padding:15px 18px;border-bottom:1px solid #EFECF4">
+                  <h2 style="margin:0;font-size:14.5px;font-weight:700">Équipes</h2>
+                </div>
+                <sc-for list="{{ planAdminEquipes }}" as="e" hint-placeholder-count="2">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px;border-bottom:1px solid #F2EFF7">
+                    <span style="font-size:13px;font-weight:600">{{ e.nom }}</span>
+                    <button onClick="{{ e.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid #EDD8DA;color:#B3383F">Supprimer</button>
+                  </div>
+                </sc-for>
+                <div style="display:flex;gap:10px;align-items:end;padding:14px 18px;background:#FBFAFD">
+                  <label style="display:flex;flex-direction:column;gap:5px;flex:1">
+                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Nouvelle équipe</span>
+                    <input value="{{ planNewEquipe }}" onChange="{{ onPlanNewEquipe }}" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
+                  </label>
+                  <button onClick="{{ onPlanAddEquipe }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#4A2E6B;color:#FFFFFF">Ajouter</button>
+                </div>
+                <sc-if value="{{ planEquipeError }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:0 18px 14px;background:#FBFAFD;font-size:12px;color:#B3383F">{{ planEquipeError }}</div>
+                </sc-if>
+              </section>
+
+              <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:hidden">
+                <div style="padding:15px 18px;border-bottom:1px solid #EFECF4">
+                  <h2 style="margin:0;font-size:14.5px;font-weight:700">Projets</h2>
+                </div>
+                <sc-for list="{{ planAdminProjets }}" as="p" hint-placeholder-count="2">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px;border-bottom:1px solid #F2EFF7">
+                    <span style="font-size:13px">{{ p.nom }} <span style="color:#8B8299">· {{ p.equipeNom }}</span></span>
+                    <button onClick="{{ p.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid #EDD8DA;color:#B3383F">Supprimer</button>
+                  </div>
+                </sc-for>
+                <div style="display:flex;gap:10px;align-items:end;padding:14px 18px;background:#FBFAFD;flex-wrap:wrap">
+                  <label style="display:flex;flex-direction:column;gap:5px;flex:1 1 180px">
+                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Nom du projet</span>
+                    <input value="{{ planNewProjetNom }}" onChange="{{ onPlanNewProjetNom }}" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
+                  </label>
+                  <label style="display:flex;flex-direction:column;gap:5px">
+                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Équipe</span>
+                    <select value="{{ planNewProjetEquipe }}" onChange="{{ onPlanNewProjetEquipe }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
+                      <option value="">Choisir</option>
+                      <sc-for list="{{ planEquipeOptions }}" as="o" hint-placeholder-count="2">
+                        <option value="{{ o.value }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                  </label>
+                  <button onClick="{{ onPlanAddProjet }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#4A2E6B;color:#FFFFFF">Ajouter</button>
+                </div>
+                <sc-if value="{{ planProjetError }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:0 18px 14px;background:#FBFAFD;font-size:12px;color:#B3383F">{{ planProjetError }}</div>
+                </sc-if>
+              </section>
+
+              <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;overflow:hidden">
+                <div style="padding:15px 18px;border-bottom:1px solid #EFECF4">
+                  <h2 style="margin:0;font-size:14.5px;font-weight:700">Personnes</h2>
+                </div>
+                <sc-for list="{{ planAdminMembres }}" as="m" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px;border-bottom:1px solid #F2EFF7">
+                    <span style="font-size:13px"><span style="font-weight:600">{{ m.nom }}</span> <span style="color:#8B8299">· {{ m.meta }}</span></span>
+                    <button onClick="{{ m.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid #EDD8DA;color:#B3383F">Supprimer</button>
+                  </div>
+                </sc-for>
+                <div style="display:flex;gap:10px;align-items:end;padding:14px 18px;background:#FBFAFD;flex-wrap:wrap">
+                  <label style="display:flex;flex-direction:column;gap:5px;flex:1 1 140px">
+                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Nom</span>
+                    <input value="{{ planNewMembreNom }}" onChange="{{ onPlanNewMembreNom }}" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
+                  </label>
+                  <label style="display:flex;flex-direction:column;gap:5px;flex:1 1 120px">
+                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Rôle</span>
+                    <input value="{{ planNewMembreRole }}" onChange="{{ onPlanNewMembreRole }}" placeholder="Optionnel" style="box-sizing:border-box;width:100%;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
+                  </label>
+                  <label style="display:flex;flex-direction:column;gap:5px">
+                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Équipe</span>
+                    <select value="{{ planNewMembreEquipe }}" onChange="{{ onPlanNewMembreEquipe }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
+                      <option value="">Choisir</option>
+                      <sc-for list="{{ planEquipeOptions }}" as="o" hint-placeholder-count="2">
+                        <option value="{{ o.value }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                  </label>
+                  <label style="display:flex;flex-direction:column;gap:5px">
+                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#8B8299">Projet</span>
+                    <select value="{{ planNewMembreProjet }}" onChange="{{ onPlanNewMembreProjet }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
+                      <sc-for list="{{ planNewMembreProjetOptions }}" as="o" hint-placeholder-count="2">
+                        <option value="{{ o.value }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                  </label>
+                  <button onClick="{{ onPlanAddMembre }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#4A2E6B;color:#FFFFFF">Ajouter</button>
+                </div>
+                <sc-if value="{{ planMembreError }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:0 18px 14px;background:#FBFAFD;font-size:12px;color:#B3383F">{{ planMembreError }}</div>
+                </sc-if>
+              </section>
+
+            </div>
+          </sc-if>
+
+        </div>
+      </sc-if>
+
       <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:24px">
 
@@ -948,6 +1270,54 @@ function hexToRgba(hex, a) {
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }
 
+const PLAN_MOIS_FR = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+const PLAN_MOIS_COURTS = ['Janv', 'Fév', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct', 'Nov', 'Déc'];
+const PLAN_JOURS_COURTS = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+const PLAN_TYPES_ABSENCE = [
+  { value: 'conge_valide', label: 'Congé validé', couleur: '#BEE2D0' },
+  { value: 'conge_previsionnel', label: 'Congé non validé', couleur: '#F6E7D4' }
+];
+function planIso(annee, mois, jour) { return annee + '-' + String(mois + 1).padStart(2, '0') + '-' + String(jour).padStart(2, '0'); }
+function planJoursDuMois(annee, mois) {
+  const total = new Date(annee, mois + 1, 0).getDate();
+  const out = [];
+  for (let i = 1; i <= total; i++) {
+    const d = new Date(annee, mois, i);
+    out.push({ jour: i, date: planIso(annee, mois, i), dow: d.getDay() });
+  }
+  return out;
+}
+function planEstWeekend(dow) { return dow === 0 || dow === 6; }
+function planValeurEffective(valeur, estSpecial) {
+  if (valeur !== undefined && valeur !== null) return valeur;
+  return estSpecial ? 0 : 1;
+}
+function planJoursOuvresPeriode(dateDebut, dateFin, speciauxSet) {
+  let n = 0;
+  const curseur = new Date(dateDebut + 'T00:00:00');
+  const fin = new Date(dateFin + 'T00:00:00');
+  while (curseur <= fin) {
+    const d = planIso(curseur.getFullYear(), curseur.getMonth(), curseur.getDate());
+    if (!planEstWeekend(curseur.getDay()) && !speciauxSet.has(d)) n++;
+    curseur.setDate(curseur.getDate() + 1);
+  }
+  return n;
+}
+function planCalculerCapacite(membreId, dateDebut, dateFin, jours, speciauxSet) {
+  const joursOuvres = planJoursOuvresPeriode(dateDebut, dateFin, speciauxSet);
+  let congesValides = 0;
+  for (const j of jours) {
+    if (j.membre_id !== membreId || j.type !== 'conge_valide') continue;
+    if (j.date < dateDebut || j.date > dateFin) continue;
+    congesValides += 1 - Number(j.valeur);
+  }
+  return { joursOuvres, congesValides, capacite: joursOuvres - congesValides };
+}
+function planFormatNombre(n) {
+  if (!n) return '—';
+  return String(Math.round(n * 100) / 100).replace('.', ',');
+}
+
 const DEFAULT_FIELDS = [
   { key:'title',     label:'Intitulé de la demande', type:'text',     required:true,  locked:true,  placeholder:'Ex. Export comptable automatisé', help:'Titre affiché dans la liste' },
   { key:'requester', label:'Demandeur',              type:'text',     required:true,  locked:true,  placeholder:'Service ou personne', help:'Service à l\u2019origine de la demande' },
@@ -989,6 +1359,15 @@ class Component extends DCLogic {
             referentiels: [], refSelected: null, refEditId: null, refDraft: null, newRef: null, newRefError: false,
             mepReleases: [], mepEditId: null, mepDraft: null,
             mepNewName: '', mepNewDate: '', mepNewTeam: 'CDO', mepNewUrl: '', mepNewError: false,
+            planningView: 'grille',
+            planEquipes: [], planProjets: [], planMembres: [], planJours: [], planJoursSpeciaux: [],
+            planSprints: [], planRepartition: [],
+            planAnnee: 2026, planMois: 0, planEquipeFiltre: 'toutes', planCellule: null,
+            planEditCell: null, planEditDraft: '',
+            planNewEquipe: '', planEquipeError: '',
+            planNewProjetNom: '', planNewProjetEquipe: '', planProjetError: '',
+            planNewMembreNom: '', planNewMembreRole: '', planNewMembreEquipe: '', planNewMembreProjet: '', planMembreError: '',
+            planSprintEditId: null, planSprintDraft: null,
             loading: true, loadError: null };
 
   componentDidMount() {
@@ -997,13 +1376,22 @@ class Component extends DCLogic {
 
   async loadAll() {
     try {
-      const [teamRows, projectRows, requestRows, fieldRows, refRows, mepRows] = await Promise.all([
+      const [teamRows, projectRows, requestRows, fieldRows, refRows, mepRows,
+             planEquipeRows, planProjetRows, planMembreRows, planJourRows, planJourSpecialRows,
+             planSprintRows, planRepartitionRows] = await Promise.all([
         api.list('teams', 'select=*&order=name.asc'),
         api.list('projects', 'select=*,key_results(*),tickets(*)'),
         api.list('requests', 'select=*&order=id.desc'),
         api.list('request_fields', 'select=*&order=position.asc'),
         api.list('referentiels', 'select=*'),
-        api.list('mep_releases', 'select=*&order=date.asc')
+        api.list('mep_releases', 'select=*&order=date.asc'),
+        api.list('planning_equipes', 'select=*&order=nom.asc'),
+        api.list('planning_projets', 'select=*&order=nom.asc'),
+        api.list('planning_membres', 'select=*&order=nom.asc'),
+        api.list('planning_jours', 'select=*'),
+        api.list('planning_jours_speciaux', 'select=*'),
+        api.list('planning_sprints', 'select=*&order=ordre.asc'),
+        api.list('planning_repartition_taches', 'select=*&order=ordre.asc')
       ]);
       const teams = (teamRows || []).map(t => ({
         id: t.id, name: t.name, lead: t.lead, capacity: t.capacity, load: t.load, dot: t.dot
@@ -1030,10 +1418,21 @@ class Component extends DCLogic {
       }));
       const refKeys = Array.from(new Set(referentiels.map(r => r.referentiel))).sort();
       const mepReleases = (mepRows || []).map(r => ({ id: r.id, name: r.name, date: r.date, team: r.team, url: r.url || '' }));
+      const planEquipes = (planEquipeRows || []).map(r => ({ id: r.id, nom: r.nom, couleur: r.couleur || '#4A2E6B' }));
+      const planProjets = (planProjetRows || []).map(r => ({ id: r.id, equipe_id: r.equipe_id, nom: r.nom }));
+      const planMembres = (planMembreRows || []).map(r => ({
+        id: r.id, equipe_id: r.equipe_id, projet_id: r.projet_id, nom: r.nom, role: r.role || '',
+        jours_travailles_client: r.jours_travailles_client === null || r.jours_travailles_client === undefined ? null : Number(r.jours_travailles_client)
+      }));
+      const planJours = (planJourRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, date: r.date, valeur: Number(r.valeur), type: r.type }));
+      const planJoursSpeciaux = (planJourSpecialRows || []).map(r => ({ id: r.id, date: r.date, libelle: r.libelle, type: r.type }));
+      const planSprints = (planSprintRows || []).map(r => ({ id: r.id, nom: r.nom, date_debut: r.date_debut, date_fin: r.date_fin, ordre: r.ordre }));
+      const planRepartition = (planRepartitionRows || []).map(r => ({ id: r.id, nom: r.nom, pourcentage: Number(r.pourcentage), ordre: r.ordre }));
       this.setState(s => ({
         teams, projects, requests, fields, referentiels, mepReleases, loading: false, loadError: null,
         team: teams.some(t => t.id === s.team) ? s.team : (teams[0] ? teams[0].id : s.team),
-        refSelected: refKeys.includes(s.refSelected) ? s.refSelected : (refKeys[0] || null)
+        refSelected: refKeys.includes(s.refSelected) ? s.refSelected : (refKeys[0] || null),
+        planEquipes, planProjets, planMembres, planJours, planJoursSpeciaux, planSprints, planRepartition
       }));
     } catch (e) {
       this.setState({ loading: false, loadError: 'Connexion à la base impossible : ' + (e && e.message ? e.message : e) });
@@ -1315,6 +1714,187 @@ class Component extends DCLogic {
     }
   }
 
+  async loadPlanning() {
+    try {
+      const [eqRows, prRows, mbRows, jrRows, jsRows, spRows, rtRows] = await Promise.all([
+        api.list('planning_equipes', 'select=*&order=nom.asc'),
+        api.list('planning_projets', 'select=*&order=nom.asc'),
+        api.list('planning_membres', 'select=*&order=nom.asc'),
+        api.list('planning_jours', 'select=*'),
+        api.list('planning_jours_speciaux', 'select=*'),
+        api.list('planning_sprints', 'select=*&order=ordre.asc'),
+        api.list('planning_repartition_taches', 'select=*&order=ordre.asc')
+      ]);
+      this.setState({
+        planEquipes: (eqRows || []).map(r => ({ id: r.id, nom: r.nom, couleur: r.couleur || '#4A2E6B' })),
+        planProjets: (prRows || []).map(r => ({ id: r.id, equipe_id: r.equipe_id, nom: r.nom })),
+        planMembres: (mbRows || []).map(r => ({
+          id: r.id, equipe_id: r.equipe_id, projet_id: r.projet_id, nom: r.nom, role: r.role || '',
+          jours_travailles_client: r.jours_travailles_client === null || r.jours_travailles_client === undefined ? null : Number(r.jours_travailles_client)
+        })),
+        planJours: (jrRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, date: r.date, valeur: Number(r.valeur), type: r.type })),
+        planJoursSpeciaux: (jsRows || []).map(r => ({ id: r.id, date: r.date, libelle: r.libelle, type: r.type })),
+        planSprints: (spRows || []).map(r => ({ id: r.id, nom: r.nom, date_debut: r.date_debut, date_fin: r.date_fin, ordre: r.ordre })),
+        planRepartition: (rtRows || []).map(r => ({ id: r.id, nom: r.nom, pourcentage: Number(r.pourcentage), ordre: r.ordre }))
+      });
+    } catch (e) {
+      this.setState({ loadError: String(e.message || e) });
+    }
+  }
+
+  planNavMonth(delta) {
+    let m = this.state.planMois + delta, a = this.state.planAnnee;
+    if (m < 0) { m = 11; a -= 1; } else if (m > 11) { m = 0; a += 1; }
+    this.setState({ planMois: m, planAnnee: a });
+  }
+  planStartEditCell(membreId, date, currentText) {
+    this.setState({ planEditCell: membreId + '|' + date, planEditDraft: currentText, planCellule: { membreId, date } });
+  }
+  planSetEditDraft(v) { this.setState({ planEditDraft: v }); }
+  planCancelEditCell() { this.setState({ planEditCell: null, planEditDraft: '' }); }
+  planCommitEditCell(membreId, date, special) {
+    this.planCommitValeur(membreId, date, this.state.planEditDraft, special);
+    this.setState({ planEditCell: null, planEditDraft: '' });
+  }
+  planCellKeyDown(e, membreId, date, special) {
+    if (e.key === 'Enter') { e.preventDefault(); this.planCommitEditCell(membreId, date, special); }
+    else if (e.key === 'Escape') { e.preventDefault(); this.planCancelEditCell(); }
+  }
+  planCommitValeur(membreId, date, texte, special) {
+    const brut = String(texte || '').trim().replace(',', '.');
+    let valeur = null;
+    if (brut === '') valeur = 1;
+    else if (brut === '0') valeur = 0;
+    else if (brut === '0.5') valeur = 0.5;
+    else if (brut === '1') valeur = 1;
+    if (valeur === null) return;
+    const existant = this.state.planJours.find(j => j.membre_id === membreId && j.date === date);
+    const valeurActuelle = existant ? existant.valeur : 1;
+    if (valeur === valeurActuelle) return;
+    const type = existant ? existant.type : 'non_classe';
+    const estDefaut = special ? valeur === 0 : valeur >= 1;
+    if (estDefaut) {
+      if (existant) {
+        this.setState(s => ({ planJours: s.planJours.filter(j => j.id !== existant.id) }));
+        api.remove('planning_jours', 'id=eq.' + encodeURIComponent(existant.id)).catch(e => this.setState({ loadError: String(e.message || e) }));
+      }
+      return;
+    }
+    if (existant) {
+      this.setState(s => ({ planJours: s.planJours.map(j => j.id === existant.id ? Object.assign({}, j, { valeur, type }) : j) }));
+      api.update('planning_jours', 'id=eq.' + encodeURIComponent(existant.id), { valeur, type }).catch(e => this.setState({ loadError: String(e.message || e) }));
+    } else {
+      const tempId = 'tmp-' + membreId + '-' + date;
+      this.setState(s => ({ planJours: s.planJours.concat([{ id: tempId, membre_id: membreId, date, valeur, type }]) }));
+      api.insert('planning_jours', { membre_id: membreId, date, valeur, type }).then(res => {
+        if (res && res.id !== undefined) this.setState(s => ({ planJours: s.planJours.map(j => j.id === tempId ? Object.assign({}, j, { id: res.id }) : j) }));
+      }).catch(e => this.setState({ loadError: String(e.message || e) }));
+    }
+  }
+  planAppliquerType(type) {
+    const c = this.state.planCellule;
+    if (!c) return;
+    const existant = this.state.planJours.find(j => j.membre_id === c.membreId && j.date === c.date);
+    if (existant) {
+      this.setState(s => ({ planJours: s.planJours.map(j => j.id === existant.id ? Object.assign({}, j, { type }) : j) }));
+      api.update('planning_jours', 'id=eq.' + encodeURIComponent(existant.id), { type }).catch(e => this.setState({ loadError: String(e.message || e) }));
+    } else {
+      const tempId = 'tmp-' + c.membreId + '-' + c.date;
+      this.setState(s => ({ planJours: s.planJours.concat([{ id: tempId, membre_id: c.membreId, date: c.date, valeur: 0, type }]) }));
+      api.insert('planning_jours', { membre_id: c.membreId, date: c.date, valeur: 0, type }).then(res => {
+        if (res && res.id !== undefined) this.setState(s => ({ planJours: s.planJours.map(j => j.id === tempId ? Object.assign({}, j, { id: res.id }) : j) }));
+      }).catch(e => this.setState({ loadError: String(e.message || e) }));
+    }
+  }
+  planSetJoursClient(membreId, texte) {
+    const brut = String(texte || '').trim().replace(',', '.');
+    let valeur = null;
+    if (brut !== '') {
+      const n = Number(brut);
+      if (Number.isNaN(n) || n < 0) return;
+      valeur = n;
+    }
+    this.setState(s => ({ planMembres: s.planMembres.map(m => m.id === membreId ? Object.assign({}, m, { jours_travailles_client: valeur }) : m) }));
+    api.update('planning_membres', 'id=eq.' + encodeURIComponent(membreId), { jours_travailles_client: valeur }).catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  planAjouterSprint() {
+    const liste = this.state.planSprints;
+    const dernier = liste[liste.length - 1];
+    const ordre = liste.length + 1;
+    let debut;
+    if (dernier) {
+      const d = new Date(dernier.date_fin + 'T00:00:00'); d.setDate(d.getDate() + 1);
+      debut = planIso(d.getFullYear(), d.getMonth(), d.getDate());
+    } else debut = planIso(this.state.planAnnee, 0, 1);
+    api.insert('planning_sprints', { nom: 'Sprint ' + ordre, date_debut: debut, date_fin: debut, ordre })
+      .then(() => this.loadPlanning())
+      .catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  planStartEditSprint(id) {
+    const s = this.state.planSprints.find(x => x.id === id);
+    if (!s) return;
+    this.setState({ planSprintEditId: id, planSprintDraft: { nom: s.nom, date_debut: s.date_debut, date_fin: s.date_fin } });
+  }
+  planSetSprintDraft(k, v) { this.setState(s => ({ planSprintDraft: Object.assign({}, s.planSprintDraft, { [k]: v }) })); }
+  planCancelSprint() { this.setState({ planSprintEditId: null, planSprintDraft: null }); }
+  planSaveSprint() {
+    const d = this.state.planSprintDraft, id = this.state.planSprintEditId;
+    if (!d || !d.nom.trim() || !d.date_debut || !d.date_fin) return;
+    const patch = { nom: d.nom.trim(), date_debut: d.date_debut, date_fin: d.date_fin };
+    this.setState(s => ({ planSprintEditId: null, planSprintDraft: null, planSprints: s.planSprints.map(x => x.id === id ? Object.assign({}, x, patch) : x) }));
+    api.update('planning_sprints', 'id=eq.' + encodeURIComponent(id), patch).catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  planSupprimerSprint(id) {
+    this.setState(s => ({ planSprints: s.planSprints.filter(x => x.id !== id) }));
+    api.remove('planning_sprints', 'id=eq.' + encodeURIComponent(id)).catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  planSetPourcentage(id, texte) {
+    const n = Number(String(texte).replace(',', '.'));
+    if (Number.isNaN(n) || n < 0 || n > 100) return;
+    this.setState(s => ({ planRepartition: s.planRepartition.map(t => t.id === id ? Object.assign({}, t, { pourcentage: n }) : t) }));
+    api.update('planning_repartition_taches', 'id=eq.' + encodeURIComponent(id), { pourcentage: n }).catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  planAddEquipe() {
+    const nom = (this.state.planNewEquipe || '').trim();
+    if (!nom) return;
+    this.setState({ planNewEquipe: '', planEquipeError: '' });
+    api.insert('planning_equipes', { nom }).then(() => this.loadPlanning())
+      .catch(e => this.setState({ planEquipeError: String(e.message || e) }));
+  }
+  planDeleteEquipe(id) {
+    this.setState(s => ({ planEquipes: s.planEquipes.filter(e => e.id !== id) }));
+    api.remove('planning_equipes', 'id=eq.' + encodeURIComponent(id)).then(() => this.loadPlanning())
+      .catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  planAddProjet() {
+    const nom = (this.state.planNewProjetNom || '').trim();
+    const equipeId = this.state.planNewProjetEquipe;
+    if (!nom || !equipeId) return;
+    this.setState({ planNewProjetNom: '', planProjetError: '' });
+    api.insert('planning_projets', { nom, equipe_id: Number(equipeId) }).then(() => this.loadPlanning())
+      .catch(e => this.setState({ planProjetError: String(e.message || e) }));
+  }
+  planDeleteProjet(id) {
+    this.setState(s => ({ planProjets: s.planProjets.filter(p => p.id !== id) }));
+    api.remove('planning_projets', 'id=eq.' + encodeURIComponent(id)).then(() => this.loadPlanning())
+      .catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  planAddMembre() {
+    const nom = (this.state.planNewMembreNom || '').trim();
+    const equipeId = this.state.planNewMembreEquipe;
+    if (!nom || !equipeId) return;
+    const role = (this.state.planNewMembreRole || '').trim() || null;
+    const projetId = this.state.planNewMembreProjet ? Number(this.state.planNewMembreProjet) : null;
+    this.setState({ planNewMembreNom: '', planNewMembreRole: '', planMembreError: '' });
+    api.insert('planning_membres', { nom, role, equipe_id: Number(equipeId), projet_id: projetId }).then(() => this.loadPlanning())
+      .catch(e => this.setState({ planMembreError: String(e.message || e) }));
+  }
+  planDeleteMembre(id) {
+    this.setState(s => ({ planMembres: s.planMembres.filter(m => m.id !== id) }));
+    api.remove('planning_membres', 'id=eq.' + encodeURIComponent(id)).then(() => this.loadPlanning())
+      .catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+
   visible() {
     return this.state.projects.filter(p => p.quarter === this.state.quarter);
   }
@@ -1365,6 +1945,7 @@ class Component extends DCLogic {
     const isRequests = st.view === 'requests';
     const isAdmin = st.view === 'admin';
     const isMep = st.view === 'mep';
+    const isPlanning = st.view === 'planning';
     const navDefs = [
       { key: 'dashboard', label: 'Dashboard', icon: '◧' },
       { key: 'team', label: 'Vue par équipe', icon: '◔' },
@@ -1378,6 +1959,10 @@ class Component extends DCLogic {
       weight: st.view === n.key ? 700 : 500,
       onClick: () => this.setState({ view: n.key })
     }));
+    const onPlanningNav = () => this.setState({ view: 'planning' });
+    const planningNavBg = isPlanning ? '#4A2E6B' : 'transparent';
+    const planningNavFg = isPlanning ? '#FFFFFF' : '#C9C0DA';
+    const planningNavWeight = isPlanning ? 700 : 500;
 
     const teamNav = st.teams.map(t => ({
       name: t.name, dot: t.dot,
@@ -1753,11 +2338,227 @@ class Component extends DCLogic {
       };
     });
 
+    // ---- Planning (congés & capacité) ----
+    const planTabsDef = [
+      { key: 'grille', label: 'Planning' },
+      { key: 'conges', label: 'Jours de congés' },
+      { key: 'capacite', label: 'Capacité' },
+      { key: 'equipes', label: 'Équipes & personnes' }
+    ];
+    const planTabs = planTabsDef.map(t => ({
+      label: t.label,
+      bg: st.planningView === t.key ? '#4A2E6B' : '#FFFFFF',
+      fg: st.planningView === t.key ? '#FFFFFF' : '#4A2E6B',
+      border: st.planningView === t.key ? '#4A2E6B' : '#DDD7E6',
+      onClick: () => this.setState({ planningView: t.key })
+    }));
+    const isPlanGrille = st.planningView === 'grille';
+    const isPlanConges = st.planningView === 'conges';
+    const isPlanCapacite = st.planningView === 'capacite';
+    const isPlanEquipes = st.planningView === 'equipes';
+
+    const planSpeciauxByDate = {};
+    st.planJoursSpeciaux.forEach(s => { planSpeciauxByDate[s.date] = s; });
+    const planSpeciauxSet = new Set(st.planJoursSpeciaux.map(s => s.date));
+    const planSaisieByKey = {};
+    st.planJours.forEach(j => { planSaisieByKey[j.membre_id + '|' + j.date] = j; });
+    const planEquipeNomById = {};
+    st.planEquipes.forEach(e => { planEquipeNomById[e.id] = e.nom; });
+
+    const planEquipeOptions = st.planEquipes.map(e => ({ value: String(e.id), label: e.nom }));
+    const planEquipeFilterOptions = [{ value: 'toutes', label: 'Toutes les équipes' }].concat(planEquipeOptions);
+    const planMembresFiltres = st.planMembres.filter(m => st.planEquipeFiltre === 'toutes' || String(m.equipe_id) === String(st.planEquipeFiltre));
+
+    const planColonnes = planJoursDuMois(st.planAnnee, st.planMois);
+    const planMoisLabel = PLAN_MOIS_FR[st.planMois] + ' ' + st.planAnnee;
+    const planGrilleHeaderCols = planColonnes.map(c => {
+      const sp = planSpeciauxByDate[c.date];
+      const weekend = planEstWeekend(c.dow);
+      return {
+        jour: c.jour, dow: PLAN_JOURS_COURTS[c.dow],
+        bg: sp ? '#FBEADD' : (weekend ? '#F3F1F8' : '#FFFFFF'),
+        fg: sp ? '#B9762A' : '#8B8299',
+        titre: sp ? sp.libelle : ''
+      };
+    });
+    const planGrilleRows = planMembresFiltres.map(m => {
+      const cells = planColonnes.map(c => {
+        const sp = planSpeciauxByDate[c.date];
+        const special = !!sp;
+        const saisie = planSaisieByKey[m.id + '|' + c.date];
+        const cellKey = m.id + '|' + c.date;
+        const editing = st.planEditCell === cellKey;
+        const displayText = saisie ? (saisie.valeur === 0.5 ? '0,5' : (saisie.valeur === 0 ? '0' : '1')) : '';
+        const congeType = saisie && (saisie.type === 'conge_valide' || saisie.type === 'conge_previsionnel') ? saisie.type : null;
+        const typeInfo = congeType ? PLAN_TYPES_ABSENCE.find(t => t.value === congeType) : null;
+        return {
+          editing, notEditing: !editing,
+          draft: editing ? st.planEditDraft : displayText,
+          displayText: displayText,
+          bg: typeInfo ? typeInfo.couleur : (!saisie && special ? '#F3F1F8' : (!saisie && planEstWeekend(c.dow) ? '#F7F5FA' : '#FFFFFF')),
+          titre: sp ? sp.libelle : (m.nom + ' — ' + c.date),
+          onStart: () => this.planStartEditCell(m.id, c.date, displayText),
+          onChangeDraft: (e) => this.planSetEditDraft(e.target.value),
+          onBlurCommit: () => this.planCommitEditCell(m.id, c.date, special),
+          onKeyDownCell: (e) => this.planCellKeyDown(e, m.id, c.date, special)
+        };
+      });
+      return { id: m.id, nom: m.nom, equipeNom: planEquipeNomById[m.equipe_id] || '—', cells };
+    });
+    const planLegend = PLAN_TYPES_ABSENCE.map(t => ({ label: t.label, couleur: t.couleur, onClick: () => this.planAppliquerType(t.value) }));
+
+    // ---- Congés (récap annuel) ----
+    const planBilanParMembre = {};
+    st.planMembres.forEach(m => {
+      const parMois = [];
+      for (let mo = 0; mo < 12; mo++) {
+        const jours = planJoursDuMois(st.planAnnee, mo);
+        let travaille = 0, conges = 0;
+        jours.forEach(c => {
+          if (planEstWeekend(c.dow)) return;
+          const saisie = planSaisieByKey[m.id + '|' + c.date];
+          const special = planSpeciauxSet.has(c.date);
+          const valeur = planValeurEffective(saisie ? saisie.valeur : undefined, special);
+          travaille += valeur;
+          conges += 1 - valeur;
+        });
+        parMois.push({ travaille, conges });
+      }
+      const totalTravaille = parMois.reduce((s, x) => s + x.travaille, 0);
+      const totalConges = parMois.reduce((s, x) => s + x.conges, 0);
+      planBilanParMembre[m.id] = { parMois, totalTravaille, totalConges };
+    });
+    const planMoisCourtsList = PLAN_MOIS_COURTS.map(x => ({ label: x }));
+    const planCongesRows = planMembresFiltres.map(m => {
+      const bilan = planBilanParMembre[m.id];
+      const joursClient = m.jours_travailles_client;
+      const aPrendre = (joursClient !== null && joursClient !== undefined) ? joursClient - bilan.totalTravaille : null;
+      return {
+        id: m.id, nom: m.nom,
+        mois: bilan.parMois.map(x => ({ text: planFormatNombre(x.travaille) + ' / ' + planFormatNombre(x.conges) })),
+        totalTravaille: planFormatNombre(bilan.totalTravaille),
+        totalConges: planFormatNombre(bilan.totalConges),
+        joursClientDraft: (joursClient === null || joursClient === undefined) ? '' : String(joursClient).replace('.', ','),
+        aPrendre: aPrendre === null ? '—' : planFormatNombre(aPrendre),
+        onJoursClientBlur: (e) => this.planSetJoursClient(m.id, e.target.value)
+      };
+    });
+    const planCongesTotal = (() => {
+      const parMois = Array.from({ length: 12 }, () => ({ travaille: 0, conges: 0 }));
+      let totalTravaille = 0, totalConges = 0, totalJoursClient = 0, totalAPrendre = 0;
+      planMembresFiltres.forEach(m => {
+        const bilan = planBilanParMembre[m.id];
+        bilan.parMois.forEach((x, i) => { parMois[i].travaille += x.travaille; parMois[i].conges += x.conges; });
+        totalTravaille += bilan.totalTravaille;
+        totalConges += bilan.totalConges;
+        if (m.jours_travailles_client !== null && m.jours_travailles_client !== undefined) {
+          totalJoursClient += m.jours_travailles_client;
+          totalAPrendre += m.jours_travailles_client - bilan.totalTravaille;
+        }
+      });
+      return {
+        mois: parMois.map(x => ({ text: planFormatNombre(x.travaille) + ' / ' + planFormatNombre(x.conges) })),
+        totalTravaille: planFormatNombre(totalTravaille), totalConges: planFormatNombre(totalConges),
+        totalJoursClient: planFormatNombre(totalJoursClient), totalAPrendre: planFormatNombre(totalAPrendre)
+      };
+    })();
+
+    // ---- Capacité (sprints + répartition tâches) ----
+    const planSprintsSorted = st.planSprints.slice().sort((a, b) => a.ordre - b.ordre);
+    const planCapaciteParMembre = {};
+    planMembresFiltres.forEach(m => {
+      planCapaciteParMembre[m.id] = planSprintsSorted.map(s => planCalculerCapacite(m.id, s.date_debut, s.date_fin, st.planJours, planSpeciauxSet));
+    });
+    const planCapaciteTotalParSprint = planSprintsSorted.map((s, i) => planMembresFiltres.reduce((sum, m) => sum + ((planCapaciteParMembre[m.id][i] || {}).capacite || 0), 0));
+    const planSprintCols = planSprintsSorted.map(s => {
+      const editing = st.planSprintEditId === s.id;
+      const d = st.planSprintDraft || {};
+      return {
+        id: s.id, label: s.nom, editing, notEditing: !editing,
+        draftNom: editing ? d.nom : s.nom,
+        draftDebut: editing ? d.date_debut : s.date_debut,
+        draftFin: editing ? d.date_fin : s.date_fin,
+        onEdit: () => this.planStartEditSprint(s.id),
+        onDraftNom: (e) => this.planSetSprintDraft('nom', e.target.value),
+        onDraftDebut: (e) => this.planSetSprintDraft('date_debut', e.target.value),
+        onDraftFin: (e) => this.planSetSprintDraft('date_fin', e.target.value),
+        onSave: () => this.planSaveSprint(),
+        onCancel: () => this.planCancelSprint(),
+        onDelete: () => this.planSupprimerSprint(s.id)
+      };
+    });
+    const planCapaciteRows = planMembresFiltres.map(m => {
+      const details = planCapaciteParMembre[m.id] || [];
+      const total = details.reduce((s, d) => s + d.capacite, 0);
+      return {
+        id: m.id, nom: m.nom,
+        cells: details.map(d => ({ value: planFormatNombre(d.capacite), titre: planFormatNombre(d.joursOuvres) + ' j ouvrés − ' + planFormatNombre(d.congesValides) + ' j congé validé' })),
+        total: planFormatNombre(total)
+      };
+    });
+    const planCapaciteTotalRow = {
+      cells: planCapaciteTotalParSprint.map(v => ({ value: planFormatNombre(v) })),
+      total: planFormatNombre(planCapaciteTotalParSprint.reduce((s, v) => s + v, 0))
+    };
+    const planRepartitionSorted = st.planRepartition.slice().sort((a, b) => a.ordre - b.ordre);
+    const planRepartitionRows = planRepartitionSorted.map(t => {
+      const cells = planCapaciteTotalParSprint.map(c => planFormatNombre((t.pourcentage / 100) * c));
+      const total = planCapaciteTotalParSprint.reduce((s, c) => s + (t.pourcentage / 100) * c, 0);
+      return {
+        id: t.id, nom: t.nom, pourcentage: String(t.pourcentage).replace('.', ','),
+        cells: cells.map(v => ({ value: v })),
+        total: planFormatNombre(total),
+        onPourcentageBlur: (e) => this.planSetPourcentage(t.id, e.target.value)
+      };
+    });
+    const planRepartitionTotalPct = planFormatNombre(planRepartitionSorted.reduce((s, t) => s + t.pourcentage, 0));
+
+    // ---- Équipes & personnes ----
+    const planAdminEquipes = st.planEquipes.map(e => ({ id: e.id, nom: e.nom, onDelete: () => this.planDeleteEquipe(e.id) }));
+    const planAdminProjets = st.planProjets.map(p => ({ id: p.id, nom: p.nom, equipeNom: planEquipeNomById[p.equipe_id] || '—', onDelete: () => this.planDeleteProjet(p.id) }));
+    const planAdminMembres = st.planMembres.map(m => {
+      const projet = m.projet_id ? st.planProjets.find(p => p.id === m.projet_id) : null;
+      return {
+        id: m.id, nom: m.nom,
+        meta: [planEquipeNomById[m.equipe_id] || '—', projet ? projet.nom : null, m.role || null].filter(Boolean).join(' · '),
+        onDelete: () => this.planDeleteMembre(m.id)
+      };
+    });
+    const planNewMembreProjetOptions = [{ value: '', label: 'Aucun' }].concat(
+      st.planProjets.filter(p => !st.planNewMembreEquipe || String(p.equipe_id) === String(st.planNewMembreEquipe)).map(p => ({ value: String(p.id), label: p.nom }))
+    );
+
     return {
       hasLoadError: !!st.loadError, loadError: st.loadError || '',
       onDismissLoadError: () => this.setState({ loadError: null }),
       onRetryLoad: () => { this.setState({ loadError: null }); this.loadAll(); },
-      isDashboard, isTeam, isRequests, isMep, navItems, teamNav, quarters, kpis, rows, capacity, alerts,
+      isDashboard, isTeam, isRequests, isMep, isPlanning, navItems, teamNav, quarters, kpis, rows, capacity, alerts,
+      onPlanningNav, planningNavBg, planningNavFg, planningNavWeight,
+      planTabs, isPlanGrille, isPlanConges, isPlanCapacite, isPlanEquipes,
+      planEquipeFilterOptions, planEquipeFiltre: String(st.planEquipeFiltre),
+      onPlanEquipeFiltre: (e) => this.setState({ planEquipeFiltre: e.target.value }),
+      planMoisLabel, onPlanPrevMonth: () => this.planNavMonth(-1), onPlanNextMonth: () => this.planNavMonth(1),
+      planGrilleHeaderCols, planGrilleRows, planLegend,
+      planMoisCourtsList, planCongesRows, planCongesTotal,
+      planSprintCols, planCapaciteRows, planCapaciteTotalRow, planRepartitionRows, planRepartitionTotalPct,
+      onPlanAjouterSprint: () => this.planAjouterSprint(),
+      planAdminEquipes, planAdminProjets, planAdminMembres,
+      planNewEquipe: st.planNewEquipe, planEquipeError: st.planEquipeError,
+      onPlanNewEquipe: (e) => this.setState({ planNewEquipe: e.target.value, planEquipeError: '' }),
+      onPlanAddEquipe: () => this.planAddEquipe(),
+      planNewProjetNom: st.planNewProjetNom, planProjetError: st.planProjetError,
+      planNewProjetEquipe: st.planNewProjetEquipe || '', planEquipeOptions,
+      onPlanNewProjetNom: (e) => this.setState({ planNewProjetNom: e.target.value, planProjetError: '' }),
+      onPlanNewProjetEquipe: (e) => this.setState({ planNewProjetEquipe: e.target.value }),
+      onPlanAddProjet: () => this.planAddProjet(),
+      planNewMembreNom: st.planNewMembreNom, planNewMembreRole: st.planNewMembreRole, planMembreError: st.planMembreError,
+      planNewMembreEquipe: st.planNewMembreEquipe || '', planNewMembreProjet: st.planNewMembreProjet || '',
+      planNewMembreProjetOptions,
+      onPlanNewMembreNom: (e) => this.setState({ planNewMembreNom: e.target.value, planMembreError: '' }),
+      onPlanNewMembreRole: (e) => this.setState({ planNewMembreRole: e.target.value }),
+      onPlanNewMembreEquipe: (e) => this.setState({ planNewMembreEquipe: e.target.value, planNewMembreProjet: '' }),
+      onPlanNewMembreProjet: (e) => this.setState({ planNewMembreProjet: e.target.value }),
+      onPlanAddMembre: () => this.planAddMembre(),
       teamTabs, teamStats, teamProjects, sel, statusOptions, query: st.query,
       requests, reqFilters, reqStats, reqQuery: st.reqQuery,
       tableColumns, tableRows,
@@ -1772,7 +2573,7 @@ class Component extends DCLogic {
       onMepNewTeam: (e) => this.setState({ mepNewTeam: e.target.value }),
       onMepNewUrl: (e) => this.setState({ mepNewUrl: e.target.value }),
       onAddMep: () => this.addMep(),
-      quartersShown: (isRequests || isAdmin || isMep) ? [] : quarters,
+      quartersShown: (isRequests || isAdmin || isMep || isPlanning) ? [] : quarters,
       formControls, statusSelectOptions, isAdmin,
       adminFields, typeOptions, adminTeams,
       refKeys, refSelectedKey, refRows,
@@ -1820,9 +2621,11 @@ class Component extends DCLogic {
       onFormNote: (e) => this.setField('note', e.target.value),
       onSubmitRequest: () => this.submitRequest(),
       onReqQuery: (e) => this.setState({ reqQuery: e.target.value }),
-      crumb: isAdmin ? 'Administration · Équipes et champs' : (isMep ? 'Suivi MEP · CDO, VISTA, PPM, V4, VI3P' : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter))),
-      title: isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name))),
-      subtitle: isAdmin
+      crumb: isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Administration · Équipes et champs' : (isMep ? 'Suivi MEP · CDO, VISTA, PPM, V4, VI3P' : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter)))),
+      title: isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name)))),
+      subtitle: isPlanning
+        ? 'Congés et présences par personne, jour par jour, et capacité/vélocité par sprint.'
+        : (isAdmin
         ? 'Gérez les équipes suivies et les champs du formulaire de demande. Les modifications s\u2019appliquent immédiatement à la navigation, au dashboard et à la saisie.'
         : (isMep
         ? 'Les mises en production de CDO, VISTA, PPM, V4 et VI3P, avec leur nom et leur date.'
@@ -1830,7 +2633,7 @@ class Component extends DCLogic {
         ? 'Toutes les demandes reçues des autres services, leur priorité, l\u2019équipe pressentie et leur état d\u2019arbitrage.'
         : (isDashboard
         ? 'État des initiatives des quatre équipes, avancement, écart aux dates cibles et charge disponible.'
-        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.'))),
+        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.')))),
       onQuery: (e) => this.setState({ query: e.target.value }),
       onProgress: (e) => selRaw && this.setProgress(selRaw.id, Number(e.target.value)),
       closeDrawer: () => this.setState({ selId: null })
