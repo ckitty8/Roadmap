@@ -447,10 +447,21 @@
                       <span style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:12.5px"><span style="width:9px;height:9px;border-radius:50%;background:{{ row.color }};flex:none"></span>{{ row.label }}</span>
                     </td>
                     <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="10">
-                      <td style="text-align:center;padding:6px;border-bottom:1px solid #F2EFF7">
-                        <sc-if value="{{ cell.hasCount }}" hint-placeholder-val="{{ false }}">
-                          <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;font-weight:700;font-size:12px;background:{{ cell.bg }};color:{{ cell.color }};border:{{ cell.border }}">{{ cell.count }}</span>
-                        </sc-if>
+                      <td style="text-align:left;vertical-align:top;padding:6px 7px;border-bottom:1px solid #F2EFF7;min-width:158px;max-width:190px">
+                        <sc-for list="{{ cell.entries }}" as="e" hint-placeholder-count="1">
+                          <sc-if value="{{ e.hasUrl }}" hint-placeholder-val="{{ false }}">
+                            <a href="{{ e.url }}" target="_blank" rel="noopener" style="display:block;text-decoration:none;margin-bottom:5px;padding:5px 8px;border-radius:7px;background:{{ e.bg }};border:{{ e.border }};box-sizing:border-box">
+                              <div style="font-size:11px;font-weight:700;color:{{ e.color }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:underline">{{ e.name }}</div>
+                              <div style="font-size:10px;color:#8B8299;margin-top:1px">{{ e.date }}</div>
+                            </a>
+                          </sc-if>
+                          <sc-if value="{{ e.noUrl }}" hint-placeholder-val="{{ true }}">
+                            <div style="margin-bottom:5px;padding:5px 8px;border-radius:7px;background:{{ e.bg }};border:{{ e.border }};box-sizing:border-box">
+                              <div style="font-size:11px;font-weight:700;color:{{ e.color }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ e.name }}</div>
+                              <div style="font-size:10px;color:#8B8299;margin-top:1px">{{ e.date }}</div>
+                            </div>
+                          </sc-if>
+                        </sc-for>
                       </td>
                     </sc-for>
                   </tr>
@@ -467,11 +478,17 @@
           <h2 style="margin:0;font-size:14.5px;font-weight:700">Ajouter une mise en production</h2>
 
           <section style="background:#FFFFFF;border:1px solid #E6E2EC;border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
-            <div style="display:grid;grid-template-columns:2fr 150px 140px auto;gap:10px;align-items:end">
+            <div style="display:grid;grid-template-columns:1.3fr 1.3fr;gap:10px">
               <label style="display:flex;flex-direction:column;gap:5px">
-                <span style="font-size:11px;font-weight:700;color:#6B6478;text-transform:uppercase;letter-spacing:.03em">Nom</span>
+                <span style="font-size:11px;font-weight:700;color:#6B6478;text-transform:uppercase;letter-spacing:.03em">Nom de la version</span>
                 <input value="{{ mepNewName }}" onChange="{{ onMepNewName }}" placeholder="Ex. Refonte du parcours réservation" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#1A1626;outline:none" />
               </label>
+              <label style="display:flex;flex-direction:column;gap:5px">
+                <span style="font-size:11px;font-weight:700;color:#6B6478;text-transform:uppercase;letter-spacing:.03em">URL (optionnel)</span>
+                <input value="{{ mepNewUrl }}" onChange="{{ onMepNewUrl }}" placeholder="https://…" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#1A1626;outline:none" />
+              </label>
+            </div>
+            <div style="display:grid;grid-template-columns:150px 140px auto;gap:10px;align-items:end">
               <label style="display:flex;flex-direction:column;gap:5px">
                 <span style="font-size:11px;font-weight:700;color:#6B6478;text-transform:uppercase;letter-spacing:.03em">Équipe</span>
                 <select value="{{ mepNewTeam }}" onChange="{{ onMepNewTeam }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#1A1626;outline:none;cursor:pointer">
@@ -496,27 +513,41 @@
               <div>Nom</div><div>Équipe</div><div>Date</div><div></div>
             </div>
             <sc-for list="{{ mepList }}" as="r" hint-placeholder-count="6">
-              <div style="border-bottom:1px solid #F2EFF7;padding:10px 18px;display:grid;grid-template-columns:minmax(0,1fr) 110px 130px auto;gap:12px;align-items:center">
+              <div style="border-bottom:1px solid #F2EFF7;padding:10px 18px">
                 <sc-if value="{{ r.editing }}" hint-placeholder-val="{{ false }}">
-                  <input value="{{ r.draftName }}" onChange="{{ r.onDraftName }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:6px 9px;font-size:12.5px;font-family:inherit;color:#1A1626;outline:none" />
-                  <select value="{{ r.draftTeam }}" onChange="{{ r.onDraftTeam }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:6px 9px;font-size:12px;font-family:inherit;color:#1A1626;outline:none;cursor:pointer">
-                    <sc-for list="{{ mepTeamOptions }}" as="o" hint-placeholder-count="5">
-                      <option value="{{ o.value }}">{{ o.label }}</option>
-                    </sc-for>
-                  </select>
-                  <input type="date" value="{{ r.draftDate }}" onChange="{{ r.onDraftDate }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:6px 9px;font-size:12px;font-family:inherit;color:#1A1626;outline:none" />
-                  <div style="display:flex;gap:8px;justify-self:end">
-                    <button onClick="{{ r.onSave }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:700;color:#2E7D5B">Enregistrer</button>
-                    <button onClick="{{ r.onCancel }}" style="all:unset;cursor:pointer;font-size:12px;color:#8B8299">Annuler</button>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                      <input value="{{ r.draftName }}" onChange="{{ r.onDraftName }}" placeholder="Nom de la version" style="flex:1 1 220px;box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:6px 9px;font-size:12.5px;font-family:inherit;color:#1A1626;outline:none" />
+                      <input value="{{ r.draftUrl }}" onChange="{{ r.onDraftUrl }}" placeholder="https://…" style="flex:1 1 220px;box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:6px 9px;font-size:12.5px;font-family:inherit;color:#1A1626;outline:none" />
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                      <select value="{{ r.draftTeam }}" onChange="{{ r.onDraftTeam }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:6px 9px;font-size:12px;font-family:inherit;color:#1A1626;outline:none;cursor:pointer">
+                        <sc-for list="{{ mepTeamOptions }}" as="o" hint-placeholder-count="5">
+                          <option value="{{ o.value }}">{{ o.label }}</option>
+                        </sc-for>
+                      </select>
+                      <input type="date" value="{{ r.draftDate }}" onChange="{{ r.onDraftDate }}" style="box-sizing:border-box;border:1px solid #DDD7E6;border-radius:8px;padding:6px 9px;font-size:12px;font-family:inherit;color:#1A1626;outline:none" />
+                      <div style="display:flex;gap:8px;margin-left:auto">
+                        <button onClick="{{ r.onSave }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:700;color:#2E7D5B">Enregistrer</button>
+                        <button onClick="{{ r.onCancel }}" style="all:unset;cursor:pointer;font-size:12px;color:#8B8299">Annuler</button>
+                      </div>
+                    </div>
                   </div>
                 </sc-if>
                 <sc-if value="{{ r.notEditing }}" hint-placeholder-val="{{ true }}">
-                  <span style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</span>
-                  <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px"><span style="width:8px;height:8px;border-radius:50%;background:{{ r.teamColor }};flex:none"></span>{{ r.team }}</span>
-                  <span style="font-size:12px;color:#6B6478">{{ r.date }}</span>
-                  <div style="display:flex;gap:12px;justify-self:end">
-                    <button onClick="{{ r.onEdit }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:#4A2E6B">Modifier</button>
-                    <button onClick="{{ r.onDelete }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:#B3383F">Supprimer</button>
+                  <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 130px auto;gap:12px;align-items:center">
+                    <sc-if value="{{ r.hasUrl }}" hint-placeholder-val="{{ false }}">
+                      <a href="{{ r.url }}" target="_blank" rel="noopener" style="font-size:13px;font-weight:600;color:#4A2E6B;text-decoration:underline;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</a>
+                    </sc-if>
+                    <sc-if value="{{ r.noUrl }}" hint-placeholder-val="{{ true }}">
+                      <span style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</span>
+                    </sc-if>
+                    <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px"><span style="width:8px;height:8px;border-radius:50%;background:{{ r.teamColor }};flex:none"></span>{{ r.team }}</span>
+                    <span style="font-size:12px;color:#6B6478">{{ r.date }}</span>
+                    <div style="display:flex;gap:12px;justify-self:end">
+                      <button onClick="{{ r.onEdit }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:#4A2E6B">Modifier</button>
+                      <button onClick="{{ r.onDelete }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:#B3383F">Supprimer</button>
+                    </div>
                   </div>
                 </sc-if>
               </div>
@@ -957,7 +988,7 @@ class Component extends DCLogic {
             teams: TEAMS, newTeam: null, teamEditId: null, teamDraft: null, adminTab: 'teams',
             referentiels: [], refSelected: null, refEditId: null, refDraft: null, newRef: null, newRefError: false,
             mepReleases: [], mepEditId: null, mepDraft: null,
-            mepNewName: '', mepNewDate: '', mepNewTeam: 'CDO', mepNewError: false,
+            mepNewName: '', mepNewDate: '', mepNewTeam: 'CDO', mepNewUrl: '', mepNewError: false,
             loading: true, loadError: null };
 
   componentDidMount() {
@@ -998,7 +1029,7 @@ class Component extends DCLogic {
         position: Number(r.position) || 0, label: r.label, active: !!r.active
       }));
       const refKeys = Array.from(new Set(referentiels.map(r => r.referentiel))).sort();
-      const mepReleases = (mepRows || []).map(r => ({ id: r.id, name: r.name, date: r.date, team: r.team }));
+      const mepReleases = (mepRows || []).map(r => ({ id: r.id, name: r.name, date: r.date, team: r.team, url: r.url || '' }));
       this.setState(s => ({
         teams, projects, requests, fields, referentiels, mepReleases, loading: false, loadError: null,
         team: teams.some(t => t.id === s.team) ? s.team : (teams[0] ? teams[0].id : s.team),
@@ -1246,7 +1277,7 @@ class Component extends DCLogic {
   async loadMepReleases() {
     try {
       const rows = await api.list('mep_releases', 'select=*&order=date.asc');
-      this.setState({ mepReleases: (rows || []).map(r => ({ id: r.id, name: r.name, date: r.date, team: r.team })) });
+      this.setState({ mepReleases: (rows || []).map(r => ({ id: r.id, name: r.name, date: r.date, team: r.team, url: r.url || '' })) });
     } catch (e) {
       this.setState({ loadError: String(e.message || e) });
     }
@@ -1254,15 +1285,15 @@ class Component extends DCLogic {
   startEditMep(id) {
     const r = this.state.mepReleases.find(x => x.id === id);
     if (!r) return;
-    this.setState({ mepEditId: id, mepDraft: { name: r.name, date: mepDateInputValue(r.date), team: r.team } });
+    this.setState({ mepEditId: id, mepDraft: { name: r.name, date: mepDateInputValue(r.date), team: r.team, url: r.url || '' } });
   }
   setMepDraft(k, v) { this.setState(s => ({ mepDraft: Object.assign({}, s.mepDraft, { [k]: v }) })); }
   cancelEditMep() { this.setState({ mepEditId: null, mepDraft: null }); }
   saveMep() {
     const d = this.state.mepDraft, id = this.state.mepEditId;
     if (!d || !d.name.trim() || !d.date) return;
-    const patch = { name: d.name.trim(), date: d.date, team: d.team };
-    this.setState(s => ({ mepEditId: null, mepDraft: null, mepReleases: s.mepReleases.map(r => r.id !== id ? r : Object.assign({}, r, patch)) }));
+    const patch = { name: d.name.trim(), date: d.date, team: d.team, url: (d.url || '').trim() || null };
+    this.setState(s => ({ mepEditId: null, mepDraft: null, mepReleases: s.mepReleases.map(r => r.id !== id ? r : Object.assign({}, r, patch, { url: patch.url || '' })) }));
     api.update('mep_releases', 'id=eq.' + encodeURIComponent(id), patch).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
   deleteMep(id) {
@@ -1273,10 +1304,11 @@ class Component extends DCLogic {
     const name = (this.state.mepNewName || '').trim();
     const date = this.state.mepNewDate;
     const team = this.state.mepNewTeam || MEP_TEAMS[0].key;
+    const url = (this.state.mepNewUrl || '').trim() || null;
     if (!name || !date) { this.setState({ mepNewError: true }); return; }
-    this.setState({ mepNewName: '', mepNewDate: '', mepNewError: false });
+    this.setState({ mepNewName: '', mepNewDate: '', mepNewUrl: '', mepNewError: false });
     try {
-      await api.insert('mep_releases', { name, date, team });
+      await api.insert('mep_releases', { name, date, team, url });
       await this.loadMepReleases();
     } catch (e) {
       this.setState({ loadError: String(e.message || e) });
@@ -1675,15 +1707,20 @@ class Component extends DCLogic {
     }
     const mepTable = MEP_TEAMS.map(team => {
       const cells = mepColumns.map(col => {
-        const count = mepRows.filter(r => r.team === team.key && mepMonthKey(r._d) === col.key).length;
         const future = col.key > mepTodayKey;
-        return {
-          count: count || '',
-          hasCount: count > 0,
-          bg: count > 0 ? (future ? '#FFFFFF' : hexToRgba(team.color, count >= 2 ? 0.32 : 0.16)) : 'transparent',
-          color: count > 0 ? team.color : 'transparent',
-          border: count > 0 && future ? ('2px dashed ' + team.color) : '1px solid transparent'
-        };
+        const entries = mepRows
+          .filter(r => r.team === team.key && mepMonthKey(r._d) === col.key)
+          .map(r => ({
+            name: r.name,
+            date: mepDateDisplay(r.date),
+            url: r.url || '',
+            hasUrl: !!r.url,
+            noUrl: !r.url,
+            bg: future ? '#FFFFFF' : hexToRgba(team.color, 0.14),
+            border: future ? ('1.5px dashed ' + team.color) : '1px solid transparent',
+            color: team.color
+          }));
+        return { entries };
       });
       return { key: team.key, label: team.key, color: team.color, total: mepRows.filter(r => r.team === team.key).length, cells };
     });
@@ -1699,17 +1736,20 @@ class Component extends DCLogic {
       const d = st.mepDraft || {};
       return {
         id: r.id, name: r.name, date: mepDateDisplay(r.date), team: r.team, teamColor: team.color,
+        url: r.url || '', hasUrl: !!r.url, noUrl: !r.url,
         editing, notEditing: !editing,
         draftName: editing ? d.name : r.name,
         draftDate: editing ? d.date : mepDateInputValue(r.date),
         draftTeam: editing ? d.team : r.team,
+        draftUrl: editing ? d.url : (r.url || ''),
         onEdit: () => this.startEditMep(r.id),
         onDelete: () => this.deleteMep(r.id),
         onSave: () => this.saveMep(),
         onCancel: () => this.cancelEditMep(),
         onDraftName: (e) => this.setMepDraft('name', e.target.value),
         onDraftDate: (e) => this.setMepDraft('date', e.target.value),
-        onDraftTeam: (e) => this.setMepDraft('team', e.target.value)
+        onDraftTeam: (e) => this.setMepDraft('team', e.target.value),
+        onDraftUrl: (e) => this.setMepDraft('url', e.target.value)
       };
     });
 
@@ -1726,10 +1766,11 @@ class Component extends DCLogic {
       onSetReqViewListe: () => this.setState({ reqView: 'liste' }),
       onSetReqViewTableau: () => this.setState({ reqView: 'tableau' }),
       mepTable, mepTeamStats: mepTable, mepColumnTotals, mepTeamOptions, mepList,
-      mepNewName: st.mepNewName, mepNewDate: st.mepNewDate, mepNewTeam: st.mepNewTeam, mepNewError: st.mepNewError,
+      mepNewName: st.mepNewName, mepNewDate: st.mepNewDate, mepNewTeam: st.mepNewTeam, mepNewUrl: st.mepNewUrl, mepNewError: st.mepNewError,
       onMepNewName: (e) => this.setState({ mepNewName: e.target.value, mepNewError: false }),
       onMepNewDate: (e) => this.setState({ mepNewDate: e.target.value, mepNewError: false }),
       onMepNewTeam: (e) => this.setState({ mepNewTeam: e.target.value }),
+      onMepNewUrl: (e) => this.setState({ mepNewUrl: e.target.value }),
       onAddMep: () => this.addMep(),
       quartersShown: (isRequests || isAdmin || isMep) ? [] : quarters,
       formControls, statusSelectOptions, isAdmin,

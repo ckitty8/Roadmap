@@ -58,7 +58,7 @@ const TABLES = {
   },
   mep_releases: {
     pk: 'id',
-    columns: ['name', 'date', 'team'],
+    columns: ['name', 'date', 'team', 'url'],
     jsonb: [],
     order: 'date ASC'
   }
