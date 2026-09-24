@@ -31,6 +31,14 @@
     </div>
 
     <nav style="display:flex;flex-direction:column;gap:2px">
+      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#9A8CB4;padding:0 8px 8px">Planning</div>
+      <button onClick="{{ onPlanningNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ planningNavWeight }};background:{{ planningNavBg }};color:{{ planningNavFg }}">
+        <span style="font-size:12px;opacity:.85">▦</span>
+        <span>Congés & capacité</span>
+      </button>
+    </nav>
+
+    <nav style="display:flex;flex-direction:column;gap:2px">
       <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#9A8CB4;padding:0 8px 8px">Roadmap</div>
       <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="2">
         <button onClick="{{ nav.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ nav.weight }};background:{{ nav.bg }};color:{{ nav.fg }}">
@@ -38,14 +46,6 @@
           <span>{{ nav.label }}</span>
         </button>
       </sc-for>
-    </nav>
-
-    <nav style="display:flex;flex-direction:column;gap:2px">
-      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#9A8CB4;padding:0 8px 8px">Planning</div>
-      <button onClick="{{ onPlanningNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ planningNavWeight }};background:{{ planningNavBg }};color:{{ planningNavFg }}">
-        <span style="font-size:12px;opacity:.85">▦</span>
-        <span>Congés & capacité</span>
-      </button>
     </nav>
 
     <div style="display:flex;flex-direction:column;gap:2px">
