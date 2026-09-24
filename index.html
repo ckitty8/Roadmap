@@ -69,7 +69,15 @@
       </button>
     </div>
 
-    <div style="margin-top:auto;border-top:1px solid #0A4A94;padding-top:14px;display:flex;align-items:center;gap:10px">
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:2px">
+      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 8px">Administration</div>
+      <button onClick="{{ onAdminGeneralNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ adminGeneralNavWeight }};background:{{ adminGeneralNavBg }};color:{{ adminGeneralNavFg }}">
+        <span style="font-size:12px;opacity:.85">◉</span>
+        <span>Administration générale</span>
+      </button>
+    </div>
+
+    <div style="border-top:1px solid #0A4A94;padding-top:14px;display:flex;align-items:center;gap:10px">
       <div style="width:30px;height:30px;border-radius:50%;background:#1F5FA8;display:grid;place-items:center;font-size:11.5px;font-weight:700;color:#E4EEF8">CK</div>
       <div style="line-height:1.25">
         <div style="font-size:12.5px;font-weight:600">Camille K.</div>
@@ -785,28 +793,6 @@
 
               <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
                 <div style="padding:15px 18px;border-bottom:1px solid #EAEEF3">
-                  <h2 style="margin:0;font-size:14.5px;font-weight:700">Équipes</h2>
-                </div>
-                <sc-for list="{{ planAdminEquipes }}" as="e" hint-placeholder-count="2">
-                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px;border-bottom:1px solid #EDF0F5">
-                    <span style="font-size:13px;font-weight:600">{{ e.nom }}</span>
-                    <button onClick="{{ e.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid #EDD8DA;color:#B3383F">Supprimer</button>
-                  </div>
-                </sc-for>
-                <div style="display:flex;gap:10px;align-items:end;padding:14px 18px;background:#F8FAFC">
-                  <label style="display:flex;flex-direction:column;gap:5px;flex:1">
-                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Nouvelle équipe</span>
-                    <input value="{{ planNewEquipe }}" onChange="{{ onPlanNewEquipe }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
-                  </label>
-                  <button onClick="{{ onPlanAddEquipe }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#003CC8;color:#FFFFFF">Ajouter</button>
-                </div>
-                <sc-if value="{{ planEquipeError }}" hint-placeholder-val="{{ false }}">
-                  <div style="padding:0 18px 14px;background:#F8FAFC;font-size:12px;color:#B3383F">{{ planEquipeError }}</div>
-                </sc-if>
-              </section>
-
-              <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
-                <div style="padding:15px 18px;border-bottom:1px solid #EAEEF3">
                   <h2 style="margin:0;font-size:14.5px;font-weight:700">Projets</h2>
                 </div>
                 <sc-for list="{{ planAdminProjets }}" as="p" hint-placeholder-count="2">
@@ -885,13 +871,13 @@
         </div>
       </sc-if>
 
-      <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ isAdminGeneral }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:24px">
 
           <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
             <div style="padding:15px 18px;border-bottom:1px solid #EAEEF3">
-              <h2 style="margin:0;font-size:14.5px;font-weight:700">Équipes</h2>
-              <p style="margin:4px 0 0;font-size:12px;color:#808A99">Ajout, renommage, capacité. Une équipe portant des initiatives ne peut pas être supprimée.</p>
+              <h2 style="margin:0;font-size:14.5px;font-weight:700">Équipes Roadmap</h2>
+              <p style="margin:4px 0 0;font-size:12px;color:#808A99">Utilisées par le Dashboard et la Vue par équipe. Ajout, renommage, capacité. Une équipe portant des initiatives ne peut pas être supprimée.</p>
             </div>
             <sc-for list="{{ adminTeams }}" as="t" hint-placeholder-count="4">
               <div style="border-bottom:1px solid #EDF0F5;background:{{ t.rowBg }};padding:13px 18px">
@@ -951,6 +937,35 @@
               <div style="padding:0 18px 15px;background:#F8FAFC;font-size:12.5px;color:#B3383F">{{ teamErrorText }}</div>
             </sc-if>
           </section>
+
+          <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
+            <div style="padding:15px 18px;border-bottom:1px solid #EAEEF3">
+              <h2 style="margin:0;font-size:14.5px;font-weight:700">Équipes Planning</h2>
+              <p style="margin:4px 0 0;font-size:12px;color:#808A99">Utilisées par le Planning (congés, capacité par sprint).</p>
+            </div>
+            <sc-for list="{{ planAdminEquipes }}" as="e" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px;border-bottom:1px solid #EDF0F5">
+                <span style="font-size:13px;font-weight:600">{{ e.nom }}</span>
+                <button onClick="{{ e.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid #EDD8DA;color:#B3383F">Supprimer</button>
+              </div>
+            </sc-for>
+            <div style="display:flex;gap:10px;align-items:end;padding:14px 18px;background:#F8FAFC">
+              <label style="display:flex;flex-direction:column;gap:5px;flex:1">
+                <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Nouvelle équipe</span>
+                <input value="{{ planNewEquipe }}" onChange="{{ onPlanNewEquipe }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
+              </label>
+              <button onClick="{{ onPlanAddEquipe }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#003CC8;color:#FFFFFF">Ajouter</button>
+            </div>
+            <sc-if value="{{ planEquipeError }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:0 18px 14px;background:#F8FAFC;font-size:12px;color:#B3383F">{{ planEquipeError }}</div>
+            </sc-if>
+          </section>
+
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:24px">
 
           <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
             <div style="padding:15px 18px;border-bottom:1px solid #EAEEF3">
@@ -1952,6 +1967,11 @@ class Component extends DCLogic {
     const isAdmin = st.view === 'admin';
     const isMep = st.view === 'mep';
     const isPlanning = st.view === 'planning';
+    const isAdminGeneral = st.view === 'admin_general';
+    const onAdminGeneralNav = () => this.setState({ view: 'admin_general' });
+    const adminGeneralNavBg = isAdminGeneral ? '#003CC8' : 'transparent';
+    const adminGeneralNavFg = isAdminGeneral ? '#FFFFFF' : '#C3D6E8';
+    const adminGeneralNavWeight = isAdminGeneral ? 700 : 500;
     const navDefs = [
       { key: 'dashboard', label: 'Dashboard', icon: '◧' },
       { key: 'requests', label: 'Demandes', icon: '☰' },
@@ -2584,8 +2604,9 @@ class Component extends DCLogic {
       onMepNewTeam: (e) => this.setState({ mepNewTeam: e.target.value }),
       onMepNewUrl: (e) => this.setState({ mepNewUrl: e.target.value }),
       onAddMep: () => this.addMep(),
-      quartersShown: (isRequests || isAdmin || isMep || isPlanning) ? [] : quarters,
-      formControls, statusSelectOptions, isAdmin,
+      quartersShown: (isRequests || isAdmin || isMep || isPlanning || isAdminGeneral) ? [] : quarters,
+      formControls, statusSelectOptions, isAdmin, isAdminGeneral,
+      onAdminGeneralNav, adminGeneralNavBg, adminGeneralNavFg, adminGeneralNavWeight,
       adminFields, typeOptions, adminTeams,
       refKeys, refSelectedKey, refRows,
       onSelectRef: (e) => this.selectRef(e.target.value),
@@ -2632,21 +2653,23 @@ class Component extends DCLogic {
       onFormNote: (e) => this.setField('note', e.target.value),
       onSubmitRequest: () => this.submitRequest(),
       onReqQuery: (e) => this.setState({ reqQuery: e.target.value }),
-      crumb: isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Administration · Équipes et champs' : (isMep ? 'Suivi MEP · CDO, VISTA, PPM, V4, VI3P' : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter))))),
-      title: isPlanEquipes ? 'Administration' : (isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name))))),
-      subtitle: isPlanEquipes
-        ? 'Gérez les équipes, projets et personnes qui apparaissent dans le planning des congés.'
+      crumb: isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Administration · Champs du formulaire' : (isMep ? 'Suivi MEP · CDO, VISTA, PPM, V4, VI3P' : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter)))))),
+      title: isAdminGeneral ? 'Administration générale' : (isPlanEquipes ? 'Administration' : (isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name)))))),
+      subtitle: isAdminGeneral
+        ? 'Créez et gérez les équipes utilisées par le Planning et par la Roadmap.'
+        : (isPlanEquipes
+        ? 'Gérez les projets et personnes qui apparaissent dans le planning des congés.'
         : (isPlanning
         ? 'Congés et présences par personne, jour par jour, et capacité/vélocité par sprint.'
         : (isAdmin
-        ? 'Gérez les équipes suivies et les champs du formulaire de demande. Les modifications s\u2019appliquent immédiatement à la navigation, au dashboard et à la saisie.'
+        ? 'Gérez les champs du formulaire de demande. Les modifications s\u2019appliquent immédiatement à la navigation, au dashboard et à la saisie.'
         : (isMep
         ? 'Les mises en production de CDO, VISTA, PPM, V4 et VI3P, avec leur nom et leur date.'
         : (isRequests
         ? 'Toutes les demandes reçues des autres services, leur priorité, l\u2019équipe pressentie et leur état d\u2019arbitrage.'
         : (isDashboard
         ? 'État des initiatives des quatre équipes, avancement, écart aux dates cibles et charge disponible.'
-        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.'))))),
+        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.')))))),
       onQuery: (e) => this.setState({ query: e.target.value }),
       onProgress: (e) => selRaw && this.setProgress(selRaw.id, Number(e.target.value)),
       closeDrawer: () => this.setState({ selId: null })
