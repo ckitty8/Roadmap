@@ -671,46 +671,72 @@
             <div style="display:flex;flex-direction:column;gap:18px">
 
               <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;border-bottom:1px solid #EAEEF3;flex-wrap:wrap">
-                  <h2 style="margin:0;font-size:14.5px;font-weight:700">Équipes &amp; projets</h2>
-                  <input value="{{ planRessourcesSearch }}" onChange="{{ onPlanRessourcesSearch }}" placeholder="Rechercher un projet ou une équipe…" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;width:220px;max-width:100%" />
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 18px;border-bottom:1px solid #EAEEF3;flex-wrap:wrap">
+                  <div style="display:flex;gap:22px">
+                    <sc-for list="{{ planEquipesTabs }}" as="t" hint-placeholder-count="3">
+                      <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:13px 2px;font-size:13px;font-weight:600;color:{{ t.fg }};border-bottom:2px solid {{ t.borderColor }}">{{ t.label }}</button>
+                    </sc-for>
+                  </div>
                 </div>
-                <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1fr) 110px auto;gap:12px;padding:9px 18px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#808A99;border-bottom:1px solid #EAEEF3;background:#F8FAFC">
-                  <div>Nom</div><div>Ressources</div><div></div>
-                </div>
-                <sc-for list="{{ planRessourcesTree }}" as="row" hint-placeholder-count="6">
-                  <sc-if value="{{ row.isGroup }}" hint-placeholder-val="{{ false }}">
-                    <div style="display:flex;align-items:center;gap:9px;padding:10px 18px;border-bottom:1px solid #EDF0F5;background:#F8FAFC">
-                      <span style="width:8px;height:8px;border-radius:50%;background:{{ row.dot }};flex:none"></span>
-                      <span style="font-size:12.5px;font-weight:700">{{ row.nom }}</span>
-                    </div>
+
+                <sc-if value="{{ isPlanEquipesTabEquipes }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;flex-wrap:wrap">
+                    <h2 style="margin:0;font-size:14.5px;font-weight:700">Équipes &amp; projets</h2>
+                    <input value="{{ planRessourcesSearch }}" onChange="{{ onPlanRessourcesSearch }}" placeholder="Rechercher un projet ou une équipe…" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;width:220px;max-width:100%" />
+                  </div>
+                  <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1fr) 100px 160px 100px auto;gap:12px;padding:9px 18px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#808A99;border-bottom:1px solid #EAEEF3;background:#F8FAFC">
+                    <div>Nom</div><div>Ressources</div><div>Responsable</div><div>Statut</div><div></div>
+                  </div>
+                  <sc-for list="{{ planRessourcesTree }}" as="row" hint-placeholder-count="6">
+                    <sc-if value="{{ row.isGroup }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ row.onToggle }}" style="all:unset;box-sizing:border-box;cursor:pointer;display:grid;width:100%;grid-template-columns:minmax(0,1fr) 100px 160px 100px auto;gap:12px;align-items:center;padding:10px 18px;border-bottom:1px solid #EDF0F5;background:#F8FAFC">
+                        <span style="display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;overflow:hidden">
+                          <span style="width:14px;flex:none;font-size:10px;color:#5B6472">{{ row.chevron }}</span>
+                          <span style="width:8px;height:8px;border-radius:50%;background:{{ row.dot }};flex:none"></span>
+                          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ row.nom }}</span>
+                        </span>
+                        <span style="font-size:12.5px;color:#5B6472;text-align:left">{{ row.ressources }}</span>
+                        <span style="font-size:12.5px;color:#5B6472;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left">{{ row.lead }}</span>
+                        <span style="text-align:left"><span style="display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:#E7F6EE;color:#1FA37C">Actif</span></span>
+                        <span></span>
+                      </button>
+                    </sc-if>
+                    <sc-if value="{{ row.isGroupNot }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:grid;grid-template-columns:minmax(0,1fr) 100px 160px 100px auto;gap:12px;align-items:center;padding:10px 18px 10px 41px;border-bottom:1px solid #EDF0F5">
+                        <span style="font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ row.nom }}</span>
+                        <span style="font-size:12.5px;color:#5B6472">{{ row.ressources }}</span>
+                        <span style="font-size:12.5px;color:#5B6472">—</span>
+                        <span><span style="display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:#E7F6EE;color:#1FA37C">Actif</span></span>
+                        <button onClick="{{ row.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;width:28px;height:28px;border-radius:7px;display:grid;place-items:center;border:1px solid #EDD8DA;color:#B3383F;justify-self:end" style-hover="background:#FBF1F1">🗑</button>
+                      </div>
+                    </sc-if>
+                  </sc-for>
+                  <div style="display:flex;gap:10px;align-items:end;padding:14px 18px;background:#F8FAFC;flex-wrap:wrap">
+                    <label style="display:flex;flex-direction:column;gap:5px;flex:1 1 180px">
+                      <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Nom du projet</span>
+                      <input value="{{ planNewProjetNom }}" onChange="{{ onPlanNewProjetNom }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
+                    </label>
+                    <label style="display:flex;flex-direction:column;gap:5px">
+                      <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Équipe</span>
+                      <select value="{{ planNewProjetEquipe }}" onChange="{{ onPlanNewProjetEquipe }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
+                        <option value="">Choisir</option>
+                        <sc-for list="{{ planEquipeOptions }}" as="o" hint-placeholder-count="2">
+                          <option value="{{ o.value }}">{{ o.label }}</option>
+                        </sc-for>
+                      </select>
+                    </label>
+                    <button onClick="{{ onPlanAddProjet }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#003CC8;color:#FFFFFF">+ Ajouter un projet</button>
+                  </div>
+                  <sc-if value="{{ planProjetError }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:0 18px 14px;background:#F8FAFC;font-size:12px;color:#B3383F">{{ planProjetError }}</div>
                   </sc-if>
-                  <sc-if value="{{ row.isGroupNot }}" hint-placeholder-val="{{ true }}">
-                    <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px auto;gap:12px;align-items:center;padding:10px 18px 10px 34px;border-bottom:1px solid #EDF0F5">
-                      <span style="font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ row.nom }}</span>
-                      <span style="font-size:12.5px;color:#5B6472">{{ row.ressources }}</span>
-                      <button onClick="{{ row.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid #EDD8DA;color:#B3383F;justify-self:end">Supprimer</button>
-                    </div>
-                  </sc-if>
-                </sc-for>
-                <div style="display:flex;gap:10px;align-items:end;padding:14px 18px;background:#F8FAFC;flex-wrap:wrap">
-                  <label style="display:flex;flex-direction:column;gap:5px;flex:1 1 180px">
-                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Nom du projet</span>
-                    <input value="{{ planNewProjetNom }}" onChange="{{ onPlanNewProjetNom }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
-                  </label>
-                  <label style="display:flex;flex-direction:column;gap:5px">
-                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Équipe</span>
-                    <select value="{{ planNewProjetEquipe }}" onChange="{{ onPlanNewProjetEquipe }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
-                      <option value="">Choisir</option>
-                      <sc-for list="{{ planEquipeOptions }}" as="o" hint-placeholder-count="2">
-                        <option value="{{ o.value }}">{{ o.label }}</option>
-                      </sc-for>
-                    </select>
-                  </label>
-                  <button onClick="{{ onPlanAddProjet }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#003CC8;color:#FFFFFF">+ Ajouter un projet</button>
-                </div>
-                <sc-if value="{{ planProjetError }}" hint-placeholder-val="{{ false }}">
-                  <div style="padding:0 18px 14px;background:#F8FAFC;font-size:12px;color:#B3383F">{{ planProjetError }}</div>
+                </sc-if>
+
+                <sc-if value="{{ isPlanEquipesTabType }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:40px 18px;text-align:center;font-size:12.5px;color:#808A99">Le classement par type de ressource n'est pas encore configuré.</div>
+                </sc-if>
+                <sc-if value="{{ isPlanEquipesTabContrat }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:40px 18px;text-align:center;font-size:12.5px;color:#808A99">Le classement par type de contrat n'est pas encore configuré.</div>
                 </sc-if>
               </section>
 
@@ -1708,6 +1734,7 @@ class Component extends DCLogic {
             planEditCell: null, planEditDraft: '',
             planNewProjetNom: '', planNewProjetEquipe: '', planProjetError: '',
             planMembreError: '', planRessourcesSearch: '', planMembresSearch: '', planMembreModal: null,
+            planEquipesTab: 'equipes', planEquipesExpanded: {},
             planSprintEditId: null, planSprintDraft: null,
             monProjRoadmapTab: 'mep', monAdminTab: 'proj', roRessourcesTab: 'calendrier', roProjRoadmapTab: 'mep',
             dailyNotes: [], dailyDate: todayIso(), dailyDraft: '', dailySaving: false,
@@ -2257,6 +2284,13 @@ class Component extends DCLogic {
     this.setState(s => ({ planProjets: s.planProjets.filter(p => p.id !== id) }));
     api.remove('planning_projets', 'id=eq.' + encodeURIComponent(id)).then(() => this.loadPlanning())
       .catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  planToggleEquipeExpand(teamId) {
+    this.setState(s => {
+      const cur = s.planEquipesExpanded || {};
+      const currentlyExpanded = cur[teamId] !== false;
+      return { planEquipesExpanded: Object.assign({}, cur, { [teamId]: !currentlyExpanded }) };
+    });
   }
   planOpenMembreModal(membre) {
     if (membre) {
@@ -3003,12 +3037,21 @@ class Component extends DCLogic {
       const key = String(p.equipe_id);
       (planProjetsByEquipe[key] = planProjetsByEquipe[key] || []).push(p);
     });
+    const planEquipesExpanded = st.planEquipesExpanded || {};
     const planRessourcesTree = [];
     st.teams.slice().sort((a, b) => a.name.localeCompare(b.name)).forEach(t => {
       const projets = (planProjetsByEquipe[String(t.id)] || []).slice().sort((a, b) => a.nom.localeCompare(b.nom));
       const visibles = projets.filter(p => !planRessourcesSearch || p.nom.toLowerCase().includes(planRessourcesSearch) || t.name.toLowerCase().includes(planRessourcesSearch));
       if (!visibles.length) return;
-      planRessourcesTree.push({ isGroup: true, isGroupNot: false, nom: t.name, dot: t.dot });
+      const expanded = planEquipesExpanded[t.id] !== false;
+      const totalRessources = visibles.reduce((sum, p) => sum + (planMembresCountByProjet[String(p.id)] || 0), 0);
+      planRessourcesTree.push({
+        isGroup: true, isGroupNot: false, nom: t.name, dot: t.dot,
+        lead: t.lead || '—', ressources: totalRessources,
+        chevron: expanded ? '▾' : '▸',
+        onToggle: () => this.planToggleEquipeExpand(t.id)
+      });
+      if (!expanded) return;
       visibles.forEach(p => {
         planRessourcesTree.push({
           isGroup: false, isGroupNot: true, id: p.id, nom: p.nom,
@@ -3017,6 +3060,20 @@ class Component extends DCLogic {
         });
       });
     });
+    const planEquipesTab = st.planEquipesTab || 'equipes';
+    const isPlanEquipesTabEquipes = planEquipesTab === 'equipes';
+    const isPlanEquipesTabType = planEquipesTab === 'type_ressource';
+    const isPlanEquipesTabContrat = planEquipesTab === 'type_contrat';
+    const planEquipesTabs = [
+      { key: 'equipes', label: 'Équipes' },
+      { key: 'type_ressource', label: 'Type de ressources' },
+      { key: 'type_contrat', label: 'Type de contrat' }
+    ].map(t => ({
+      key: t.key, label: t.label,
+      fg: t.key === planEquipesTab ? '#003CC8' : '#808A99',
+      borderColor: t.key === planEquipesTab ? '#003CC8' : 'transparent',
+      onClick: () => this.setState({ planEquipesTab: t.key })
+    }));
     const planAdminMembres = st.planMembres.map(m => {
       const projets = (planProjetsByMembreId[m.id] || []).slice().sort((a, b) => a.nom.localeCompare(b.nom));
       return {
@@ -3163,7 +3220,8 @@ class Component extends DCLogic {
       planMoisCourtsList, planCongesRows, planCongesTotal,
       planSprintCols, planCapaciteRows, planCapaciteTotalRow, planRepartitionRows, planRepartitionTotalPct,
       onPlanAjouterSprint: () => this.planAjouterSprint(),
-      planRessourcesTree,
+      planRessourcesTree, planEquipesTabs,
+      isPlanEquipesTabEquipes, isPlanEquipesTabType, isPlanEquipesTabContrat,
       planRessourcesSearch: st.planRessourcesSearch || '',
       onPlanRessourcesSearch: (e) => this.setState({ planRessourcesSearch: e.target.value }),
       planNewProjetNom: st.planNewProjetNom, planProjetError: st.planProjetError,
