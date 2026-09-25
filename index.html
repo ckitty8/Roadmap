@@ -53,6 +53,9 @@
 
     <div style="border-top:1px solid #0A4A94;padding-top:14px;display:flex;flex-direction:column;gap:2px">
       <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 8px">Mon dashboard · PO technique</div>
+      <button onClick="{{ navMonDaily.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navMonDaily.weight }};background:{{ navMonDaily.bg }};color:{{ navMonDaily.fg }}">
+        <span style="font-size:12px;opacity:.85">☀</span><span>Daily</span>
+      </button>
       <button onClick="{{ navMonProjRoadmap.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navMonProjRoadmap.weight }};background:{{ navMonProjRoadmap.bg }};color:{{ navMonProjRoadmap.fg }}">
         <span style="font-size:12px;opacity:.85">▤</span><span>Projets et Roadmap</span>
       </button>
@@ -257,6 +260,44 @@
               </article>
             </sc-for>
           </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isMonDaily }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+
+          <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:1px;border:1px solid #E1E6ED;border-radius:8px;background:#FFFFFF;padding:4px">
+                <button onClick="{{ onDailyPrevDay }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;color:#003CC8">‹</button>
+                <span style="min-width:220px;text-align:center;font-size:13px;font-weight:600;text-transform:capitalize">{{ dailyDateLabel }}</span>
+                <button onClick="{{ onDailyNextDay }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;color:#003CC8">›</button>
+              </div>
+              <sc-if value="{{ dailyIsToday }}" hint-placeholder-val="{{ true }}">
+                <span style="display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#E5EFFC;color:#003CC8">Aujourd'hui</span>
+              </sc-if>
+              <sc-if value="{{ dailyIsToday }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ onDailyToday }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid #D7DEE7;color:#003CC8">Revenir à aujourd'hui</button>
+              </sc-if>
+            </div>
+            <textarea value="{{ dailyDraft }}" onChange="{{ onDailyDraft }}" rows="8" placeholder="Avancement, blocages, décisions du jour…" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:9px;padding:11px 13px;font-size:13px;font-family:inherit;line-height:1.55;color:#14181F;outline:none;resize:vertical"></textarea>
+            <div>
+              <button onClick="{{ onDailySave }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;background:#003CC8;color:#FFFFFF">Enregistrer</button>
+            </div>
+          </section>
+
+          <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
+            <div style="padding:15px 18px;border-bottom:1px solid #EAEEF3">
+              <h2 style="margin:0;font-size:14.5px;font-weight:700">Historique</h2>
+            </div>
+            <sc-for list="{{ dailyHistory }}" as="h" hint-placeholder-count="4">
+              <button onClick="{{ h.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:block;text-align:left;padding:12px 18px;border-bottom:1px solid #EDF0F5" style-hover="background:#F7FAFC">
+                <div style="font-size:12.5px;font-weight:600;text-transform:capitalize">{{ h.label }}</div>
+                <div style="font-size:12.5px;color:#5B6472;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ h.preview }}</div>
+              </button>
+            </sc-for>
+          </section>
+
         </div>
       </sc-if>
 
@@ -1515,6 +1556,14 @@ const PLAN_TYPES_ABSENCE = [
 ];
 function planIso(annee, mois, jour) { return annee + '-' + String(mois + 1).padStart(2, '0') + '-' + String(jour).padStart(2, '0'); }
 function planNormDate(v) { return v == null ? v : String(v).slice(0, 10); }
+function todayIso() { const d = new Date(); return planIso(d.getFullYear(), d.getMonth(), d.getDate()); }
+function dailyDateDisplay(v) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v || ''));
+  if (!m) return '—';
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  return jours[d.getDay()] + ' ' + d.getDate() + ' ' + MEP_MONTHS_FR[d.getMonth()].toLowerCase() + ' ' + d.getFullYear();
+}
 function planJoursDuMois(annee, mois) {
   const total = new Date(annee, mois + 1, 0).getDate();
   const out = [];
@@ -1604,6 +1653,7 @@ class Component extends DCLogic {
             planNewMembreNom: '', planNewMembreRole: '', planNewMembreProjet: '', planMembreError: '', planRessourcesSearch: '',
             planSprintEditId: null, planSprintDraft: null,
             monProjRoadmapTab: 'mep', monAdminTab: 'proj', roRessourcesTab: 'calendrier', roProjRoadmapTab: 'mep',
+            dailyNotes: [], dailyDate: todayIso(), dailyDraft: '', dailySaving: false,
             loading: true, loadError: null };
 
   componentDidMount() {
@@ -1614,7 +1664,7 @@ class Component extends DCLogic {
     try {
       const [teamRows, projectRows, requestRows, fieldRows, refRows, mepRows,
              planProjetRows, planMembreRows, planJourRows, planJourSpecialRows,
-             planSprintRows, planRepartitionRows] = await Promise.all([
+             planSprintRows, planRepartitionRows, dailyRows] = await Promise.all([
         api.list('teams', 'select=*&order=name.asc'),
         api.list('projects', 'select=*,key_results(*),tickets(*)'),
         api.list('requests', 'select=*&order=id.desc'),
@@ -1626,7 +1676,8 @@ class Component extends DCLogic {
         api.list('planning_jours', 'select=*'),
         api.list('planning_jours_speciaux', 'select=*'),
         api.list('planning_sprints', 'select=*&order=ordre.asc'),
-        api.list('planning_repartition_taches', 'select=*&order=ordre.asc')
+        api.list('planning_repartition_taches', 'select=*&order=ordre.asc'),
+        api.list('daily_notes', 'select=*&order=date.desc')
       ]);
       const teams = (teamRows || []).map(t => ({
         id: String(t.id), name: t.name, lead: t.lead, capacity: t.capacity, load: t.load, dot: t.dot
@@ -1662,11 +1713,13 @@ class Component extends DCLogic {
       const planJoursSpeciaux = (planJourSpecialRows || []).map(r => ({ id: r.id, date: planNormDate(r.date), libelle: r.libelle, type: r.type }));
       const planSprints = (planSprintRows || []).map(r => ({ id: r.id, nom: r.nom, date_debut: planNormDate(r.date_debut), date_fin: planNormDate(r.date_fin), ordre: r.ordre }));
       const planRepartition = (planRepartitionRows || []).map(r => ({ id: r.id, nom: r.nom, pourcentage: Number(r.pourcentage), ordre: r.ordre }));
+      const dailyNotes = (dailyRows || []).map(r => ({ id: r.id, date: planNormDate(r.date), note: r.note || '' }));
       this.setState(s => ({
         teams, projects, requests, fields, referentiels, mepReleases, loading: false, loadError: null,
         team: teams.some(t => t.id === s.team) ? s.team : (teams[0] ? teams[0].id : s.team),
         refSelected: refKeys.includes(s.refSelected) ? s.refSelected : (refKeys[0] || null),
-        planProjets, planMembres, planJours, planJoursSpeciaux, planSprints, planRepartition
+        planProjets, planMembres, planJours, planJoursSpeciaux, planSprints, planRepartition,
+        dailyNotes, dailyDraft: (dailyNotes.find(n => n.date === s.dailyDate) || {}).note || ''
       }));
     } catch (e) {
       this.setState({ loading: false, loadError: 'Connexion à la base impossible : ' + (e && e.message ? e.message : e) });
@@ -2086,6 +2139,39 @@ class Component extends DCLogic {
     this.setState(s => ({ planSprints: s.planSprints.filter(x => x.id !== id) }));
     api.remove('planning_sprints', 'id=eq.' + encodeURIComponent(id)).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
+  dailyGoToDate(date) {
+    const note = this.state.dailyNotes.find(n => n.date === date);
+    this.setState({ dailyDate: date, dailyDraft: note ? note.note : '' });
+  }
+  dailyPrevDay() {
+    const d = new Date(this.state.dailyDate + 'T00:00:00');
+    d.setDate(d.getDate() - 1);
+    this.dailyGoToDate(planIso(d.getFullYear(), d.getMonth(), d.getDate()));
+  }
+  dailyNextDay() {
+    const d = new Date(this.state.dailyDate + 'T00:00:00');
+    d.setDate(d.getDate() + 1);
+    this.dailyGoToDate(planIso(d.getFullYear(), d.getMonth(), d.getDate()));
+  }
+  dailySetDraft(v) { this.setState({ dailyDraft: v }); }
+  async dailySave() {
+    const date = this.state.dailyDate;
+    const note = this.state.dailyDraft || '';
+    const existant = this.state.dailyNotes.find(n => n.date === date);
+    this.setState({ dailySaving: true });
+    try {
+      if (existant) {
+        await api.update('daily_notes', 'id=eq.' + encodeURIComponent(existant.id), { note });
+        this.setState(s => ({ dailyNotes: s.dailyNotes.map(n => n.id === existant.id ? Object.assign({}, n, { note }) : n) }));
+      } else {
+        const res = await api.insert('daily_notes', { date, note });
+        this.setState(s => ({ dailyNotes: [{ id: res.id, date, note }].concat(s.dailyNotes) }));
+      }
+    } catch (e) {
+      this.setState({ loadError: String(e.message || e) });
+    }
+    this.setState({ dailySaving: false });
+  }
   planSetPourcentage(id, texte) {
     const n = Number(String(texte).replace(',', '.'));
     if (Number.isNaN(n) || n < 0 || n > 100) return;
@@ -2185,6 +2271,7 @@ class Component extends DCLogic {
     const isRoRessources = st.view === 'ro_ressources';
     const isTimesheet = st.view === 'timesheet';
     const isMonAdmin = st.view === 'mon_admin';
+    const isMonDaily = st.view === 'mon_daily';
     const navKey = (key) => ({
       active: st.view === key,
       bg: st.view === key ? '#003CC8' : 'transparent',
@@ -2196,6 +2283,7 @@ class Component extends DCLogic {
     const navRoProj = navKey('ro_proj_roadmap');
     const navRoRes = navKey('ro_ressources');
     const navTimesheet = navKey('timesheet');
+    const navMonDaily = navKey('mon_daily');
     const navMonProjRoadmap = navKey('mon_proj_roadmap');
     const navMonRessources = navKey('planning');
     const navMonAdmin = navKey('mon_admin');
@@ -2778,6 +2866,16 @@ class Component extends DCLogic {
     const planRepartitionTotalPct = planFormatNombre(planRepartitionSorted.reduce((s, t) => s + t.pourcentage, 0));
 
     // ---- Projets & personnes ----
+    const dailyIsToday = st.dailyDate === todayIso();
+    const dailyHistory = st.dailyNotes
+      .filter(n => n.date !== st.dailyDate && n.note && n.note.trim())
+      .slice(0, 14)
+      .map(n => ({
+        date: n.date, label: dailyDateDisplay(n.date),
+        preview: n.note.length > 140 ? n.note.slice(0, 140) + '…' : n.note,
+        onClick: () => this.dailyGoToDate(n.date)
+      }));
+
     const planRessourcesSearch = (st.planRessourcesSearch || '').trim().toLowerCase();
     const planMembresCountByProjet = {};
     st.planMembres.forEach(m => {
@@ -2881,8 +2979,15 @@ class Component extends DCLogic {
       onDismissLoadError: () => this.setState({ loadError: null }),
       onRetryLoad: () => { this.setState({ loadError: null }); this.loadAll(); },
       isDashboard, isTeam, isRequests, isMep, isPlanning, quarters, kpis, rows, capacity, alerts,
-      navDash, navRoProj, navRoRes, navTimesheet, navMonProjRoadmap, navMonRessources, navMonAdmin,
-      isRoProjRoadmap, isRoRessources, isTimesheet, isMonRoadmap, isMonAdmin,
+      navDash, navRoProj, navRoRes, navTimesheet, navMonDaily, navMonProjRoadmap, navMonRessources, navMonAdmin,
+      isRoProjRoadmap, isRoRessources, isTimesheet, isMonRoadmap, isMonAdmin, isMonDaily,
+      dailyDate: st.dailyDate, dailyDateLabel: dailyDateDisplay(st.dailyDate), dailyIsToday,
+      dailyDraft: st.dailyDraft, dailySaving: !!st.dailySaving, dailyHistory,
+      onDailyPrevDay: () => this.dailyPrevDay(),
+      onDailyNextDay: () => this.dailyNextDay(),
+      onDailyDraft: (e) => this.dailySetDraft(e.target.value),
+      onDailySave: () => this.dailySave(),
+      onDailyToday: () => this.dailyGoToDate(todayIso()),
       stubPage,
       monAdminTabs, isMonAdminRes, isMonAdminDash, isMonAdminTips,
       roRessourcesTabs, isRoRessourcesCalendrier, isRoRessourcesListe, roRessourcesRows,
@@ -2968,9 +3073,11 @@ class Component extends DCLogic {
       formToggleBorder: st.formOpen ? '#D7DEE7' : '#003CC8',
       onSubmitRequest: () => this.submitRequest(),
       onReqQuery: (e) => this.setState({ reqQuery: e.target.value }),
-      crumb: isRoRessources ? 'Gestion des ressources · lecture seule' : (isRoProjRoadmap ? 'Projets et Roadmap · lecture seule' : (stubPage ? stubPage.crumb : (isMonRoadmap ? 'Mon dashboard · Roadmap · CDO (Demandes)' : (isMonAdmin ? 'Mon dashboard · PO technique' : (isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Mon dashboard · Administration' : (isMep ? 'Suivi MEP · ' + mepTeamNamesLabel : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter))))))))))),
-      title: isRoRessources ? 'Gestion des ressources' : (isRoProjRoadmap ? 'Projets et Roadmap' : (stubPage ? stubPage.title : (isMonRoadmap ? 'Roadmap' : (isMonAdmin ? 'Administration' : (isAdminGeneral ? 'Administration générale' : (isPlanEquipes ? 'Administration' : (isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name))))))))))),
-      subtitle: isRoRessources
+      crumb: isMonDaily ? 'Mon dashboard · Daily' : (isRoRessources ? 'Gestion des ressources · lecture seule' : (isRoProjRoadmap ? 'Projets et Roadmap · lecture seule' : (stubPage ? stubPage.crumb : (isMonRoadmap ? 'Mon dashboard · Roadmap · CDO (Demandes)' : (isMonAdmin ? 'Mon dashboard · PO technique' : (isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Mon dashboard · Administration' : (isMep ? 'Suivi MEP · ' + mepTeamNamesLabel : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter)))))))))))),
+      title: isMonDaily ? 'Daily' : (isRoRessources ? 'Gestion des ressources' : (isRoProjRoadmap ? 'Projets et Roadmap' : (stubPage ? stubPage.title : (isMonRoadmap ? 'Roadmap' : (isMonAdmin ? 'Administration' : (isAdminGeneral ? 'Administration générale' : (isPlanEquipes ? 'Administration' : (isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name)))))))))))),
+      subtitle: isMonDaily
+        ? 'Notes de stand-up quotidiennes, à vous seul(e).'
+        : (isRoRessources
         ? 'Vue lecture seule du calendrier des congés. Pour modifier, direction Mon dashboard.'
         : (isRoProjRoadmap
         ? 'Vue lecture seule du calendrier des MEP. Pour ajouter ou modifier, direction Mon dashboard.'
@@ -2994,7 +3101,7 @@ class Component extends DCLogic {
         ? 'Toutes les demandes reçues des autres services, leur priorité, l\u2019équipe pressentie et leur état d\u2019arbitrage.'
         : (isDashboard
         ? 'État des initiatives des quatre équipes, avancement, écart aux dates cibles et charge disponible.'
-        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.'))))))))))),
+        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.')))))))))))),
       onQuery: (e) => this.setState({ query: e.target.value }),
       onProgress: (e) => selRaw && this.setProgress(selRaw.id, Number(e.target.value)),
       closeDrawer: () => this.setState({ selId: null })

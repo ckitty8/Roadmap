@@ -97,6 +97,12 @@ const TABLES = {
     columns: ['nom', 'pourcentage', 'ordre'],
     jsonb: [],
     order: 'ordre ASC'
+  },
+  daily_notes: {
+    pk: 'id',
+    columns: ['date', 'note'],
+    jsonb: [],
+    order: 'date DESC'
   }
 };
 
