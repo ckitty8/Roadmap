@@ -297,7 +297,7 @@
             <table style="border-collapse:collapse;width:max-content;min-width:100%;font-size:12px">
               <thead>
                 <tr>
-                  <th style="position:sticky;left:0;top:0;z-index:3;text-align:left;padding:9px 12px;background:#F8FAFC;border-bottom:1px solid #EAEEF3;border-right:1px solid #EAEEF3;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#808A99;white-space:nowrap">Équipe</th>
+                  <th style="position:sticky;left:0;top:0;z-index:3;text-align:left;padding:9px 12px;background:#F8FAFC;border-bottom:1px solid #EAEEF3;border-right:1px solid #EAEEF3;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#808A99;white-space:nowrap">Projet</th>
                   <sc-for list="{{ mepColumnTotals }}" as="c" hint-placeholder-count="10">
                     <th style="position:sticky;top:0;z-index:2;text-align:center;padding:9px 10px;background:{{ c.todayBg }};color:{{ c.todayFg }};border-bottom:1px solid #EAEEF3;font-size:10px;font-weight:700;white-space:nowrap">{{ c.label }}</th>
                   </sc-for>
@@ -353,7 +353,7 @@
             </div>
             <div style="display:grid;grid-template-columns:150px 140px auto;gap:10px;align-items:end">
               <label style="display:flex;flex-direction:column;gap:5px">
-                <span style="font-size:11px;font-weight:700;color:#5B6472;text-transform:uppercase;letter-spacing:.03em">Équipe</span>
+                <span style="font-size:11px;font-weight:700;color:#5B6472;text-transform:uppercase;letter-spacing:.03em">Projet</span>
                 <select value="{{ mepNewTeam }}" onChange="{{ onMepNewTeam }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none;cursor:pointer">
                   <sc-for list="{{ mepTeamOptions }}" as="o" hint-placeholder-count="5">
                     <option value="{{ o.value }}">{{ o.label }}</option>
@@ -367,13 +367,13 @@
               <button onClick="{{ onAddMep }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;cursor:pointer;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;background:#003CC8;color:#FFFFFF">Ajouter</button>
             </div>
             <sc-if value="{{ mepNewError }}" hint-placeholder-val="{{ false }}">
-              <span style="font-size:12px;color:#B3383F">Merci de renseigner un nom, une équipe et une date.</span>
+              <span style="font-size:12px;color:#B3383F">Merci de renseigner un nom, un projet et une date.</span>
             </sc-if>
           </section>
 
           <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
             <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1fr) 110px 130px auto;gap:12px;padding:11px 18px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#808A99;border-bottom:1px solid #EAEEF3;background:#F8FAFC">
-              <div>Nom</div><div>Équipe</div><div>Date</div><div></div>
+              <div>Nom</div><div>Projet</div><div>Date</div><div></div>
             </div>
             <sc-for list="{{ mepList }}" as="r" hint-placeholder-count="6">
               <div style="border-bottom:1px solid #EDF0F5;padding:10px 18px">
@@ -685,17 +685,9 @@
                     <input value="{{ planNewMembreRole }}" onChange="{{ onPlanNewMembreRole }}" placeholder="Optionnel" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
                   </label>
                   <label style="display:flex;flex-direction:column;gap:5px">
-                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Équipe</span>
-                    <select value="{{ planNewMembreEquipe }}" onChange="{{ onPlanNewMembreEquipe }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
-                      <option value="">Choisir</option>
-                      <sc-for list="{{ planEquipeOptions }}" as="o" hint-placeholder-count="2">
-                        <option value="{{ o.value }}">{{ o.label }}</option>
-                      </sc-for>
-                    </select>
-                  </label>
-                  <label style="display:flex;flex-direction:column;gap:5px">
                     <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Projet</span>
                     <select value="{{ planNewMembreProjet }}" onChange="{{ onPlanNewMembreProjet }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
+                      <option value="">Choisir</option>
                       <sc-for list="{{ planNewMembreProjetOptions }}" as="o" hint-placeholder-count="2">
                         <option value="{{ o.value }}">{{ o.label }}</option>
                       </sc-for>
@@ -814,7 +806,7 @@
                 <table style="border-collapse:collapse;width:max-content;min-width:100%;font-size:12px">
                   <thead>
                     <tr>
-                      <th style="position:sticky;left:0;top:0;z-index:3;text-align:left;padding:9px 12px;background:#F8FAFC;border-bottom:1px solid #EAEEF3;border-right:1px solid #EAEEF3;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#808A99;white-space:nowrap">Équipe</th>
+                      <th style="position:sticky;left:0;top:0;z-index:3;text-align:left;padding:9px 12px;background:#F8FAFC;border-bottom:1px solid #EAEEF3;border-right:1px solid #EAEEF3;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#808A99;white-space:nowrap">Projet</th>
                       <sc-for list="{{ mepColumnTotals }}" as="c" hint-placeholder-count="10">
                         <th style="position:sticky;top:0;z-index:2;text-align:center;padding:9px 10px;background:{{ c.todayBg }};color:{{ c.todayFg }};border-bottom:1px solid #EAEEF3;font-size:10px;font-weight:700;white-space:nowrap">{{ c.label }}</th>
                       </sc-for>
@@ -1601,7 +1593,7 @@ class Component extends DCLogic {
             planAnnee: 2026, planMois: 0, planEquipeFiltre: 'toutes', planCellule: null,
             planEditCell: null, planEditDraft: '',
             planNewProjetNom: '', planNewProjetEquipe: '', planProjetError: '',
-            planNewMembreNom: '', planNewMembreRole: '', planNewMembreEquipe: '', planNewMembreProjet: '', planMembreError: '',
+            planNewMembreNom: '', planNewMembreRole: '', planNewMembreProjet: '', planMembreError: '',
             planSprintEditId: null, planSprintDraft: null,
             monRoadmapTab: 'cdo', monAdminTab: 'proj', roRessourcesTab: 'calendrier', roProjRoadmapTab: 'mep',
             loading: true, loadError: null };
@@ -1652,10 +1644,10 @@ class Component extends DCLogic {
         position: Number(r.position) || 0, label: r.label, active: !!r.active
       }));
       const refKeys = Array.from(new Set(referentiels.map(r => r.referentiel))).sort();
-      const mepReleases = (mepRows || []).map(r => ({ id: r.id, name: r.name, date: r.date, team: r.team, url: r.url || '' }));
-      const planProjets = (planProjetRows || []).map(r => ({ id: r.id, equipe_id: String(r.equipe_id), nom: r.nom }));
+      const mepReleases = (mepRows || []).map(r => ({ id: r.id, name: r.name, date: r.date, projet: r.projet, url: r.url || '' }));
+      const planProjets = (planProjetRows || []).map(r => ({ id: r.id, equipe_id: String(r.equipe_id), nom: r.nom, couleur: r.couleur }));
       const planMembres = (planMembreRows || []).map(r => ({
-        id: r.id, equipe_id: String(r.equipe_id), projet_id: r.projet_id, nom: r.nom, role: r.role || '',
+        id: r.id, projet_id: r.projet_id, nom: r.nom, role: r.role || '',
         jours_travailles_client: r.jours_travailles_client === null || r.jours_travailles_client === undefined ? null : Number(r.jours_travailles_client)
       }));
       const planJours = (planJourRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, date: r.date, valeur: Number(r.valeur), type: r.type }));
@@ -1910,7 +1902,7 @@ class Component extends DCLogic {
   async loadMepReleases() {
     try {
       const rows = await api.list('mep_releases', 'select=*&order=date.asc');
-      this.setState({ mepReleases: (rows || []).map(r => ({ id: r.id, name: r.name, date: r.date, team: r.team, url: r.url || '' })) });
+      this.setState({ mepReleases: (rows || []).map(r => ({ id: r.id, name: r.name, date: r.date, projet: r.projet, url: r.url || '' })) });
     } catch (e) {
       this.setState({ loadError: String(e.message || e) });
     }
@@ -1918,14 +1910,14 @@ class Component extends DCLogic {
   startEditMep(id) {
     const r = this.state.mepReleases.find(x => x.id === id);
     if (!r) return;
-    this.setState({ mepEditId: id, mepDraft: { name: r.name, date: mepDateInputValue(r.date), team: r.team, url: r.url || '' } });
+    this.setState({ mepEditId: id, mepDraft: { name: r.name, date: mepDateInputValue(r.date), projet: r.projet, url: r.url || '' } });
   }
   setMepDraft(k, v) { this.setState(s => ({ mepDraft: Object.assign({}, s.mepDraft, { [k]: v }) })); }
   cancelEditMep() { this.setState({ mepEditId: null, mepDraft: null }); }
   saveMep() {
     const d = this.state.mepDraft, id = this.state.mepEditId;
     if (!d || !d.name.trim() || !d.date) return;
-    const patch = { name: d.name.trim(), date: d.date, team: d.team, url: (d.url || '').trim() || null };
+    const patch = { name: d.name.trim(), date: d.date, projet: d.projet, url: (d.url || '').trim() || null };
     this.setState(s => ({ mepEditId: null, mepDraft: null, mepReleases: s.mepReleases.map(r => r.id !== id ? r : Object.assign({}, r, patch, { url: patch.url || '' })) }));
     api.update('mep_releases', 'id=eq.' + encodeURIComponent(id), patch).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
@@ -1936,13 +1928,13 @@ class Component extends DCLogic {
   async addMep() {
     const name = (this.state.mepNewName || '').trim();
     const date = this.state.mepNewDate;
-    const firstTeam = this.state.teams[0];
-    const team = this.state.mepNewTeam || (firstTeam ? firstTeam.name : '');
+    const firstProjet = this.state.planProjets[0];
+    const projet = this.state.mepNewTeam || (firstProjet ? firstProjet.nom : '');
     const url = (this.state.mepNewUrl || '').trim() || null;
-    if (!name || !date || !team) { this.setState({ mepNewError: true }); return; }
+    if (!name || !date || !projet) { this.setState({ mepNewError: true }); return; }
     this.setState({ mepNewName: '', mepNewDate: '', mepNewUrl: '', mepNewError: false });
     try {
-      await api.insert('mep_releases', { name, date, team, url });
+      await api.insert('mep_releases', { name, date, projet, url });
       await this.loadMepReleases();
     } catch (e) {
       this.setState({ loadError: String(e.message || e) });
@@ -1960,9 +1952,9 @@ class Component extends DCLogic {
         api.list('planning_repartition_taches', 'select=*&order=ordre.asc')
       ]);
       this.setState({
-        planProjets: (prRows || []).map(r => ({ id: r.id, equipe_id: String(r.equipe_id), nom: r.nom })),
+        planProjets: (prRows || []).map(r => ({ id: r.id, equipe_id: String(r.equipe_id), nom: r.nom, couleur: r.couleur })),
         planMembres: (mbRows || []).map(r => ({
-          id: r.id, equipe_id: String(r.equipe_id), projet_id: r.projet_id, nom: r.nom, role: r.role || '',
+          id: r.id, projet_id: r.projet_id, nom: r.nom, role: r.role || '',
           jours_travailles_client: r.jours_travailles_client === null || r.jours_travailles_client === undefined ? null : Number(r.jours_travailles_client)
         })),
         planJours: (jrRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, date: r.date, valeur: Number(r.valeur), type: r.type })),
@@ -2102,12 +2094,11 @@ class Component extends DCLogic {
   }
   planAddMembre() {
     const nom = (this.state.planNewMembreNom || '').trim();
-    const equipeId = this.state.planNewMembreEquipe;
-    if (!nom || !equipeId) return;
-    const role = (this.state.planNewMembreRole || '').trim() || null;
     const projetId = this.state.planNewMembreProjet ? Number(this.state.planNewMembreProjet) : null;
-    this.setState({ planNewMembreNom: '', planNewMembreRole: '', planMembreError: '' });
-    api.insert('planning_membres', { nom, role, equipe_id: Number(equipeId), projet_id: projetId }).then(() => this.loadPlanning())
+    if (!nom || !projetId) return;
+    const role = (this.state.planNewMembreRole || '').trim() || null;
+    this.setState({ planNewMembreNom: '', planNewMembreRole: '', planNewMembreProjet: '', planMembreError: '' });
+    api.insert('planning_membres', { nom, role, projet_id: projetId }).then(() => this.loadPlanning())
       .catch(e => this.setState({ planMembreError: String(e.message || e) }));
   }
   planDeleteMembre(id) {
@@ -2528,43 +2519,44 @@ class Component extends DCLogic {
         guard++;
       }
     }
-    const mepTable = st.teams.map(team => {
+    const mepTable = st.planProjets.map(projet => {
+      const color = projet.couleur || '#808A99';
       const cells = mepColumns.map(col => {
         const future = col.key > mepTodayKey;
         const entries = mepRows
-          .filter(r => r.team === team.name && mepMonthKey(r._d) === col.key)
+          .filter(r => r.projet === projet.nom && mepMonthKey(r._d) === col.key)
           .map(r => ({
             name: r.name,
             date: mepDateDisplay(r.date),
             url: r.url || '',
             hasUrl: !!r.url,
             noUrl: !r.url,
-            bg: future ? '#FFFFFF' : hexToRgba(team.dot, 0.14),
-            border: future ? ('1.5px dashed ' + team.dot) : '1px solid transparent',
-            color: team.dot
+            bg: future ? '#FFFFFF' : hexToRgba(color, 0.14),
+            border: future ? ('1.5px dashed ' + color) : '1px solid transparent',
+            color: color
           }));
         return { entries };
       });
-      return { key: team.id, label: team.name, color: team.dot, total: mepRows.filter(r => r.team === team.name).length, cells };
+      return { key: projet.id, label: projet.nom, color: color, total: mepRows.filter(r => r.projet === projet.nom).length, cells };
     });
     const mepColumnTotals = mepColumns.map(col => ({
       label: col.label,
       todayBg: col.isToday ? '#E5EFFC' : '#F8FAFC',
       todayFg: col.isToday ? '#003CC8' : '#808A99'
     }));
-    const mepTeamOptions = st.teams.map(t => ({ value: t.name, label: t.name }));
-    const mepTeamNamesLabel = st.teams.length ? st.teams.map(t => t.name).join(', ') : 'aucune équipe';
+    const mepTeamOptions = st.planProjets.map(p => ({ value: p.nom, label: p.nom }));
+    const mepTeamNamesLabel = st.planProjets.length ? st.planProjets.map(p => p.nom).join(', ') : 'aucun projet';
     const mepList = st.mepReleases.slice().sort((a, b) => (a.date < b.date ? 1 : -1)).map(r => {
       const editing = st.mepEditId === r.id;
-      const team = st.teams.find(t => t.name === r.team) || { dot: '#808A99' };
+      const projet = st.planProjets.find(p => p.nom === r.projet) || { couleur: '#808A99' };
       const d = st.mepDraft || {};
       return {
-        id: r.id, name: r.name, date: mepDateDisplay(r.date), team: r.team, teamColor: team.dot,
+        id: r.id, name: r.name, date: mepDateDisplay(r.date), team: r.projet, teamColor: projet.couleur || '#808A99',
         url: r.url || '', hasUrl: !!r.url, noUrl: !r.url,
         editing, notEditing: !editing,
         draftName: editing ? d.name : r.name,
         draftDate: editing ? d.date : mepDateInputValue(r.date),
-        draftTeam: editing ? d.team : r.team,
+        draftTeam: editing ? d.projet : r.projet,
         draftUrl: editing ? d.url : (r.url || ''),
         onEdit: () => this.startEditMep(r.id),
         onDelete: () => this.deleteMep(r.id),
@@ -2572,7 +2564,7 @@ class Component extends DCLogic {
         onCancel: () => this.cancelEditMep(),
         onDraftName: (e) => this.setMepDraft('name', e.target.value),
         onDraftDate: (e) => this.setMepDraft('date', e.target.value),
-        onDraftTeam: (e) => this.setMepDraft('team', e.target.value),
+        onDraftTeam: (e) => this.setMepDraft('projet', e.target.value),
         onDraftUrl: (e) => this.setMepDraft('url', e.target.value)
       };
     });
@@ -2603,10 +2595,17 @@ class Component extends DCLogic {
     st.planJours.forEach(j => { planSaisieByKey[j.membre_id + '|' + j.date] = j; });
     const planEquipeNomById = {};
     st.teams.forEach(t => { planEquipeNomById[t.id] = t.name; });
+    const planProjetById = {};
+    st.planProjets.forEach(p => { planProjetById[p.id] = p; });
+    const planEquipeIdByMembreId = {};
+    st.planMembres.forEach(m => {
+      const projet = m.projet_id ? planProjetById[m.projet_id] : null;
+      planEquipeIdByMembreId[m.id] = projet ? String(projet.equipe_id) : null;
+    });
 
     const planEquipeOptions = st.teams.map(t => ({ value: t.id, label: t.name }));
     const planEquipeFilterOptions = [{ value: 'toutes', label: 'Toutes les équipes' }].concat(planEquipeOptions);
-    const planMembresFiltres = st.planMembres.filter(m => st.planEquipeFiltre === 'toutes' || String(m.equipe_id) === String(st.planEquipeFiltre));
+    const planMembresFiltres = st.planMembres.filter(m => st.planEquipeFiltre === 'toutes' || planEquipeIdByMembreId[m.id] === String(st.planEquipeFiltre));
 
     const planColonnes = planJoursDuMois(st.planAnnee, st.planMois);
     const planMoisLabel = PLAN_MOIS_FR[st.planMois] + ' ' + st.planAnnee;
@@ -2642,7 +2641,7 @@ class Component extends DCLogic {
           onKeyDownCell: (e) => this.planCellKeyDown(e, m.id, c.date, special)
         };
       });
-      return { id: m.id, nom: m.nom, equipeNom: planEquipeNomById[m.equipe_id] || '—', cells };
+      return { id: m.id, nom: m.nom, equipeNom: planEquipeNomById[planEquipeIdByMembreId[m.id]] || '—', cells };
     });
     const planLegend = PLAN_TYPES_ABSENCE.map(t => ({ label: t.label, couleur: t.couleur, onClick: () => this.planAppliquerType(t.value) }));
 
@@ -2756,15 +2755,14 @@ class Component extends DCLogic {
     const planAdminProjets = st.planProjets.map(p => ({ id: p.id, nom: p.nom, equipeNom: planEquipeNomById[p.equipe_id] || '—', onDelete: () => this.planDeleteProjet(p.id) }));
     const planAdminMembres = st.planMembres.map(m => {
       const projet = m.projet_id ? st.planProjets.find(p => p.id === m.projet_id) : null;
+      const equipeNom = projet ? (planEquipeNomById[projet.equipe_id] || '—') : '—';
       return {
         id: m.id, nom: m.nom,
-        meta: [planEquipeNomById[m.equipe_id] || '—', projet ? projet.nom : null, m.role || null].filter(Boolean).join(' · '),
+        meta: [equipeNom, projet ? projet.nom : null, m.role || null].filter(Boolean).join(' · '),
         onDelete: () => this.planDeleteMembre(m.id)
       };
     });
-    const planNewMembreProjetOptions = [{ value: '', label: 'Aucun' }].concat(
-      st.planProjets.filter(p => !st.planNewMembreEquipe || String(p.equipe_id) === String(st.planNewMembreEquipe)).map(p => ({ value: String(p.id), label: p.nom }))
-    );
+    const planNewMembreProjetOptions = st.planProjets.map(p => ({ value: String(p.id), label: p.nom }));
 
     // ---- Pages "à venir" (nouvelle IA, contenu pas encore développé) ----
     const stubPages = {
@@ -2822,7 +2820,7 @@ class Component extends DCLogic {
       const projet = m.projet_id ? st.planProjets.find(p => p.id === m.projet_id) : null;
       return {
         nom: m.nom, role: m.role || '',
-        equipeNom: planEquipeNomById[m.equipe_id] || '—',
+        equipeNom: projet ? (planEquipeNomById[projet.equipe_id] || '—') : '—',
         projetNom: projet ? projet.nom : '—'
       };
     });
@@ -2870,11 +2868,10 @@ class Component extends DCLogic {
       onPlanNewProjetEquipe: (e) => this.setState({ planNewProjetEquipe: e.target.value }),
       onPlanAddProjet: () => this.planAddProjet(),
       planNewMembreNom: st.planNewMembreNom, planNewMembreRole: st.planNewMembreRole, planMembreError: st.planMembreError,
-      planNewMembreEquipe: st.planNewMembreEquipe || '', planNewMembreProjet: st.planNewMembreProjet || '',
+      planNewMembreProjet: st.planNewMembreProjet || '',
       planNewMembreProjetOptions,
       onPlanNewMembreNom: (e) => this.setState({ planNewMembreNom: e.target.value, planMembreError: '' }),
       onPlanNewMembreRole: (e) => this.setState({ planNewMembreRole: e.target.value }),
-      onPlanNewMembreEquipe: (e) => this.setState({ planNewMembreEquipe: e.target.value, planNewMembreProjet: '' }),
       onPlanNewMembreProjet: (e) => this.setState({ planNewMembreProjet: e.target.value }),
       onPlanAddMembre: () => this.planAddMembre(),
       teamTabs, teamStats, teamProjects, sel, statusOptions, query: st.query,
@@ -2958,7 +2955,7 @@ class Component extends DCLogic {
         : (isAdmin
         ? 'Gérez les champs du formulaire de demande. Les modifications s\u2019appliquent immédiatement à la navigation, au dashboard et à la saisie.'
         : (isMep
-        ? 'Les mises en production des équipes (' + mepTeamNamesLabel + '), avec leur nom et leur date.'
+        ? 'Les mises en production des projets (' + mepTeamNamesLabel + '), avec leur nom et leur date.'
         : (isRequests
         ? 'Toutes les demandes reçues des autres services, leur priorité, l\u2019équipe pressentie et leur état d\u2019arbitrage.'
         : (isDashboard

@@ -58,19 +58,19 @@ const TABLES = {
   },
   mep_releases: {
     pk: 'id',
-    columns: ['name', 'date', 'team', 'url'],
+    columns: ['name', 'date', 'projet', 'url'],
     jsonb: [],
     order: 'date ASC'
   },
   planning_projets: {
     pk: 'id',
-    columns: ['equipe_id', 'nom'],
+    columns: ['equipe_id', 'nom', 'couleur'],
     jsonb: [],
     order: 'nom ASC'
   },
   planning_membres: {
     pk: 'id',
-    columns: ['equipe_id', 'projet_id', 'nom', 'role', 'jours_travailles_client'],
+    columns: ['projet_id', 'nom', 'role', 'jours_travailles_client'],
     jsonb: [],
     order: 'nom ASC'
   },
