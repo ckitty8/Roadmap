@@ -1498,6 +1498,7 @@ const PLAN_TYPES_ABSENCE = [
   { value: 'conge_previsionnel', label: 'Congé non validé', couleur: '#F6E7D4' }
 ];
 function planIso(annee, mois, jour) { return annee + '-' + String(mois + 1).padStart(2, '0') + '-' + String(jour).padStart(2, '0'); }
+function planNormDate(v) { return v == null ? v : String(v).slice(0, 10); }
 function planJoursDuMois(annee, mois) {
   const total = new Date(annee, mois + 1, 0).getDate();
   const out = [];
@@ -1641,9 +1642,9 @@ class Component extends DCLogic {
         id: r.id, projet_id: r.projet_id, nom: r.nom, role: r.role || '',
         jours_travailles_client: r.jours_travailles_client === null || r.jours_travailles_client === undefined ? null : Number(r.jours_travailles_client)
       }));
-      const planJours = (planJourRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, date: r.date, valeur: Number(r.valeur), type: r.type }));
-      const planJoursSpeciaux = (planJourSpecialRows || []).map(r => ({ id: r.id, date: r.date, libelle: r.libelle, type: r.type }));
-      const planSprints = (planSprintRows || []).map(r => ({ id: r.id, nom: r.nom, date_debut: r.date_debut, date_fin: r.date_fin, ordre: r.ordre }));
+      const planJours = (planJourRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, date: planNormDate(r.date), valeur: Number(r.valeur), type: r.type }));
+      const planJoursSpeciaux = (planJourSpecialRows || []).map(r => ({ id: r.id, date: planNormDate(r.date), libelle: r.libelle, type: r.type }));
+      const planSprints = (planSprintRows || []).map(r => ({ id: r.id, nom: r.nom, date_debut: planNormDate(r.date_debut), date_fin: planNormDate(r.date_fin), ordre: r.ordre }));
       const planRepartition = (planRepartitionRows || []).map(r => ({ id: r.id, nom: r.nom, pourcentage: Number(r.pourcentage), ordre: r.ordre }));
       this.setState(s => ({
         teams, projects, requests, fields, referentiels, mepReleases, loading: false, loadError: null,
@@ -1953,9 +1954,9 @@ class Component extends DCLogic {
           id: r.id, projet_id: r.projet_id, nom: r.nom, role: r.role || '',
           jours_travailles_client: r.jours_travailles_client === null || r.jours_travailles_client === undefined ? null : Number(r.jours_travailles_client)
         })),
-        planJours: (jrRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, date: r.date, valeur: Number(r.valeur), type: r.type })),
-        planJoursSpeciaux: (jsRows || []).map(r => ({ id: r.id, date: r.date, libelle: r.libelle, type: r.type })),
-        planSprints: (spRows || []).map(r => ({ id: r.id, nom: r.nom, date_debut: r.date_debut, date_fin: r.date_fin, ordre: r.ordre })),
+        planJours: (jrRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, date: planNormDate(r.date), valeur: Number(r.valeur), type: r.type })),
+        planJoursSpeciaux: (jsRows || []).map(r => ({ id: r.id, date: planNormDate(r.date), libelle: r.libelle, type: r.type })),
+        planSprints: (spRows || []).map(r => ({ id: r.id, nom: r.nom, date_debut: planNormDate(r.date_debut), date_fin: planNormDate(r.date_fin), ordre: r.ordre })),
         planRepartition: (rtRows || []).map(r => ({ id: r.id, nom: r.nom, pourcentage: Number(r.pourcentage), ordre: r.ordre }))
       });
     } catch (e) {
