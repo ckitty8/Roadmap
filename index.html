@@ -630,14 +630,27 @@
             <div style="display:flex;flex-direction:column;gap:18px">
 
               <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
-                <div style="padding:15px 18px;border-bottom:1px solid #EAEEF3">
-                  <h2 style="margin:0;font-size:14.5px;font-weight:700">Projets</h2>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;border-bottom:1px solid #EAEEF3;flex-wrap:wrap">
+                  <h2 style="margin:0;font-size:14.5px;font-weight:700">Équipes &amp; projets</h2>
+                  <input value="{{ planRessourcesSearch }}" onChange="{{ onPlanRessourcesSearch }}" placeholder="Rechercher un projet ou une équipe…" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;width:220px;max-width:100%" />
                 </div>
-                <sc-for list="{{ planAdminProjets }}" as="p" hint-placeholder-count="2">
-                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px;border-bottom:1px solid #EDF0F5">
-                    <span style="font-size:13px">{{ p.nom }} <span style="color:#808A99">· {{ p.equipeNom }}</span></span>
-                    <button onClick="{{ p.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid #EDD8DA;color:#B3383F">Supprimer</button>
-                  </div>
+                <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1fr) 110px auto;gap:12px;padding:9px 18px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#808A99;border-bottom:1px solid #EAEEF3;background:#F8FAFC">
+                  <div>Nom</div><div>Ressources</div><div></div>
+                </div>
+                <sc-for list="{{ planRessourcesTree }}" as="row" hint-placeholder-count="6">
+                  <sc-if value="{{ row.isGroup }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;align-items:center;gap:9px;padding:10px 18px;border-bottom:1px solid #EDF0F5;background:#F8FAFC">
+                      <span style="width:8px;height:8px;border-radius:50%;background:{{ row.dot }};flex:none"></span>
+                      <span style="font-size:12.5px;font-weight:700">{{ row.nom }}</span>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ row.isGroupNot }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px auto;gap:12px;align-items:center;padding:10px 18px 10px 34px;border-bottom:1px solid #EDF0F5">
+                      <span style="font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ row.nom }}</span>
+                      <span style="font-size:12.5px;color:#5B6472">{{ row.ressources }}</span>
+                      <button onClick="{{ row.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid #EDD8DA;color:#B3383F;justify-self:end">Supprimer</button>
+                    </div>
+                  </sc-if>
                 </sc-for>
                 <div style="display:flex;gap:10px;align-items:end;padding:14px 18px;background:#F8FAFC;flex-wrap:wrap">
                   <label style="display:flex;flex-direction:column;gap:5px;flex:1 1 180px">
@@ -653,7 +666,7 @@
                       </sc-for>
                     </select>
                   </label>
-                  <button onClick="{{ onPlanAddProjet }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#003CC8;color:#FFFFFF">Ajouter</button>
+                  <button onClick="{{ onPlanAddProjet }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#003CC8;color:#FFFFFF">+ Ajouter un projet</button>
                 </div>
                 <sc-if value="{{ planProjetError }}" hint-placeholder-val="{{ false }}">
                   <div style="padding:0 18px 14px;background:#F8FAFC;font-size:12px;color:#B3383F">{{ planProjetError }}</div>
@@ -662,7 +675,10 @@
 
               <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
                 <div style="padding:15px 18px;border-bottom:1px solid #EAEEF3">
-                  <h2 style="margin:0;font-size:14.5px;font-weight:700">Personnes</h2>
+                  <h2 style="margin:0;font-size:14.5px;font-weight:700">Ressources</h2>
+                </div>
+                <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:9px 18px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#808A99;border-bottom:1px solid #EAEEF3;background:#F8FAFC">
+                  <div>Nom</div><div></div>
                 </div>
                 <sc-for list="{{ planAdminMembres }}" as="m" hint-placeholder-count="5">
                   <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px;border-bottom:1px solid #EDF0F5">
@@ -1585,7 +1601,7 @@ class Component extends DCLogic {
             planAnnee: 2026, planMois: 0, planEquipeFiltre: 'toutes', planCellule: null,
             planEditCell: null, planEditDraft: '',
             planNewProjetNom: '', planNewProjetEquipe: '', planProjetError: '',
-            planNewMembreNom: '', planNewMembreRole: '', planNewMembreProjet: '', planMembreError: '',
+            planNewMembreNom: '', planNewMembreRole: '', planNewMembreProjet: '', planMembreError: '', planRessourcesSearch: '',
             planSprintEditId: null, planSprintDraft: null,
             monProjRoadmapTab: 'mep', monAdminTab: 'proj', roRessourcesTab: 'calendrier', roProjRoadmapTab: 'mep',
             loading: true, loadError: null };
@@ -2762,7 +2778,31 @@ class Component extends DCLogic {
     const planRepartitionTotalPct = planFormatNombre(planRepartitionSorted.reduce((s, t) => s + t.pourcentage, 0));
 
     // ---- Projets & personnes ----
-    const planAdminProjets = st.planProjets.map(p => ({ id: p.id, nom: p.nom, equipeNom: planEquipeNomById[p.equipe_id] || '—', onDelete: () => this.planDeleteProjet(p.id) }));
+    const planRessourcesSearch = (st.planRessourcesSearch || '').trim().toLowerCase();
+    const planMembresCountByProjet = {};
+    st.planMembres.forEach(m => {
+      const key = String(m.projet_id);
+      planMembresCountByProjet[key] = (planMembresCountByProjet[key] || 0) + 1;
+    });
+    const planProjetsByEquipe = {};
+    st.planProjets.forEach(p => {
+      const key = String(p.equipe_id);
+      (planProjetsByEquipe[key] = planProjetsByEquipe[key] || []).push(p);
+    });
+    const planRessourcesTree = [];
+    st.teams.slice().sort((a, b) => a.name.localeCompare(b.name)).forEach(t => {
+      const projets = (planProjetsByEquipe[String(t.id)] || []).slice().sort((a, b) => a.nom.localeCompare(b.nom));
+      const visibles = projets.filter(p => !planRessourcesSearch || p.nom.toLowerCase().includes(planRessourcesSearch) || t.name.toLowerCase().includes(planRessourcesSearch));
+      if (!visibles.length) return;
+      planRessourcesTree.push({ isGroup: true, isGroupNot: false, nom: t.name, dot: t.dot });
+      visibles.forEach(p => {
+        planRessourcesTree.push({
+          isGroup: false, isGroupNot: true, id: p.id, nom: p.nom,
+          ressources: planMembresCountByProjet[String(p.id)] || 0,
+          onDelete: () => this.planDeleteProjet(p.id)
+        });
+      });
+    });
     const planAdminMembres = st.planMembres.map(m => {
       const projet = m.projet_id ? st.planProjets.find(p => p.id === m.projet_id) : null;
       const equipeNom = projet ? (planEquipeNomById[projet.equipe_id] || '—') : '—';
@@ -2858,7 +2898,9 @@ class Component extends DCLogic {
       planMoisCourtsList, planCongesRows, planCongesTotal,
       planSprintCols, planCapaciteRows, planCapaciteTotalRow, planRepartitionRows, planRepartitionTotalPct,
       onPlanAjouterSprint: () => this.planAjouterSprint(),
-      planAdminProjets, planAdminMembres,
+      planRessourcesTree, planAdminMembres,
+      planRessourcesSearch: st.planRessourcesSearch || '',
+      onPlanRessourcesSearch: (e) => this.setState({ planRessourcesSearch: e.target.value }),
       planNewProjetNom: st.planNewProjetNom, planProjetError: st.planProjetError,
       planNewProjetEquipe: st.planNewProjetEquipe || '', planEquipeOptions,
       onPlanNewProjetNom: (e) => this.setState({ planNewProjetNom: e.target.value, planProjetError: '' }),
