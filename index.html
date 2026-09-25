@@ -862,60 +862,86 @@
       <sc-if value="{{ isRoRessources }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:22px">
 
-          <div>
-            <h2 style="margin:0 0 4px;font-size:15px;font-weight:700">Calendrier des congés</h2>
-            <p style="margin:0;font-size:12.5px;color:#5B6472">Lecture seule — pour modifier, direction Mon dashboard &gt; Gestion des ressources.</p>
+          <div style="display:flex;gap:8px">
+            <sc-for list="{{ roRessourcesTabs }}" as="t" hint-placeholder-count="2">
+              <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
+            </sc-for>
           </div>
 
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px">
-            <div style="display:flex;align-items:center;gap:1px;border:1px solid #E1E6ED;border-radius:8px;background:#FFFFFF;padding:4px">
-              <button onClick="{{ onPlanPrevMonth }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;color:#003CC8">‹</button>
-              <span style="min-width:130px;text-align:center;font-size:13px;font-weight:600">{{ planMoisLabel }}</span>
-              <button onClick="{{ onPlanNextMonth }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;color:#003CC8">›</button>
-            </div>
-            <select value="{{ planEquipeFiltre }}" onChange="{{ onPlanEquipeFiltre }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
-              <sc-for list="{{ planEquipeFilterOptions }}" as="o" hint-placeholder-count="2">
-                <option value="{{ o.value }}">{{ o.label }}</option>
-              </sc-for>
-            </select>
-          </div>
+          <sc-if value="{{ isRoRessourcesCalendrier }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:18px">
+              <p style="margin:0;font-size:12.5px;color:#5B6472">Lecture seule — pour modifier, direction Mon dashboard &gt; Gestion des ressources.</p>
 
-          <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:auto">
-            <table style="border-collapse:collapse;font-size:11.5px;width:100%">
-              <thead>
-                <tr>
-                  <th style="position:sticky;left:0;z-index:2;background:#F8FAFC;min-width:160px;text-align:left;padding:8px 12px;border-bottom:1px solid #E1E6ED;border-right:1px solid #E1E6ED">Personne</th>
-                  <sc-for list="{{ planGrilleHeaderCols }}" as="c" hint-placeholder-count="28">
-                    <th title="{{ c.titre }}" style="width:30px;padding:5px 0;text-align:center;font-weight:600;border-bottom:1px solid #E1E6ED;border-right:1px solid #EDF0F5;background:{{ c.bg }};color:{{ c.fg }}">
-                      <div style="font-family:monospace">{{ c.jour }}</div>
-                      <div style="font-size:9.5px;color:#808A99">{{ c.dow }}</div>
-                    </th>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+                <div style="display:flex;align-items:center;gap:1px;border:1px solid #E1E6ED;border-radius:8px;background:#FFFFFF;padding:4px">
+                  <button onClick="{{ onPlanPrevMonth }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;color:#003CC8">‹</button>
+                  <span style="min-width:130px;text-align:center;font-size:13px;font-weight:600">{{ planMoisLabel }}</span>
+                  <button onClick="{{ onPlanNextMonth }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;color:#003CC8">›</button>
+                </div>
+                <select value="{{ planEquipeFiltre }}" onChange="{{ onPlanEquipeFiltre }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
+                  <sc-for list="{{ planEquipeFilterOptions }}" as="o" hint-placeholder-count="2">
+                    <option value="{{ o.value }}">{{ o.label }}</option>
                   </sc-for>
-                </tr>
-              </thead>
-              <tbody>
-                <sc-for list="{{ planGrilleRows }}" as="r" hint-placeholder-count="5">
-                  <tr>
-                    <td style="position:sticky;left:0;z-index:1;background:#FFFFFF;padding:7px 12px;border-bottom:1px solid #EDF0F5;border-right:1px solid #E1E6ED">
-                      <div style="font-weight:600">{{ r.nom }}</div>
-                      <div style="font-size:10.5px;color:#808A99">{{ r.equipeNom }}</div>
-                    </td>
-                    <sc-for list="{{ r.cells }}" as="cell" hint-placeholder-count="28">
-                      <td title="{{ cell.titre }}" style="padding:0;text-align:center;border-bottom:1px solid #EDF0F5;border-right:1px solid #EDF0F5;background:{{ cell.bg }}">
-                        <div style="width:30px;height:26px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:11px;font-weight:600">{{ cell.displayText }}</div>
-                      </td>
-                    </sc-for>
-                  </tr>
-                </sc-for>
-              </tbody>
-            </table>
-          </section>
+                </select>
+              </div>
 
-          <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
-            <div style="display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#EEF3FA;color:#003CC8">Contenu à venir</div>
-            <h2 style="margin:14px 0 6px;font-size:16px;font-weight:700">Liste des ressources par équipe</h2>
-            <p style="margin:0;font-size:13px;color:#5B6472">Liste des ressources par équipe, en lecture seule.</p>
-          </section>
+              <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:auto">
+                <table style="border-collapse:collapse;font-size:11.5px;width:100%">
+                  <thead>
+                    <tr>
+                      <th style="position:sticky;left:0;z-index:2;background:#F8FAFC;min-width:160px;text-align:left;padding:8px 12px;border-bottom:1px solid #E1E6ED;border-right:1px solid #E1E6ED">Personne</th>
+                      <sc-for list="{{ planGrilleHeaderCols }}" as="c" hint-placeholder-count="28">
+                        <th title="{{ c.titre }}" style="width:30px;padding:5px 0;text-align:center;font-weight:600;border-bottom:1px solid #E1E6ED;border-right:1px solid #EDF0F5;background:{{ c.bg }};color:{{ c.fg }}">
+                          <div style="font-family:monospace">{{ c.jour }}</div>
+                          <div style="font-size:9.5px;color:#808A99">{{ c.dow }}</div>
+                        </th>
+                      </sc-for>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ planGrilleRows }}" as="r" hint-placeholder-count="5">
+                      <tr>
+                        <td style="position:sticky;left:0;z-index:1;background:#FFFFFF;padding:7px 12px;border-bottom:1px solid #EDF0F5;border-right:1px solid #E1E6ED">
+                          <div style="font-weight:600">{{ r.nom }}</div>
+                          <div style="font-size:10.5px;color:#808A99">{{ r.equipeNom }}</div>
+                        </td>
+                        <sc-for list="{{ r.cells }}" as="cell" hint-placeholder-count="28">
+                          <td title="{{ cell.titre }}" style="padding:0;text-align:center;border-bottom:1px solid #EDF0F5;border-right:1px solid #EDF0F5;background:{{ cell.bg }}">
+                            <div style="width:30px;height:26px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:11px;font-weight:600">{{ cell.displayText }}</div>
+                          </td>
+                        </sc-for>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </section>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isRoRessourcesListe }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:18px">
+              <p style="margin:0;font-size:12.5px;color:#5B6472">Lecture seule — pour ajouter, modifier ou supprimer une ressource, direction Mon dashboard &gt; Gestion des ressources.</p>
+
+              <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
+                <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1.4fr) 1fr 1fr 1fr;gap:12px;padding:11px 18px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#808A99;border-bottom:1px solid #EAEEF3;background:#F8FAFC">
+                  <div>Nom</div><div>Équipe</div><div>Projet</div><div>Statut</div>
+                </div>
+                <sc-for list="{{ roRessourcesRows }}" as="r" hint-placeholder-count="5">
+                  <div style="display:grid;grid-template-columns:minmax(0,1.4fr) 1fr 1fr 1fr;gap:12px;align-items:center;padding:11px 18px;border-bottom:1px solid #EDF0F5">
+                    <div>
+                      <div style="font-size:13px;font-weight:600">{{ r.nom }}</div>
+                      <sc-if value="{{ r.role }}" hint-placeholder-val="{{ false }}">
+                        <div style="font-size:11px;color:#808A99">{{ r.role }}</div>
+                      </sc-if>
+                    </div>
+                    <div style="font-size:12.5px;color:#5B6472">{{ r.equipeNom }}</div>
+                    <div style="font-size:12.5px;color:#5B6472">{{ r.projetNom }}</div>
+                    <div><span style="display:inline-flex;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:#E7F3ED;color:#2E7D5B">Active</span></div>
+                  </div>
+                </sc-for>
+              </section>
+            </div>
+          </sc-if>
 
         </div>
       </sc-if>
@@ -1568,7 +1594,7 @@ class Component extends DCLogic {
             planNewProjetNom: '', planNewProjetEquipe: '', planProjetError: '',
             planNewMembreNom: '', planNewMembreRole: '', planNewMembreEquipe: '', planNewMembreProjet: '', planMembreError: '',
             planSprintEditId: null, planSprintDraft: null,
-            monRoadmapTab: 'cdo', monAdminTab: 'proj',
+            monRoadmapTab: 'cdo', monAdminTab: 'proj', roRessourcesTab: 'calendrier',
             loading: true, loadError: null };
 
   componentDidMount() {
@@ -2771,6 +2797,27 @@ class Component extends DCLogic {
     const isMonAdminDash = st.monAdminTab === 'dash';
     const isMonAdminTips = st.monAdminTab === 'tips';
 
+    const roRessourcesTabs = [
+      { key: 'calendrier', label: 'Calendrier des congés' },
+      { key: 'liste', label: 'Les ressources' }
+    ].map(t => ({
+      label: t.label,
+      bg: st.roRessourcesTab === t.key ? '#003CC8' : '#FFFFFF',
+      fg: st.roRessourcesTab === t.key ? '#FFFFFF' : '#003CC8',
+      border: st.roRessourcesTab === t.key ? '#003CC8' : '#D7DEE7',
+      onClick: () => this.setState({ roRessourcesTab: t.key })
+    }));
+    const isRoRessourcesCalendrier = st.roRessourcesTab === 'calendrier';
+    const isRoRessourcesListe = st.roRessourcesTab === 'liste';
+    const roRessourcesRows = st.planMembres.map(m => {
+      const projet = m.projet_id ? st.planProjets.find(p => p.id === m.projet_id) : null;
+      return {
+        nom: m.nom, role: m.role || '',
+        equipeNom: planEquipeNomById[m.equipe_id] || '—',
+        projetNom: projet ? projet.nom : '—'
+      };
+    });
+
     return {
       hasLoadError: !!st.loadError, loadError: st.loadError || '',
       onDismissLoadError: () => this.setState({ loadError: null }),
@@ -2782,6 +2829,7 @@ class Component extends DCLogic {
       stubPage,
       monRoadmapTabs, isMonRoadmapCdo, isMonRoadmapIa,
       monAdminTabs, isMonAdminRes, isMonAdminDash, isMonAdminTips,
+      roRessourcesTabs, isRoRessourcesCalendrier, isRoRessourcesListe, roRessourcesRows,
       onPlanningNav, planningNavBg, planningNavFg, planningNavWeight,
       onPlanningAdminNav, planningAdminNavBg, planningAdminNavFg,
       planTabs, isPlanGrille, isPlanConges, isPlanCapacite, isPlanEquipes, isPlanEquipesNot,
