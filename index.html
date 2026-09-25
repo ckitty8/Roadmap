@@ -77,10 +77,7 @@
     </div>
 
     <div style="border-top:1px solid #0A4A94;padding-top:14px;display:flex;flex-direction:column;gap:2px">
-      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 8px">Autres</div>
-      <button onClick="{{ navRequests.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navRequests.weight }};background:{{ navRequests.bg }};color:{{ navRequests.fg }}">
-        <span style="font-size:12px;opacity:.85">☰</span><span>Demandes</span>
-      </button>
+      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 8px">Vue par équipe</div>
       <sc-for list="{{ teamNav }}" as="t" hint-placeholder-count="4">
         <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:9px;font-size:13px;background:{{ t.bg }};color:{{ t.fg }}">
           <span style="display:flex;align-items:center;gap:9px">
@@ -277,177 +274,6 @@
               </article>
             </sc-for>
           </div>
-        </div>
-      </sc-if>
-
-      <sc-if value="{{ isRequests }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;gap:22px">
-
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px">
-            <sc-for list="{{ reqStats }}" as="s" hint-placeholder-count="4">
-              <div style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:15px 17px">
-                <div style="font-size:11.5px;letter-spacing:0.05em;text-transform:uppercase;color:#808A99">{{ s.label }}</div>
-                <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em;margin-top:7px;color:{{ s.color }}">{{ s.value }}</div>
-                <div style="font-size:11.5px;color:#5B6472;margin-top:4px">{{ s.hint }}</div>
-              </div>
-            </sc-for>
-          </div>
-
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
-            <h2 style="margin:0;font-size:14.5px;font-weight:700">Nouvelle demande</h2>
-            <button onClick="{{ toggleForm }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;padding:8px 14px;border-radius:9px;font-size:12.5px;font-weight:600;border:1px solid {{ formToggleBorder }};background:{{ formToggleBg }};color:{{ formToggleFg }}">{{ formToggleLabel }}</button>
-          </div>
-
-          <sc-if value="{{ formOpen }}" hint-placeholder-val="{{ false }}">
-            <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:16px">
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px">
-                <sc-for list="{{ formControls }}" as="c" hint-placeholder-count="6">
-                  <label style="display:flex;flex-direction:column;gap:6px;grid-column:{{ c.wide }}">
-                    <span style="font-size:11.5px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#5B6472">{{ c.label }} <span style="color:#B3383F">{{ c.required }}</span></span>
-                    <sc-if value="{{ c.isText }}" hint-placeholder-val="{{ true }}">
-                      <input value="{{ c.value }}" onChange="{{ c.onChange }}" placeholder="{{ c.placeholder }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF" />
-                    </sc-if>
-                    <sc-if value="{{ c.isNumber }}" hint-placeholder-val="{{ false }}">
-                      <input type="number" value="{{ c.value }}" onChange="{{ c.onChange }}" placeholder="{{ c.placeholder }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF" />
-                    </sc-if>
-                    <sc-if value="{{ c.isDate }}" hint-placeholder-val="{{ false }}">
-                      <input type="date" value="{{ c.value }}" onChange="{{ c.onChange }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF" />
-                    </sc-if>
-                    <sc-if value="{{ c.isSelect }}" hint-placeholder-val="{{ false }}">
-                      <select value="{{ c.value }}" onChange="{{ c.onChange }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF;cursor:pointer">
-                        <sc-for list="{{ c.options }}" as="o" hint-placeholder-count="3">
-                          <option value="{{ o.value }}">{{ o.label }}</option>
-                        </sc-for>
-                      </select>
-                    </sc-if>
-                    <sc-if value="{{ c.isTextarea }}" hint-placeholder-val="{{ false }}">
-                      <textarea value="{{ c.value }}" onChange="{{ c.onChange }}" rows="3" placeholder="{{ c.placeholder }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;line-height:1.5;color:#14181F;outline:none;resize:vertical;background:#FFFFFF"></textarea>
-                    </sc-if>
-                    <span style="font-size:11px;color:#808A99">{{ c.help }}</span>
-                  </label>
-                </sc-for>
-              </div>
-              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-                <button onClick="{{ onSubmitRequest }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;background:#003CC8;color:#FFFFFF" style-hover="background:#002E8A">Enregistrer la demande</button>
-                <sc-if value="{{ formError }}" hint-placeholder-val="{{ false }}">
-                  <span style="font-size:12.5px;color:#B3383F">{{ formErrorText }}</span>
-                </sc-if>
-              </div>
-            </section>
-          </sc-if>
-
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <sc-for list="{{ reqFilters }}" as="f" hint-placeholder-count="5">
-                <button onClick="{{ f.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;white-space:nowrap;gap:7px;padding:8px 13px;border-radius:9px;font-size:12.5px;font-weight:600;border:1px solid {{ f.border }};background:{{ f.bg }};color:{{ f.fg }}">
-                  <span>{{ f.label }}</span>
-                  <span style="font-size:11px;opacity:.65">{{ f.count }}</span>
-                </button>
-              </sc-for>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-              <div style="display:inline-flex;border:1px solid #D7DEE7;border-radius:9px;overflow:hidden">
-                <button onClick="{{ onSetReqViewListe }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:7px 12px;font-size:12px;font-weight:600;background:{{ reqViewIsListe ? '#003CC8' : '#FFFFFF' }};color:{{ reqViewIsListe ? '#FFFFFF' : '#003CC8' }}">Liste</button>
-                <button onClick="{{ onSetReqViewTableau }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:7px 12px;font-size:12px;font-weight:600;background:{{ reqViewIsTableau ? '#003CC8' : '#FFFFFF' }};color:{{ reqViewIsTableau ? '#FFFFFF' : '#003CC8' }}">Tableau (colonnes A à AB)</button>
-              </div>
-              <input value="{{ reqQuery }}" onChange="{{ onReqQuery }}" placeholder="Rechercher une demande…" style="border:1px solid #E1E6ED;border-radius:8px;padding:8px 11px;font-size:12.5px;font-family:inherit;color:#14181F;outline:none;width:230px;max-width:100%;box-sizing:border-box;background:#FFFFFF" />
-            </div>
-          </div>
-
-          <sc-if value="{{ reqViewIsTableau }}" hint-placeholder-val="{{ false }}">
-            <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:auto;max-height:75vh">
-              <table style="border-collapse:collapse;width:max-content;min-width:100%;font-size:11.5px">
-                <thead>
-                  <tr>
-                    <th style="position:sticky;left:0;top:0;z-index:3;text-align:left;white-space:nowrap;padding:9px 12px;background:#F8FAFC;border-bottom:1px solid #EAEEF3;border-right:1px solid #EAEEF3;font-size:10.5px;letter-spacing:0.05em;text-transform:uppercase;color:#808A99">ID</th>
-                    <sc-for list="{{ tableColumns }}" as="c" hint-placeholder-count="28">
-                      <th style="position:sticky;top:0;z-index:2;text-align:left;white-space:nowrap;padding:9px 12px;background:#F8FAFC;border-bottom:1px solid #EAEEF3;font-size:10.5px;letter-spacing:0.05em;text-transform:uppercase;color:#808A99">{{ c.label }}</th>
-                    </sc-for>
-                  </tr>
-                </thead>
-                <tbody>
-                  <sc-for list="{{ tableRows }}" as="r" hint-placeholder-count="8">
-                    <tr>
-                      <td style="position:sticky;left:0;z-index:1;white-space:nowrap;padding:8px 12px;background:#FFFFFF;border-bottom:1px solid #EDF0F5;border-right:1px solid #EAEEF3;font-variant-numeric:tabular-nums;color:#8A93A6">{{ r.id }}</td>
-                      <sc-for list="{{ r.cells }}" as="cell" hint-placeholder-count="28">
-                        <td style="padding:0;border-bottom:1px solid #EDF0F5;max-width:280px">
-                          <sc-if value="{{ cell.notEditing }}" hint-placeholder-val="{{ true }}">
-                            <button onClick="{{ cell.onStartEdit }}" style="all:unset;box-sizing:border-box;display:block;width:100%;cursor:text;padding:8px 12px;font-size:11.5px;font-family:inherit;color:#14181F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" style-hover="background:#F7FAFC">{{ cell.display }}</button>
-                          </sc-if>
-                          <sc-if value="{{ cell.editing }}" hint-placeholder-val="{{ false }}">
-                            <sc-if value="{{ cell.isSelect }}" hint-placeholder-val="{{ false }}">
-                              <select value="{{ cell.selectValue }}" onChange="{{ cell.onChangeSelect }}" onBlur="{{ cell.onBlurCancel }}" style="box-sizing:border-box;width:100%;min-width:150px;border:2px solid #003CC8;padding:7px 10px;font-size:11.5px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF;cursor:pointer">
-                                <option value="">—</option>
-                                <sc-for list="{{ cell.options }}" as="o" hint-placeholder-count="4">
-                                  <option value="{{ o.value }}">{{ o.label }}</option>
-                                </sc-for>
-                              </select>
-                            </sc-if>
-                            <sc-if value="{{ cell.isText }}" hint-placeholder-val="{{ true }}">
-                              <input value="{{ cell.draftValue }}" onChange="{{ cell.onChangeDraft }}" onBlur="{{ cell.onBlurCommit }}" onKeyDown="{{ cell.onKeyDownCell }}" style="box-sizing:border-box;width:100%;min-width:150px;border:2px solid #003CC8;padding:7px 10px;font-size:11.5px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF" />
-                            </sc-if>
-                          </sc-if>
-                        </td>
-                      </sc-for>
-                    </tr>
-                  </sc-for>
-                </tbody>
-              </table>
-            </section>
-          </sc-if>
-
-          <sc-if value="{{ reqViewIsListe }}" hint-placeholder-val="{{ true }}">
-          <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
-            <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1fr) minmax(76px,96px) minmax(84px,104px) minmax(60px,72px);gap:12px;padding:11px 18px;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#808A99;border-bottom:1px solid #EAEEF3;background:#F8FAFC">
-              <div>Demande</div><div>Priorité</div><div>Statut</div><div style="text-align:right">Reçue</div>
-            </div>
-            <sc-for list="{{ requests }}" as="r" hint-placeholder-count="8">
-              <div style="border-bottom:1px solid #EDF0F5;background:{{ r.rowBg }}">
-                <button onClick="{{ r.onClick }}" style="all:unset;cursor:pointer;display:grid;width:100%;grid-template-columns:minmax(0,1fr) minmax(76px,96px) minmax(84px,104px) minmax(60px,72px);gap:12px;align-items:center;padding:12px 18px;box-sizing:border-box" style-hover="background:#F7FAFC">
-                  <div style="min-width:0">
-                    <div style="display:flex;align-items:center;gap:8px;min-width:0">
-                      <span style="font-size:12px;line-height:1;color:#808A99;flex:none;display:inline-flex;align-items:center">{{ r.caret }}</span>
-                      <span style="font-size:13.5px;font-weight:600;letter-spacing:-0.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.title }}</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:#808A99;margin-top:3px;padding-left:18px;min-width:0">
-                      <span style="font-variant-numeric:tabular-nums;color:#8A93A6;white-space:nowrap;flex:none">{{ r.id }}</span>
-                      <span style="flex:none">·</span>
-                      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1 1 auto;min-width:0">{{ r.requester }}</span>
-                      <span style="flex:none">·</span>
-                      <span style="width:6px;height:6px;border-radius:50%;flex:none;background:{{ r.dot }}"></span>
-                      <span style="white-space:nowrap;flex:none">{{ r.team }}</span>
-                    </div>
-                  </div>
-                  <div><span style="display:inline-flex;white-space:nowrap;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;background:{{ r.prioBg }};color:{{ r.prioColor }}">{{ r.prioLabel }}</span></div>
-                  <div><span style="display:inline-flex;white-space:nowrap;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;background:{{ r.statusBg }};color:{{ r.statusColor }}">{{ r.statusLabel }}</span></div>
-                  <div style="text-align:right;font-size:12px;color:#808A99;white-space:nowrap">{{ r.date }}</div>
-                </button>
-                <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
-                  <div style="padding:2px 18px 18px 44px;display:flex;flex-direction:column;gap:14px">
-                    <p style="margin:0;font-size:13px;color:#3E4652;line-height:1.5;max-width:62ch">{{ r.note }}</p>
-                    <sc-for list="{{ r.extras }}" as="x" hint-placeholder-count="0">
-                      <div style="display:flex;gap:8px;font-size:12.5px">
-                        <span style="color:#808A99">{{ x.label }} :</span>
-                        <span style="color:#14181F;font-weight:600">{{ x.value }}</span>
-                      </div>
-                    </sc-for>
-                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                      <span style="font-size:11.5px;color:#808A99">Estimation {{ r.effort }}</span>
-                      <select value="{{ r.statusValue }}" onChange="{{ r.onStatusChange }}" onClick="{{ r.stopClick }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;font-family:inherit;color:#14181F;background:#FFFFFF;cursor:pointer;outline:none">
-                        <sc-for list="{{ statusSelectOptions }}" as="o" hint-placeholder-count="4">
-                          <option value="{{ o.value }}">{{ o.label }}</option>
-                        </sc-for>
-                      </select>
-                      <sc-for list="{{ r.actions }}" as="a" hint-placeholder-count="3">
-                        <button onClick="{{ a.onClick }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid {{ a.border }};background:{{ a.bg }};color:{{ a.fg }}">{{ a.label }}</button>
-                      </sc-for>
-                    </div>
-                  </div>
-                </sc-if>
-              </div>
-            </sc-for>
-          </section>
-          </sc-if>
         </div>
       </sc-if>
 
@@ -1054,10 +880,174 @@
             </sc-for>
           </div>
           <sc-if value="{{ isMonRoadmapCdo }}" hint-placeholder-val="{{ true }}">
-            <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
-              <h2 style="margin:0 0 6px;font-size:16px;font-weight:700">Roadmap — CDO</h2>
-              <p style="margin:0;font-size:13px;color:#5B6472">À connecter au dashboard Roadmap existant (initiatives, key results, tickets) scopé à l'équipe/projet CDO.</p>
+        <div style="display:flex;flex-direction:column;gap:22px">
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px">
+            <sc-for list="{{ reqStats }}" as="s" hint-placeholder-count="4">
+              <div style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:15px 17px">
+                <div style="font-size:11.5px;letter-spacing:0.05em;text-transform:uppercase;color:#808A99">{{ s.label }}</div>
+                <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em;margin-top:7px;color:{{ s.color }}">{{ s.value }}</div>
+                <div style="font-size:11.5px;color:#5B6472;margin-top:4px">{{ s.hint }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+            <h2 style="margin:0;font-size:14.5px;font-weight:700">Nouvelle demande</h2>
+            <button onClick="{{ toggleForm }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;padding:8px 14px;border-radius:9px;font-size:12.5px;font-weight:600;border:1px solid {{ formToggleBorder }};background:{{ formToggleBg }};color:{{ formToggleFg }}">{{ formToggleLabel }}</button>
+          </div>
+
+          <sc-if value="{{ formOpen }}" hint-placeholder-val="{{ false }}">
+            <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:16px">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px">
+                <sc-for list="{{ formControls }}" as="c" hint-placeholder-count="6">
+                  <label style="display:flex;flex-direction:column;gap:6px;grid-column:{{ c.wide }}">
+                    <span style="font-size:11.5px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#5B6472">{{ c.label }} <span style="color:#B3383F">{{ c.required }}</span></span>
+                    <sc-if value="{{ c.isText }}" hint-placeholder-val="{{ true }}">
+                      <input value="{{ c.value }}" onChange="{{ c.onChange }}" placeholder="{{ c.placeholder }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF" />
+                    </sc-if>
+                    <sc-if value="{{ c.isNumber }}" hint-placeholder-val="{{ false }}">
+                      <input type="number" value="{{ c.value }}" onChange="{{ c.onChange }}" placeholder="{{ c.placeholder }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF" />
+                    </sc-if>
+                    <sc-if value="{{ c.isDate }}" hint-placeholder-val="{{ false }}">
+                      <input type="date" value="{{ c.value }}" onChange="{{ c.onChange }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF" />
+                    </sc-if>
+                    <sc-if value="{{ c.isSelect }}" hint-placeholder-val="{{ false }}">
+                      <select value="{{ c.value }}" onChange="{{ c.onChange }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF;cursor:pointer">
+                        <sc-for list="{{ c.options }}" as="o" hint-placeholder-count="3">
+                          <option value="{{ o.value }}">{{ o.label }}</option>
+                        </sc-for>
+                      </select>
+                    </sc-if>
+                    <sc-if value="{{ c.isTextarea }}" hint-placeholder-val="{{ false }}">
+                      <textarea value="{{ c.value }}" onChange="{{ c.onChange }}" rows="3" placeholder="{{ c.placeholder }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;line-height:1.5;color:#14181F;outline:none;resize:vertical;background:#FFFFFF"></textarea>
+                    </sc-if>
+                    <span style="font-size:11px;color:#808A99">{{ c.help }}</span>
+                  </label>
+                </sc-for>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <button onClick="{{ onSubmitRequest }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;background:#003CC8;color:#FFFFFF" style-hover="background:#002E8A">Enregistrer la demande</button>
+                <sc-if value="{{ formError }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:12.5px;color:#B3383F">{{ formErrorText }}</span>
+                </sc-if>
+              </div>
             </section>
+          </sc-if>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <sc-for list="{{ reqFilters }}" as="f" hint-placeholder-count="5">
+                <button onClick="{{ f.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;white-space:nowrap;gap:7px;padding:8px 13px;border-radius:9px;font-size:12.5px;font-weight:600;border:1px solid {{ f.border }};background:{{ f.bg }};color:{{ f.fg }}">
+                  <span>{{ f.label }}</span>
+                  <span style="font-size:11px;opacity:.65">{{ f.count }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <div style="display:inline-flex;border:1px solid #D7DEE7;border-radius:9px;overflow:hidden">
+                <button onClick="{{ onSetReqViewListe }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:7px 12px;font-size:12px;font-weight:600;background:{{ reqViewIsListe ? '#003CC8' : '#FFFFFF' }};color:{{ reqViewIsListe ? '#FFFFFF' : '#003CC8' }}">Liste</button>
+                <button onClick="{{ onSetReqViewTableau }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:7px 12px;font-size:12px;font-weight:600;background:{{ reqViewIsTableau ? '#003CC8' : '#FFFFFF' }};color:{{ reqViewIsTableau ? '#FFFFFF' : '#003CC8' }}">Tableau (colonnes A à AB)</button>
+              </div>
+              <input value="{{ reqQuery }}" onChange="{{ onReqQuery }}" placeholder="Rechercher une demande…" style="border:1px solid #E1E6ED;border-radius:8px;padding:8px 11px;font-size:12.5px;font-family:inherit;color:#14181F;outline:none;width:230px;max-width:100%;box-sizing:border-box;background:#FFFFFF" />
+            </div>
+          </div>
+
+          <sc-if value="{{ reqViewIsTableau }}" hint-placeholder-val="{{ false }}">
+            <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:auto;max-height:75vh">
+              <table style="border-collapse:collapse;width:max-content;min-width:100%;font-size:11.5px">
+                <thead>
+                  <tr>
+                    <th style="position:sticky;left:0;top:0;z-index:3;text-align:left;white-space:nowrap;padding:9px 12px;background:#F8FAFC;border-bottom:1px solid #EAEEF3;border-right:1px solid #EAEEF3;font-size:10.5px;letter-spacing:0.05em;text-transform:uppercase;color:#808A99">ID</th>
+                    <sc-for list="{{ tableColumns }}" as="c" hint-placeholder-count="28">
+                      <th style="position:sticky;top:0;z-index:2;text-align:left;white-space:nowrap;padding:9px 12px;background:#F8FAFC;border-bottom:1px solid #EAEEF3;font-size:10.5px;letter-spacing:0.05em;text-transform:uppercase;color:#808A99">{{ c.label }}</th>
+                    </sc-for>
+                  </tr>
+                </thead>
+                <tbody>
+                  <sc-for list="{{ tableRows }}" as="r" hint-placeholder-count="8">
+                    <tr>
+                      <td style="position:sticky;left:0;z-index:1;white-space:nowrap;padding:8px 12px;background:#FFFFFF;border-bottom:1px solid #EDF0F5;border-right:1px solid #EAEEF3;font-variant-numeric:tabular-nums;color:#8A93A6">{{ r.id }}</td>
+                      <sc-for list="{{ r.cells }}" as="cell" hint-placeholder-count="28">
+                        <td style="padding:0;border-bottom:1px solid #EDF0F5;max-width:280px">
+                          <sc-if value="{{ cell.notEditing }}" hint-placeholder-val="{{ true }}">
+                            <button onClick="{{ cell.onStartEdit }}" style="all:unset;box-sizing:border-box;display:block;width:100%;cursor:text;padding:8px 12px;font-size:11.5px;font-family:inherit;color:#14181F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" style-hover="background:#F7FAFC">{{ cell.display }}</button>
+                          </sc-if>
+                          <sc-if value="{{ cell.editing }}" hint-placeholder-val="{{ false }}">
+                            <sc-if value="{{ cell.isSelect }}" hint-placeholder-val="{{ false }}">
+                              <select value="{{ cell.selectValue }}" onChange="{{ cell.onChangeSelect }}" onBlur="{{ cell.onBlurCancel }}" style="box-sizing:border-box;width:100%;min-width:150px;border:2px solid #003CC8;padding:7px 10px;font-size:11.5px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF;cursor:pointer">
+                                <option value="">—</option>
+                                <sc-for list="{{ cell.options }}" as="o" hint-placeholder-count="4">
+                                  <option value="{{ o.value }}">{{ o.label }}</option>
+                                </sc-for>
+                              </select>
+                            </sc-if>
+                            <sc-if value="{{ cell.isText }}" hint-placeholder-val="{{ true }}">
+                              <input value="{{ cell.draftValue }}" onChange="{{ cell.onChangeDraft }}" onBlur="{{ cell.onBlurCommit }}" onKeyDown="{{ cell.onKeyDownCell }}" style="box-sizing:border-box;width:100%;min-width:150px;border:2px solid #003CC8;padding:7px 10px;font-size:11.5px;font-family:inherit;color:#14181F;outline:none;background:#FFFFFF" />
+                            </sc-if>
+                          </sc-if>
+                        </td>
+                      </sc-for>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </section>
+          </sc-if>
+
+          <sc-if value="{{ reqViewIsListe }}" hint-placeholder-val="{{ true }}">
+          <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
+            <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1fr) minmax(76px,96px) minmax(84px,104px) minmax(60px,72px);gap:12px;padding:11px 18px;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#808A99;border-bottom:1px solid #EAEEF3;background:#F8FAFC">
+              <div>Demande</div><div>Priorité</div><div>Statut</div><div style="text-align:right">Reçue</div>
+            </div>
+            <sc-for list="{{ requests }}" as="r" hint-placeholder-count="8">
+              <div style="border-bottom:1px solid #EDF0F5;background:{{ r.rowBg }}">
+                <button onClick="{{ r.onClick }}" style="all:unset;cursor:pointer;display:grid;width:100%;grid-template-columns:minmax(0,1fr) minmax(76px,96px) minmax(84px,104px) minmax(60px,72px);gap:12px;align-items:center;padding:12px 18px;box-sizing:border-box" style-hover="background:#F7FAFC">
+                  <div style="min-width:0">
+                    <div style="display:flex;align-items:center;gap:8px;min-width:0">
+                      <span style="font-size:12px;line-height:1;color:#808A99;flex:none;display:inline-flex;align-items:center">{{ r.caret }}</span>
+                      <span style="font-size:13.5px;font-weight:600;letter-spacing:-0.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.title }}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:#808A99;margin-top:3px;padding-left:18px;min-width:0">
+                      <span style="font-variant-numeric:tabular-nums;color:#8A93A6;white-space:nowrap;flex:none">{{ r.id }}</span>
+                      <span style="flex:none">·</span>
+                      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1 1 auto;min-width:0">{{ r.requester }}</span>
+                      <span style="flex:none">·</span>
+                      <span style="width:6px;height:6px;border-radius:50%;flex:none;background:{{ r.dot }}"></span>
+                      <span style="white-space:nowrap;flex:none">{{ r.team }}</span>
+                    </div>
+                  </div>
+                  <div><span style="display:inline-flex;white-space:nowrap;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;background:{{ r.prioBg }};color:{{ r.prioColor }}">{{ r.prioLabel }}</span></div>
+                  <div><span style="display:inline-flex;white-space:nowrap;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;background:{{ r.statusBg }};color:{{ r.statusColor }}">{{ r.statusLabel }}</span></div>
+                  <div style="text-align:right;font-size:12px;color:#808A99;white-space:nowrap">{{ r.date }}</div>
+                </button>
+                <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:2px 18px 18px 44px;display:flex;flex-direction:column;gap:14px">
+                    <p style="margin:0;font-size:13px;color:#3E4652;line-height:1.5;max-width:62ch">{{ r.note }}</p>
+                    <sc-for list="{{ r.extras }}" as="x" hint-placeholder-count="0">
+                      <div style="display:flex;gap:8px;font-size:12.5px">
+                        <span style="color:#808A99">{{ x.label }} :</span>
+                        <span style="color:#14181F;font-weight:600">{{ x.value }}</span>
+                      </div>
+                    </sc-for>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                      <span style="font-size:11.5px;color:#808A99">Estimation {{ r.effort }}</span>
+                      <select value="{{ r.statusValue }}" onChange="{{ r.onStatusChange }}" onClick="{{ r.stopClick }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;font-family:inherit;color:#14181F;background:#FFFFFF;cursor:pointer;outline:none">
+                        <sc-for list="{{ statusSelectOptions }}" as="o" hint-placeholder-count="4">
+                          <option value="{{ o.value }}">{{ o.label }}</option>
+                        </sc-for>
+                      </select>
+                      <sc-for list="{{ r.actions }}" as="a" hint-placeholder-count="3">
+                        <button onClick="{{ a.onClick }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid {{ a.border }};background:{{ a.bg }};color:{{ a.fg }}">{{ a.label }}</button>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </section>
+          </sc-if>
+        </div>
           </sc-if>
           <sc-if value="{{ isMonRoadmapIa }}" hint-placeholder-val="{{ false }}">
             <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
@@ -2077,7 +2067,7 @@ class Component extends DCLogic {
     const isTeam = st.view === 'team';
     const currentTeam = st.teams.find(t => t.id === st.team) || st.teams[0] || { id:'', name:'—', lead:'—', capacity:1, load:0, dot:'#C3D6E8' };
 
-    const isRequests = st.view === 'requests';
+    const isRequests = st.view === 'mon_roadmap' && st.monRoadmapTab === 'cdo';
     const isAdmin = st.view === 'mon_admin' && st.monAdminTab === 'proj';
     const isMep = st.view === 'mep';
     const isPlanning = st.view === 'planning';
@@ -2101,7 +2091,6 @@ class Component extends DCLogic {
     const navMep = navKey('mep');
     const navMonRoadmap = navKey('mon_roadmap');
     const navMonAdmin = navKey('mon_admin');
-    const navRequests = navKey('requests');
     const onAdminGeneralNav = () => this.setState({ view: 'admin_general' });
     const adminGeneralNavBg = isAdminGeneral ? '#003CC8' : 'transparent';
     const adminGeneralNavFg = isAdminGeneral ? '#FFFFFF' : '#C3D6E8';
@@ -2731,7 +2720,7 @@ class Component extends DCLogic {
       onDismissLoadError: () => this.setState({ loadError: null }),
       onRetryLoad: () => { this.setState({ loadError: null }); this.loadAll(); },
       isDashboard, isTeam, isRequests, isMep, isPlanning, teamNav, quarters, kpis, rows, capacity, alerts,
-      navDash, navRoProj, navRoRes, navTimesheet, navMep, navMonRoadmap, navMonAdmin, navRequests,
+      navDash, navRoProj, navRoRes, navTimesheet, navMep, navMonRoadmap, navMonAdmin,
       planningAdminNavWeight,
       isRoProjRoadmap, isRoRessources, isTimesheet, isMonRoadmap, isMonAdmin,
       stubPage,
@@ -2821,7 +2810,7 @@ class Component extends DCLogic {
       onFormNote: (e) => this.setField('note', e.target.value),
       onSubmitRequest: () => this.submitRequest(),
       onReqQuery: (e) => this.setState({ reqQuery: e.target.value }),
-      crumb: isRoProjRoadmap ? 'Projets et Roadmap · lecture seule' : (stubPage ? stubPage.crumb : (isMonRoadmap ? 'Mon dashboard · PO technique' : (isMonAdmin ? 'Mon dashboard · PO technique' : (isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Mon dashboard · Administration' : (isMep ? 'Suivi MEP · ' + mepTeamNamesLabel : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter)))))))))),
+      crumb: isRoProjRoadmap ? 'Projets et Roadmap · lecture seule' : (stubPage ? stubPage.crumb : (isMonRoadmap ? (isMonRoadmapCdo ? 'Mon dashboard · Roadmap · CDO (Demandes)' : 'Mon dashboard · Roadmap · IA') : (isMonAdmin ? 'Mon dashboard · PO technique' : (isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Mon dashboard · Administration' : (isMep ? 'Suivi MEP · ' + mepTeamNamesLabel : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter)))))))))),
       title: isRoProjRoadmap ? 'Projets et Roadmap' : (stubPage ? stubPage.title : (isMonRoadmap ? 'Roadmap' : (isMonAdmin ? 'Administration' : (isAdminGeneral ? 'Administration générale' : (isPlanEquipes ? 'Administration' : (isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name)))))))))),
       subtitle: isRoProjRoadmap
         ? 'Vue lecture seule du calendrier des MEP. Pour ajouter ou modifier, direction Mon dashboard.'
