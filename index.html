@@ -787,74 +787,83 @@
       <sc-if value="{{ isRoProjRoadmap }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:22px">
 
-          <div>
-            <h2 style="margin:0 0 4px;font-size:15px;font-weight:700">Calendrier des mises en production</h2>
-            <p style="margin:0;font-size:12.5px;color:#5B6472">Lecture seule — pour ajouter ou modifier une MEP, direction Mon dashboard &gt; Projets et Roadmap.</p>
-          </div>
-
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px">
-            <sc-for list="{{ mepTeamStats }}" as="s" hint-placeholder-count="5">
-              <div style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:15px 17px">
-                <div style="display:flex;align-items:center;gap:7px">
-                  <span style="width:9px;height:9px;border-radius:50%;background:{{ s.color }};flex:none"></span>
-                  <div style="font-size:11.5px;letter-spacing:0.05em;text-transform:uppercase;color:#808A99">{{ s.label }}</div>
-                </div>
-                <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em;margin-top:7px;color:#14181F">{{ s.total }}</div>
-                <div style="font-size:11.5px;color:#5B6472;margin-top:4px">mises en production</div>
-              </div>
+          <div style="display:flex;gap:8px">
+            <sc-for list="{{ roProjRoadmapTabs }}" as="t" hint-placeholder-count="2">
+              <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
             </sc-for>
           </div>
 
-          <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:auto;max-height:60vh">
-            <table style="border-collapse:collapse;width:max-content;min-width:100%;font-size:12px">
-              <thead>
-                <tr>
-                  <th style="position:sticky;left:0;top:0;z-index:3;text-align:left;padding:9px 12px;background:#F8FAFC;border-bottom:1px solid #EAEEF3;border-right:1px solid #EAEEF3;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#808A99;white-space:nowrap">Équipe</th>
-                  <sc-for list="{{ mepColumnTotals }}" as="c" hint-placeholder-count="10">
-                    <th style="position:sticky;top:0;z-index:2;text-align:center;padding:9px 10px;background:{{ c.todayBg }};color:{{ c.todayFg }};border-bottom:1px solid #EAEEF3;font-size:10px;font-weight:700;white-space:nowrap">{{ c.label }}</th>
-                  </sc-for>
-                </tr>
-              </thead>
-              <tbody>
-                <sc-for list="{{ mepTable }}" as="row" hint-placeholder-count="5">
-                  <tr>
-                    <td style="position:sticky;left:0;z-index:1;background:#FFFFFF;border-bottom:1px solid #EDF0F5;border-right:1px solid #EAEEF3;padding:9px 12px;white-space:nowrap">
-                      <span style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:12.5px"><span style="width:9px;height:9px;border-radius:50%;background:{{ row.color }};flex:none"></span>{{ row.label }}</span>
-                    </td>
-                    <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="10">
-                      <td style="text-align:left;vertical-align:top;padding:6px 7px;border-bottom:1px solid #EDF0F5;min-width:158px;max-width:190px">
-                        <sc-for list="{{ cell.entries }}" as="e" hint-placeholder-count="1">
-                          <sc-if value="{{ e.hasUrl }}" hint-placeholder-val="{{ false }}">
-                            <a href="{{ e.url }}" target="_blank" rel="noopener" style="display:block;text-decoration:none;margin-bottom:5px;padding:5px 8px;border-radius:7px;background:{{ e.bg }};border:{{ e.border }};box-sizing:border-box">
-                              <div style="font-size:11px;font-weight:700;color:{{ e.color }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:underline">{{ e.name }}</div>
-                              <div style="font-size:10px;color:#808A99;margin-top:1px">{{ e.date }}</div>
-                            </a>
-                          </sc-if>
-                          <sc-if value="{{ e.noUrl }}" hint-placeholder-val="{{ true }}">
-                            <div style="margin-bottom:5px;padding:5px 8px;border-radius:7px;background:{{ e.bg }};border:{{ e.border }};box-sizing:border-box">
-                              <div style="font-size:11px;font-weight:700;color:{{ e.color }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ e.name }}</div>
-                              <div style="font-size:10px;color:#808A99;margin-top:1px">{{ e.date }}</div>
-                            </div>
-                          </sc-if>
-                        </sc-for>
-                      </td>
-                    </sc-for>
-                  </tr>
+          <sc-if value="{{ isRoProjRoadmapMep }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:18px">
+              <p style="margin:0;font-size:12.5px;color:#5B6472">Lecture seule — pour ajouter ou modifier une MEP, direction Mon dashboard &gt; Projets et Roadmap.</p>
+
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px">
+                <sc-for list="{{ mepTeamStats }}" as="s" hint-placeholder-count="5">
+                  <div style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:15px 17px">
+                    <div style="display:flex;align-items:center;gap:7px">
+                      <span style="width:9px;height:9px;border-radius:50%;background:{{ s.color }};flex:none"></span>
+                      <div style="font-size:11.5px;letter-spacing:0.05em;text-transform:uppercase;color:#808A99">{{ s.label }}</div>
+                    </div>
+                    <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em;margin-top:7px;color:#14181F">{{ s.total }}</div>
+                    <div style="font-size:11.5px;color:#5B6472;margin-top:4px">mises en production</div>
+                  </div>
                 </sc-for>
-              </tbody>
-            </table>
-          </section>
+              </div>
 
-          <div style="display:flex;align-items:center;gap:16px;font-size:11px;color:#5B6472">
-            <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:5px;background:#E1E6ED;display:inline-block"></span>MEP réalisée</span>
-            <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:5px;border:2px dashed #C3D2E6;display:inline-block;box-sizing:border-box"></span>MEP à venir</span>
-          </div>
+              <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:auto;max-height:60vh">
+                <table style="border-collapse:collapse;width:max-content;min-width:100%;font-size:12px">
+                  <thead>
+                    <tr>
+                      <th style="position:sticky;left:0;top:0;z-index:3;text-align:left;padding:9px 12px;background:#F8FAFC;border-bottom:1px solid #EAEEF3;border-right:1px solid #EAEEF3;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#808A99;white-space:nowrap">Équipe</th>
+                      <sc-for list="{{ mepColumnTotals }}" as="c" hint-placeholder-count="10">
+                        <th style="position:sticky;top:0;z-index:2;text-align:center;padding:9px 10px;background:{{ c.todayBg }};color:{{ c.todayFg }};border-bottom:1px solid #EAEEF3;font-size:10px;font-weight:700;white-space:nowrap">{{ c.label }}</th>
+                      </sc-for>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ mepTable }}" as="row" hint-placeholder-count="5">
+                      <tr>
+                        <td style="position:sticky;left:0;z-index:1;background:#FFFFFF;border-bottom:1px solid #EDF0F5;border-right:1px solid #EAEEF3;padding:9px 12px;white-space:nowrap">
+                          <span style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:12.5px"><span style="width:9px;height:9px;border-radius:50%;background:{{ row.color }};flex:none"></span>{{ row.label }}</span>
+                        </td>
+                        <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="10">
+                          <td style="text-align:left;vertical-align:top;padding:6px 7px;border-bottom:1px solid #EDF0F5;min-width:158px;max-width:190px">
+                            <sc-for list="{{ cell.entries }}" as="e" hint-placeholder-count="1">
+                              <sc-if value="{{ e.hasUrl }}" hint-placeholder-val="{{ false }}">
+                                <a href="{{ e.url }}" target="_blank" rel="noopener" style="display:block;text-decoration:none;margin-bottom:5px;padding:5px 8px;border-radius:7px;background:{{ e.bg }};border:{{ e.border }};box-sizing:border-box">
+                                  <div style="font-size:11px;font-weight:700;color:{{ e.color }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:underline">{{ e.name }}</div>
+                                  <div style="font-size:10px;color:#808A99;margin-top:1px">{{ e.date }}</div>
+                                </a>
+                              </sc-if>
+                              <sc-if value="{{ e.noUrl }}" hint-placeholder-val="{{ true }}">
+                                <div style="margin-bottom:5px;padding:5px 8px;border-radius:7px;background:{{ e.bg }};border:{{ e.border }};box-sizing:border-box">
+                                  <div style="font-size:11px;font-weight:700;color:{{ e.color }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ e.name }}</div>
+                                  <div style="font-size:10px;color:#808A99;margin-top:1px">{{ e.date }}</div>
+                                </div>
+                              </sc-if>
+                            </sc-for>
+                          </td>
+                        </sc-for>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </section>
 
-          <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
-            <div style="display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#EEF3FA;color:#003CC8">Contenu à venir</div>
-            <h2 style="margin:14px 0 6px;font-size:16px;font-weight:700">Roadmaps des projets</h2>
-            <p style="margin:0;font-size:13px;color:#5B6472">Toutes les roadmaps des projets, en lecture seule.</p>
-          </section>
+              <div style="display:flex;align-items:center;gap:16px;font-size:11px;color:#5B6472">
+                <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:5px;background:#E1E6ED;display:inline-block"></span>MEP réalisée</span>
+                <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:5px;border:2px dashed #C3D2E6;display:inline-block;box-sizing:border-box"></span>MEP à venir</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isRoProjRoadmapRoadmap }}" hint-placeholder-val="{{ false }}">
+            <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
+              <div style="display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#EEF3FA;color:#003CC8">Contenu à venir</div>
+              <h2 style="margin:14px 0 6px;font-size:16px;font-weight:700">Roadmaps des projets</h2>
+              <p style="margin:0;font-size:13px;color:#5B6472">Toutes les roadmaps des projets, en lecture seule.</p>
+            </section>
+          </sc-if>
 
         </div>
       </sc-if>
@@ -1594,7 +1603,7 @@ class Component extends DCLogic {
             planNewProjetNom: '', planNewProjetEquipe: '', planProjetError: '',
             planNewMembreNom: '', planNewMembreRole: '', planNewMembreEquipe: '', planNewMembreProjet: '', planMembreError: '',
             planSprintEditId: null, planSprintDraft: null,
-            monRoadmapTab: 'cdo', monAdminTab: 'proj', roRessourcesTab: 'calendrier',
+            monRoadmapTab: 'cdo', monAdminTab: 'proj', roRessourcesTab: 'calendrier', roProjRoadmapTab: 'mep',
             loading: true, loadError: null };
 
   componentDidMount() {
@@ -2818,6 +2827,19 @@ class Component extends DCLogic {
       };
     });
 
+    const roProjRoadmapTabs = [
+      { key: 'mep', label: 'Calendrier des MEP' },
+      { key: 'roadmap', label: 'Roadmap' }
+    ].map(t => ({
+      label: t.label,
+      bg: st.roProjRoadmapTab === t.key ? '#003CC8' : '#FFFFFF',
+      fg: st.roProjRoadmapTab === t.key ? '#FFFFFF' : '#003CC8',
+      border: st.roProjRoadmapTab === t.key ? '#003CC8' : '#D7DEE7',
+      onClick: () => this.setState({ roProjRoadmapTab: t.key })
+    }));
+    const isRoProjRoadmapMep = st.roProjRoadmapTab === 'mep';
+    const isRoProjRoadmapRoadmap = st.roProjRoadmapTab === 'roadmap';
+
     return {
       hasLoadError: !!st.loadError, loadError: st.loadError || '',
       onDismissLoadError: () => this.setState({ loadError: null }),
@@ -2830,6 +2852,7 @@ class Component extends DCLogic {
       monRoadmapTabs, isMonRoadmapCdo, isMonRoadmapIa,
       monAdminTabs, isMonAdminRes, isMonAdminDash, isMonAdminTips,
       roRessourcesTabs, isRoRessourcesCalendrier, isRoRessourcesListe, roRessourcesRows,
+      roProjRoadmapTabs, isRoProjRoadmapMep, isRoProjRoadmapRoadmap,
       onPlanningNav, planningNavBg, planningNavFg, planningNavWeight,
       onPlanningAdminNav, planningAdminNavBg, planningAdminNavFg,
       planTabs, isPlanGrille, isPlanConges, isPlanCapacite, isPlanEquipes, isPlanEquipesNot,
