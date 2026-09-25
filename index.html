@@ -76,19 +76,6 @@
       </button>
     </div>
 
-    <div style="border-top:1px solid #0A4A94;padding-top:14px;display:flex;flex-direction:column;gap:2px">
-      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 8px">Vue par équipe</div>
-      <sc-for list="{{ teamNav }}" as="t" hint-placeholder-count="4">
-        <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:9px;font-size:13px;background:{{ t.bg }};color:{{ t.fg }}">
-          <span style="display:flex;align-items:center;gap:9px">
-            <span style="width:7px;height:7px;border-radius:50%;background:{{ t.dot }}"></span>
-            <span>{{ t.name }}</span>
-          </span>
-          <span style="font-size:11.5px;color:#6E9BC9">{{ t.count }}</span>
-        </button>
-      </sc-for>
-    </div>
-
     </div>
 
     <div style="border-top:1px solid #0A4A94;padding-top:14px;display:flex;align-items:center;gap:10px">
@@ -2202,14 +2189,6 @@ class Component extends DCLogic {
     const planningAdminNavFg = isPlanningAdminActive ? '#FFFFFF' : '#C3D6E8';
     const planningAdminNavWeight = isPlanningAdminActive ? 700 : 500;
 
-    const teamNav = st.teams.map(t => ({
-      name: t.name, dot: t.dot,
-      count: vis.filter(p => p.team === t.id).length,
-      bg: isTeam && st.team === t.id ? '#0A4A94' : 'transparent',
-      fg: isTeam && st.team === t.id ? '#FFFFFF' : '#C3D6E8',
-      onClick: () => this.setState({ view: 'team', team: t.id })
-    }));
-
     const quarters = ['T3 2026', 'T4 2026', 'T1 2027'].map(q => ({
       label: q,
       bg: st.quarter === q ? '#003CC8' : '#FFFFFF',
@@ -2854,7 +2833,7 @@ class Component extends DCLogic {
       hasLoadError: !!st.loadError, loadError: st.loadError || '',
       onDismissLoadError: () => this.setState({ loadError: null }),
       onRetryLoad: () => { this.setState({ loadError: null }); this.loadAll(); },
-      isDashboard, isTeam, isRequests, isMep, isPlanning, teamNav, quarters, kpis, rows, capacity, alerts,
+      isDashboard, isTeam, isRequests, isMep, isPlanning, quarters, kpis, rows, capacity, alerts,
       navDash, navRoProj, navRoRes, navTimesheet, navMep, navMonRoadmap, navMonAdmin,
       planningAdminNavWeight,
       isRoProjRoadmap, isRoRessources, isTimesheet, isMonRoadmap, isMonAdmin,
