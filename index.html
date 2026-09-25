@@ -26,8 +26,8 @@
 
   <aside style="background:#003C71;color:#E4EEF8;display:flex;flex-direction:column;gap:28px;padding:22px 16px;position:sticky;top:0;height:100vh">
     <div style="display:flex;align-items:center;gap:10px;padding:0 6px">
-      <div style="width:28px;height:28px;border-radius:8px;background:#A9CBF2;display:grid;place-items:center;color:#003C71;font-weight:800;font-size:14px">R</div>
-      <div style="font-weight:700;font-size:15px;letter-spacing:-0.01em">Roadmaps</div>
+      <div style="width:28px;height:28px;border-radius:8px;background:#A9CBF2;display:grid;place-items:center;color:#003C71;font-weight:800;font-size:14px">P</div>
+      <div style="font-weight:700;font-size:15px;letter-spacing:-0.01em">Pilotage Projet</div>
     </div>
 
     <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:22px;padding-right:2px">
@@ -854,6 +854,67 @@
             <div style="display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#EEF3FA;color:#003CC8">Contenu à venir</div>
             <h2 style="margin:14px 0 6px;font-size:16px;font-weight:700">Roadmaps des projets</h2>
             <p style="margin:0;font-size:13px;color:#5B6472">Toutes les roadmaps des projets, en lecture seule.</p>
+          </section>
+
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isRoRessources }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:22px">
+
+          <div>
+            <h2 style="margin:0 0 4px;font-size:15px;font-weight:700">Calendrier des congés</h2>
+            <p style="margin:0;font-size:12.5px;color:#5B6472">Lecture seule — pour modifier, direction Mon dashboard &gt; Gestion des ressources.</p>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+            <div style="display:flex;align-items:center;gap:1px;border:1px solid #E1E6ED;border-radius:8px;background:#FFFFFF;padding:4px">
+              <button onClick="{{ onPlanPrevMonth }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;color:#003CC8">‹</button>
+              <span style="min-width:130px;text-align:center;font-size:13px;font-weight:600">{{ planMoisLabel }}</span>
+              <button onClick="{{ onPlanNextMonth }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;color:#003CC8">›</button>
+            </div>
+            <select value="{{ planEquipeFiltre }}" onChange="{{ onPlanEquipeFiltre }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
+              <sc-for list="{{ planEquipeFilterOptions }}" as="o" hint-placeholder-count="2">
+                <option value="{{ o.value }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+          </div>
+
+          <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:auto">
+            <table style="border-collapse:collapse;font-size:11.5px;width:100%">
+              <thead>
+                <tr>
+                  <th style="position:sticky;left:0;z-index:2;background:#F8FAFC;min-width:160px;text-align:left;padding:8px 12px;border-bottom:1px solid #E1E6ED;border-right:1px solid #E1E6ED">Personne</th>
+                  <sc-for list="{{ planGrilleHeaderCols }}" as="c" hint-placeholder-count="28">
+                    <th title="{{ c.titre }}" style="width:30px;padding:5px 0;text-align:center;font-weight:600;border-bottom:1px solid #E1E6ED;border-right:1px solid #EDF0F5;background:{{ c.bg }};color:{{ c.fg }}">
+                      <div style="font-family:monospace">{{ c.jour }}</div>
+                      <div style="font-size:9.5px;color:#808A99">{{ c.dow }}</div>
+                    </th>
+                  </sc-for>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ planGrilleRows }}" as="r" hint-placeholder-count="5">
+                  <tr>
+                    <td style="position:sticky;left:0;z-index:1;background:#FFFFFF;padding:7px 12px;border-bottom:1px solid #EDF0F5;border-right:1px solid #E1E6ED">
+                      <div style="font-weight:600">{{ r.nom }}</div>
+                      <div style="font-size:10.5px;color:#808A99">{{ r.equipeNom }}</div>
+                    </td>
+                    <sc-for list="{{ r.cells }}" as="cell" hint-placeholder-count="28">
+                      <td title="{{ cell.titre }}" style="padding:0;text-align:center;border-bottom:1px solid #EDF0F5;border-right:1px solid #EDF0F5;background:{{ cell.bg }}">
+                        <div style="width:30px;height:26px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:11px;font-weight:600">{{ cell.displayText }}</div>
+                      </td>
+                    </sc-for>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </section>
+
+          <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
+            <div style="display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#EEF3FA;color:#003CC8">Contenu à venir</div>
+            <h2 style="margin:14px 0 6px;font-size:16px;font-weight:700">Liste des ressources par équipe</h2>
+            <p style="margin:0;font-size:13px;color:#5B6472">Liste des ressources par équipe, en lecture seule.</p>
           </section>
 
         </div>
@@ -2672,11 +2733,6 @@ class Component extends DCLogic {
 
     // ---- Pages "à venir" (nouvelle IA, contenu pas encore développé) ----
     const stubPages = {
-      ro_ressources: {
-        title: 'Gestion des ressources', crumb: 'Vue lecture seule · commune à tous les profils',
-        subtitle: 'Vue en lecture seule, commune à tous les profils.',
-        items: ['Calendrier des congés par équipe et par mois, avec un bascule Calendrier / Liste.', 'Liste des ressources par équipe.']
-      },
       timesheet: {
         title: 'Timesheet', crumb: 'À cadrer',
         subtitle: 'Reste à décider si on le construit ici ou si on s’appuie sur Azure DevOps.',
@@ -2810,9 +2866,11 @@ class Component extends DCLogic {
       onFormNote: (e) => this.setField('note', e.target.value),
       onSubmitRequest: () => this.submitRequest(),
       onReqQuery: (e) => this.setState({ reqQuery: e.target.value }),
-      crumb: isRoProjRoadmap ? 'Projets et Roadmap · lecture seule' : (stubPage ? stubPage.crumb : (isMonRoadmap ? (isMonRoadmapCdo ? 'Mon dashboard · Roadmap · CDO (Demandes)' : 'Mon dashboard · Roadmap · IA') : (isMonAdmin ? 'Mon dashboard · PO technique' : (isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Mon dashboard · Administration' : (isMep ? 'Suivi MEP · ' + mepTeamNamesLabel : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter)))))))))),
-      title: isRoProjRoadmap ? 'Projets et Roadmap' : (stubPage ? stubPage.title : (isMonRoadmap ? 'Roadmap' : (isMonAdmin ? 'Administration' : (isAdminGeneral ? 'Administration générale' : (isPlanEquipes ? 'Administration' : (isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name)))))))))),
-      subtitle: isRoProjRoadmap
+      crumb: isRoRessources ? 'Gestion des ressources · lecture seule' : (isRoProjRoadmap ? 'Projets et Roadmap · lecture seule' : (stubPage ? stubPage.crumb : (isMonRoadmap ? (isMonRoadmapCdo ? 'Mon dashboard · Roadmap · CDO (Demandes)' : 'Mon dashboard · Roadmap · IA') : (isMonAdmin ? 'Mon dashboard · PO technique' : (isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Mon dashboard · Administration' : (isMep ? 'Suivi MEP · ' + mepTeamNamesLabel : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter))))))))))),
+      title: isRoRessources ? 'Gestion des ressources' : (isRoProjRoadmap ? 'Projets et Roadmap' : (stubPage ? stubPage.title : (isMonRoadmap ? 'Roadmap' : (isMonAdmin ? 'Administration' : (isAdminGeneral ? 'Administration générale' : (isPlanEquipes ? 'Administration' : (isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name))))))))))),
+      subtitle: isRoRessources
+        ? 'Vue lecture seule du calendrier des congés. Pour modifier, direction Mon dashboard.'
+        : (isRoProjRoadmap
         ? 'Vue lecture seule du calendrier des MEP. Pour ajouter ou modifier, direction Mon dashboard.'
         : (stubPage
         ? stubPage.subtitle
@@ -2834,7 +2892,7 @@ class Component extends DCLogic {
         ? 'Toutes les demandes reçues des autres services, leur priorité, l\u2019équipe pressentie et leur état d\u2019arbitrage.'
         : (isDashboard
         ? 'État des initiatives des quatre équipes, avancement, écart aux dates cibles et charge disponible.'
-        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.')))))))))),
+        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.'))))))))))),
       onQuery: (e) => this.setState({ query: e.target.value }),
       onProgress: (e) => selRaw && this.setProgress(selRaw.id, Number(e.target.value)),
       closeDrawer: () => this.setState({ selId: null })
