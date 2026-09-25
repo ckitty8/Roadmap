@@ -351,7 +351,7 @@
                 <input value="{{ mepNewUrl }}" onChange="{{ onMepNewUrl }}" placeholder="https://…" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none" />
               </label>
             </div>
-            <div style="display:grid;grid-template-columns:150px 140px auto;gap:10px;align-items:end">
+            <div style="display:grid;grid-template-columns:150px 140px 130px auto;gap:10px;align-items:end">
               <label style="display:flex;flex-direction:column;gap:5px">
                 <span style="font-size:11px;font-weight:700;color:#5B6472;text-transform:uppercase;letter-spacing:.03em">Projet</span>
                 <select value="{{ mepNewTeam }}" onChange="{{ onMepNewTeam }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none;cursor:pointer">
@@ -364,6 +364,10 @@
                 <span style="font-size:11px;font-weight:700;color:#5B6472;text-transform:uppercase;letter-spacing:.03em">Date</span>
                 <input type="date" value="{{ mepNewDate }}" onChange="{{ onMepNewDate }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none" />
               </label>
+              <label style="display:flex;flex-direction:column;gap:5px">
+                <span style="font-size:11px;font-weight:700;color:#5B6472;text-transform:uppercase;letter-spacing:.03em">Tickets livrés</span>
+                <input type="number" min="0" value="{{ mepNewNbTickets }}" onChange="{{ onMepNewNbTickets }}" placeholder="0" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit;color:#14181F;outline:none" />
+              </label>
               <button onClick="{{ onAddMep }}" style="all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;cursor:pointer;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;background:#003CC8;color:#FFFFFF">Ajouter</button>
             </div>
             <sc-if value="{{ mepNewError }}" hint-placeholder-val="{{ false }}">
@@ -372,8 +376,8 @@
           </section>
 
           <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;overflow:hidden">
-            <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1fr) 110px 130px auto;gap:12px;padding:11px 18px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#808A99;border-bottom:1px solid #EAEEF3;background:#F8FAFC">
-              <div>Nom</div><div>Projet</div><div>Date</div><div></div>
+            <div style="display:grid;box-sizing:border-box;width:100%;grid-template-columns:minmax(0,1fr) 110px 90px 130px auto;gap:12px;padding:11px 18px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#808A99;border-bottom:1px solid #EAEEF3;background:#F8FAFC">
+              <div>Nom</div><div>Projet</div><div>Tickets</div><div>Date</div><div></div>
             </div>
             <sc-for list="{{ mepList }}" as="r" hint-placeholder-count="6">
               <div style="border-bottom:1px solid #EDF0F5;padding:10px 18px">
@@ -390,6 +394,7 @@
                         </sc-for>
                       </select>
                       <input type="date" value="{{ r.draftDate }}" onChange="{{ r.onDraftDate }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:6px 9px;font-size:12px;font-family:inherit;color:#14181F;outline:none" />
+                      <input type="number" min="0" value="{{ r.draftNbTickets }}" onChange="{{ r.onDraftNbTickets }}" placeholder="Tickets livrés" style="width:110px;box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:6px 9px;font-size:12px;font-family:inherit;color:#14181F;outline:none" />
                       <div style="display:flex;gap:8px;margin-left:auto">
                         <button onClick="{{ r.onSave }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:700;color:#2E7D5B">Enregistrer</button>
                         <button onClick="{{ r.onCancel }}" style="all:unset;cursor:pointer;font-size:12px;color:#808A99">Annuler</button>
@@ -398,7 +403,7 @@
                   </div>
                 </sc-if>
                 <sc-if value="{{ r.notEditing }}" hint-placeholder-val="{{ true }}">
-                  <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 130px auto;gap:12px;align-items:center">
+                  <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 90px 130px auto;gap:12px;align-items:center">
                     <sc-if value="{{ r.hasUrl }}" hint-placeholder-val="{{ false }}">
                       <a href="{{ r.url }}" target="_blank" rel="noopener" style="font-size:13px;font-weight:600;color:#003CC8;text-decoration:underline;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</a>
                     </sc-if>
@@ -406,6 +411,7 @@
                       <span style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</span>
                     </sc-if>
                     <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px"><span style="width:8px;height:8px;border-radius:50%;background:{{ r.teamColor }};flex:none"></span>{{ r.team }}</span>
+                    <span style="font-size:12px;color:#5B6472">{{ r.nbTickets }}</span>
                     <span style="font-size:12px;color:#5B6472">{{ r.date }}</span>
                     <div style="display:flex;gap:12px;justify-self:end">
                       <button onClick="{{ r.onEdit }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:#003CC8">Modifier</button>
@@ -1586,7 +1592,7 @@ class Component extends DCLogic {
             teams: TEAMS, newTeam: null, teamEditId: null, teamDraft: null, adminTab: 'teams',
             referentiels: [], refSelected: null, refEditId: null, refDraft: null, newRef: null, newRefError: false,
             mepReleases: [], mepEditId: null, mepDraft: null,
-            mepNewName: '', mepNewDate: '', mepNewTeam: '', mepNewUrl: '', mepNewError: false,
+            mepNewName: '', mepNewDate: '', mepNewTeam: '', mepNewUrl: '', mepNewNbTickets: '', mepNewError: false,
             planningView: 'grille',
             planProjets: [], planMembres: [], planJours: [], planJoursSpeciaux: [],
             planSprints: [], planRepartition: [],
@@ -1644,7 +1650,7 @@ class Component extends DCLogic {
         position: Number(r.position) || 0, label: r.label, active: !!r.active
       }));
       const refKeys = Array.from(new Set(referentiels.map(r => r.referentiel))).sort();
-      const mepReleases = (mepRows || []).map(r => ({ id: r.id, name: r.name, date: r.date, projet: r.projet, url: r.url || '' }));
+      const mepReleases = (mepRows || []).map(r => ({ id: r.id, name: r.name, date: r.date, projet: r.projet, url: r.url || '', nb_tickets: r.nb_tickets == null ? null : Number(r.nb_tickets) }));
       const planProjets = (planProjetRows || []).map(r => ({ id: r.id, equipe_id: String(r.equipe_id), nom: r.nom, couleur: r.couleur }));
       const planMembres = (planMembreRows || []).map(r => ({
         id: r.id, projet_id: r.projet_id, nom: r.nom, role: r.role || '',
@@ -1902,7 +1908,7 @@ class Component extends DCLogic {
   async loadMepReleases() {
     try {
       const rows = await api.list('mep_releases', 'select=*&order=date.asc');
-      this.setState({ mepReleases: (rows || []).map(r => ({ id: r.id, name: r.name, date: r.date, projet: r.projet, url: r.url || '' })) });
+      this.setState({ mepReleases: (rows || []).map(r => ({ id: r.id, name: r.name, date: r.date, projet: r.projet, url: r.url || '', nb_tickets: r.nb_tickets == null ? null : Number(r.nb_tickets) })) });
     } catch (e) {
       this.setState({ loadError: String(e.message || e) });
     }
@@ -1910,14 +1916,15 @@ class Component extends DCLogic {
   startEditMep(id) {
     const r = this.state.mepReleases.find(x => x.id === id);
     if (!r) return;
-    this.setState({ mepEditId: id, mepDraft: { name: r.name, date: mepDateInputValue(r.date), projet: r.projet, url: r.url || '' } });
+    this.setState({ mepEditId: id, mepDraft: { name: r.name, date: mepDateInputValue(r.date), projet: r.projet, url: r.url || '', nb_tickets: r.nb_tickets == null ? '' : String(r.nb_tickets) } });
   }
   setMepDraft(k, v) { this.setState(s => ({ mepDraft: Object.assign({}, s.mepDraft, { [k]: v }) })); }
   cancelEditMep() { this.setState({ mepEditId: null, mepDraft: null }); }
   saveMep() {
     const d = this.state.mepDraft, id = this.state.mepEditId;
     if (!d || !d.name.trim() || !d.date) return;
-    const patch = { name: d.name.trim(), date: d.date, projet: d.projet, url: (d.url || '').trim() || null };
+    const nbTickets = (d.nb_tickets || '').toString().trim();
+    const patch = { name: d.name.trim(), date: d.date, projet: d.projet, url: (d.url || '').trim() || null, nb_tickets: nbTickets === '' ? null : Number(nbTickets) };
     this.setState(s => ({ mepEditId: null, mepDraft: null, mepReleases: s.mepReleases.map(r => r.id !== id ? r : Object.assign({}, r, patch, { url: patch.url || '' })) }));
     api.update('mep_releases', 'id=eq.' + encodeURIComponent(id), patch).catch(e => this.setState({ loadError: String(e.message || e) }));
   }
@@ -1931,10 +1938,12 @@ class Component extends DCLogic {
     const firstProjet = this.state.planProjets[0];
     const projet = this.state.mepNewTeam || (firstProjet ? firstProjet.nom : '');
     const url = (this.state.mepNewUrl || '').trim() || null;
+    const nbTicketsRaw = (this.state.mepNewNbTickets || '').trim();
+    const nb_tickets = nbTicketsRaw === '' ? null : Number(nbTicketsRaw);
     if (!name || !date || !projet) { this.setState({ mepNewError: true }); return; }
-    this.setState({ mepNewName: '', mepNewDate: '', mepNewUrl: '', mepNewError: false });
+    this.setState({ mepNewName: '', mepNewDate: '', mepNewUrl: '', mepNewNbTickets: '', mepNewError: false });
     try {
-      await api.insert('mep_releases', { name, date, projet, url });
+      await api.insert('mep_releases', { name, date, projet, url, nb_tickets });
       await this.loadMepReleases();
     } catch (e) {
       this.setState({ loadError: String(e.message || e) });
@@ -2553,11 +2562,13 @@ class Component extends DCLogic {
       return {
         id: r.id, name: r.name, date: mepDateDisplay(r.date), team: r.projet, teamColor: projet.couleur || '#808A99',
         url: r.url || '', hasUrl: !!r.url, noUrl: !r.url,
+        nbTickets: r.nb_tickets == null ? '—' : String(r.nb_tickets),
         editing, notEditing: !editing,
         draftName: editing ? d.name : r.name,
         draftDate: editing ? d.date : mepDateInputValue(r.date),
         draftTeam: editing ? d.projet : r.projet,
         draftUrl: editing ? d.url : (r.url || ''),
+        draftNbTickets: editing ? d.nb_tickets : (r.nb_tickets == null ? '' : String(r.nb_tickets)),
         onEdit: () => this.startEditMep(r.id),
         onDelete: () => this.deleteMep(r.id),
         onSave: () => this.saveMep(),
@@ -2565,7 +2576,8 @@ class Component extends DCLogic {
         onDraftName: (e) => this.setMepDraft('name', e.target.value),
         onDraftDate: (e) => this.setMepDraft('date', e.target.value),
         onDraftTeam: (e) => this.setMepDraft('projet', e.target.value),
-        onDraftUrl: (e) => this.setMepDraft('url', e.target.value)
+        onDraftUrl: (e) => this.setMepDraft('url', e.target.value),
+        onDraftNbTickets: (e) => this.setMepDraft('nb_tickets', e.target.value)
       };
     });
 
@@ -2882,11 +2894,12 @@ class Component extends DCLogic {
       onSetReqViewListe: () => this.setState({ reqView: 'liste' }),
       onSetReqViewTableau: () => this.setState({ reqView: 'tableau' }),
       mepTable, mepTeamStats: mepTable, mepColumnTotals, mepTeamOptions, mepList, mepTeamNamesLabel,
-      mepNewName: st.mepNewName, mepNewDate: st.mepNewDate, mepNewTeam: st.mepNewTeam, mepNewUrl: st.mepNewUrl, mepNewError: st.mepNewError,
+      mepNewName: st.mepNewName, mepNewDate: st.mepNewDate, mepNewTeam: st.mepNewTeam, mepNewUrl: st.mepNewUrl, mepNewNbTickets: st.mepNewNbTickets, mepNewError: st.mepNewError,
       onMepNewName: (e) => this.setState({ mepNewName: e.target.value, mepNewError: false }),
       onMepNewDate: (e) => this.setState({ mepNewDate: e.target.value, mepNewError: false }),
       onMepNewTeam: (e) => this.setState({ mepNewTeam: e.target.value }),
       onMepNewUrl: (e) => this.setState({ mepNewUrl: e.target.value }),
+      onMepNewNbTickets: (e) => this.setState({ mepNewNbTickets: e.target.value }),
       onAddMep: () => this.addMep(),
       quartersShown: (isRequests || isAdmin || isMep || isPlanning || isAdminGeneral || isRoProjRoadmap || isRoRessources || isTimesheet || isMonRoadmap || isMonAdmin) ? [] : quarters,
       formControls, statusSelectOptions, isAdmin, isAdminGeneral,
