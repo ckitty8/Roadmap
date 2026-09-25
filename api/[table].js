@@ -70,9 +70,15 @@ const TABLES = {
   },
   planning_membres: {
     pk: 'id',
-    columns: ['projet_id', 'nom', 'role', 'jours_travailles_client'],
+    columns: ['nom', 'role', 'jours_travailles_client'],
     jsonb: [],
     order: 'nom ASC'
+  },
+  planning_membre_projets: {
+    pk: 'id',
+    columns: ['membre_id', 'projet_id'],
+    jsonb: [],
+    order: 'id ASC'
   },
   planning_jours: {
     pk: 'id',

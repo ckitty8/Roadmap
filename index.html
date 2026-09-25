@@ -722,30 +722,48 @@
                   <div>Nom</div><div></div>
                 </div>
                 <sc-for list="{{ planAdminMembres }}" as="m" hint-placeholder-count="5">
-                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px;border-bottom:1px solid #EDF0F5">
-                    <span style="font-size:13px"><span style="font-weight:600">{{ m.nom }}</span> <span style="color:#808A99">· {{ m.meta }}</span></span>
-                    <button onClick="{{ m.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid #EDD8DA;color:#B3383F">Supprimer</button>
+                  <div style="display:flex;flex-direction:column;gap:8px;padding:11px 18px;border-bottom:1px solid #EDF0F5">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                      <span style="font-size:13px"><span style="font-weight:600">{{ m.nom }}</span> <span style="color:#808A99">· {{ m.equipeNoms }}<sc-if value="{{ m.role }}" hint-placeholder-val="{{ false }}"> · {{ m.role }}</sc-if></span></span>
+                      <button onClick="{{ m.onDelete }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid #EDD8DA;color:#B3383F">Supprimer</button>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                      <sc-for list="{{ m.projetChips }}" as="pc" hint-placeholder-count="2">
+                        <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 5px 4px 10px;border-radius:20px;background:#EEF3FA;color:#003CC8;font-size:11.5px;font-weight:600">
+                          {{ pc.nom }}
+                          <button onClick="{{ pc.onRemove }}" style="all:unset;box-sizing:border-box;cursor:pointer;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-size:11px;color:#003CC8" style-hover="background:#D7E4F7">×</button>
+                        </span>
+                      </sc-for>
+                      <sc-if value="{{ m.hasAvailable }}" hint-placeholder-val="{{ false }}">
+                        <select value="" onChange="{{ m.onAddProjet }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:20px;padding:4px 10px;font-size:11.5px;font-family:inherit;background:#FFFFFF;color:#5B6472;cursor:pointer">
+                          <sc-for list="{{ m.addProjetOptions }}" as="o" hint-placeholder-count="2">
+                            <option value="{{ o.value }}">{{ o.label }}</option>
+                          </sc-for>
+                        </select>
+                      </sc-if>
+                    </div>
                   </div>
                 </sc-for>
-                <div style="display:flex;gap:10px;align-items:end;padding:14px 18px;background:#F8FAFC;flex-wrap:wrap">
-                  <label style="display:flex;flex-direction:column;gap:5px;flex:1 1 140px">
-                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Nom</span>
-                    <input value="{{ planNewMembreNom }}" onChange="{{ onPlanNewMembreNom }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
-                  </label>
-                  <label style="display:flex;flex-direction:column;gap:5px;flex:1 1 120px">
-                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Rôle</span>
-                    <input value="{{ planNewMembreRole }}" onChange="{{ onPlanNewMembreRole }}" placeholder="Optionnel" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
-                  </label>
-                  <label style="display:flex;flex-direction:column;gap:5px">
-                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Projet</span>
-                    <select value="{{ planNewMembreProjet }}" onChange="{{ onPlanNewMembreProjet }}" style="box-sizing:border-box;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF">
-                      <option value="">Choisir</option>
-                      <sc-for list="{{ planNewMembreProjetOptions }}" as="o" hint-placeholder-count="2">
-                        <option value="{{ o.value }}">{{ o.label }}</option>
+                <div style="display:flex;flex-direction:column;gap:10px;padding:14px 18px;background:#F8FAFC">
+                  <div style="display:flex;gap:10px;align-items:end;flex-wrap:wrap">
+                    <label style="display:flex;flex-direction:column;gap:5px;flex:1 1 140px">
+                      <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Nom</span>
+                      <input value="{{ planNewMembreNom }}" onChange="{{ onPlanNewMembreNom }}" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
+                    </label>
+                    <label style="display:flex;flex-direction:column;gap:5px;flex:1 1 120px">
+                      <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Rôle</span>
+                      <input value="{{ planNewMembreRole }}" onChange="{{ onPlanNewMembreRole }}" placeholder="Optionnel" style="box-sizing:border-box;width:100%;border:1px solid #D7DEE7;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;background:#FFFFFF" />
+                    </label>
+                    <button onClick="{{ onPlanAddMembre }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#003CC8;color:#FFFFFF">Ajouter</button>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#808A99">Projets (un ou plusieurs)</span>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                      <sc-for list="{{ planNewMembreProjetOptions }}" as="o" hint-placeholder-count="4">
+                        <button onClick="{{ o.onToggle }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button>
                       </sc-for>
-                    </select>
-                  </label>
-                  <button onClick="{{ onPlanAddMembre }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;background:#003CC8;color:#FFFFFF">Ajouter</button>
+                    </div>
+                  </div>
                 </div>
                 <sc-if value="{{ planMembreError }}" hint-placeholder-val="{{ false }}">
                   <div style="padding:0 18px 14px;background:#F8FAFC;font-size:12px;color:#B3383F">{{ planMembreError }}</div>
@@ -1645,12 +1663,12 @@ class Component extends DCLogic {
             mepReleases: [], mepEditId: null, mepDraft: null,
             mepNewName: '', mepNewDate: '', mepNewTeam: '', mepNewUrl: '', mepNewNbTickets: '', mepNewError: false,
             planningView: 'grille',
-            planProjets: [], planMembres: [], planJours: [], planJoursSpeciaux: [],
+            planProjets: [], planMembres: [], planMembreProjets: [], planJours: [], planJoursSpeciaux: [],
             planSprints: [], planRepartition: [],
             planAnnee: 2026, planMois: 0, planEquipeFiltre: 'toutes', planCellule: null,
             planEditCell: null, planEditDraft: '',
             planNewProjetNom: '', planNewProjetEquipe: '', planProjetError: '',
-            planNewMembreNom: '', planNewMembreRole: '', planNewMembreProjet: '', planMembreError: '', planRessourcesSearch: '',
+            planNewMembreNom: '', planNewMembreRole: '', planNewMembreProjets: [], planMembreError: '', planRessourcesSearch: '',
             planSprintEditId: null, planSprintDraft: null,
             monProjRoadmapTab: 'mep', monAdminTab: 'proj', roRessourcesTab: 'calendrier', roProjRoadmapTab: 'mep',
             dailyNotes: [], dailyDate: todayIso(), dailyDraft: '', dailySaving: false,
@@ -1663,7 +1681,7 @@ class Component extends DCLogic {
   async loadAll() {
     try {
       const [teamRows, projectRows, requestRows, fieldRows, refRows, mepRows,
-             planProjetRows, planMembreRows, planJourRows, planJourSpecialRows,
+             planProjetRows, planMembreRows, planMembreProjetRows, planJourRows, planJourSpecialRows,
              planSprintRows, planRepartitionRows, dailyRows] = await Promise.all([
         api.list('teams', 'select=*&order=name.asc'),
         api.list('projects', 'select=*,key_results(*),tickets(*)'),
@@ -1673,6 +1691,7 @@ class Component extends DCLogic {
         api.list('mep_releases', 'select=*&order=date.asc'),
         api.list('planning_projets', 'select=*&order=nom.asc'),
         api.list('planning_membres', 'select=*&order=nom.asc'),
+        api.list('planning_membre_projets', 'select=*'),
         api.list('planning_jours', 'select=*'),
         api.list('planning_jours_speciaux', 'select=*'),
         api.list('planning_sprints', 'select=*&order=ordre.asc'),
@@ -1706,9 +1725,10 @@ class Component extends DCLogic {
       const mepReleases = (mepRows || []).map(r => ({ id: r.id, name: r.name, date: r.date, projet: r.projet, url: r.url || '', nb_tickets: r.nb_tickets == null ? null : Number(r.nb_tickets) }));
       const planProjets = (planProjetRows || []).map(r => ({ id: r.id, equipe_id: String(r.equipe_id), nom: r.nom, couleur: r.couleur }));
       const planMembres = (planMembreRows || []).map(r => ({
-        id: r.id, projet_id: r.projet_id, nom: r.nom, role: r.role || '',
+        id: r.id, nom: r.nom, role: r.role || '',
         jours_travailles_client: r.jours_travailles_client === null || r.jours_travailles_client === undefined ? null : Number(r.jours_travailles_client)
       }));
+      const planMembreProjets = (planMembreProjetRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, projet_id: r.projet_id }));
       const planJours = (planJourRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, date: planNormDate(r.date), valeur: Number(r.valeur), type: r.type }));
       const planJoursSpeciaux = (planJourSpecialRows || []).map(r => ({ id: r.id, date: planNormDate(r.date), libelle: r.libelle, type: r.type }));
       const planSprints = (planSprintRows || []).map(r => ({ id: r.id, nom: r.nom, date_debut: planNormDate(r.date_debut), date_fin: planNormDate(r.date_fin), ordre: r.ordre }));
@@ -1718,7 +1738,7 @@ class Component extends DCLogic {
         teams, projects, requests, fields, referentiels, mepReleases, loading: false, loadError: null,
         team: teams.some(t => t.id === s.team) ? s.team : (teams[0] ? teams[0].id : s.team),
         refSelected: refKeys.includes(s.refSelected) ? s.refSelected : (refKeys[0] || null),
-        planProjets, planMembres, planJours, planJoursSpeciaux, planSprints, planRepartition,
+        planProjets, planMembres, planMembreProjets, planJours, planJoursSpeciaux, planSprints, planRepartition,
         dailyNotes, dailyDraft: (dailyNotes.find(n => n.date === s.dailyDate) || {}).note || ''
       }));
     } catch (e) {
@@ -2009,9 +2029,10 @@ class Component extends DCLogic {
 
   async loadPlanning() {
     try {
-      const [prRows, mbRows, jrRows, jsRows, spRows, rtRows] = await Promise.all([
+      const [prRows, mbRows, mpRows, jrRows, jsRows, spRows, rtRows] = await Promise.all([
         api.list('planning_projets', 'select=*&order=nom.asc'),
         api.list('planning_membres', 'select=*&order=nom.asc'),
+        api.list('planning_membre_projets', 'select=*'),
         api.list('planning_jours', 'select=*'),
         api.list('planning_jours_speciaux', 'select=*'),
         api.list('planning_sprints', 'select=*&order=ordre.asc'),
@@ -2020,9 +2041,10 @@ class Component extends DCLogic {
       this.setState({
         planProjets: (prRows || []).map(r => ({ id: r.id, equipe_id: String(r.equipe_id), nom: r.nom, couleur: r.couleur })),
         planMembres: (mbRows || []).map(r => ({
-          id: r.id, projet_id: r.projet_id, nom: r.nom, role: r.role || '',
+          id: r.id, nom: r.nom, role: r.role || '',
           jours_travailles_client: r.jours_travailles_client === null || r.jours_travailles_client === undefined ? null : Number(r.jours_travailles_client)
         })),
+        planMembreProjets: (mpRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, projet_id: r.projet_id })),
         planJours: (jrRows || []).map(r => ({ id: r.id, membre_id: r.membre_id, date: planNormDate(r.date), valeur: Number(r.valeur), type: r.type })),
         planJoursSpeciaux: (jsRows || []).map(r => ({ id: r.id, date: planNormDate(r.date), libelle: r.libelle, type: r.type })),
         planSprints: (spRows || []).map(r => ({ id: r.id, nom: r.nom, date_debut: planNormDate(r.date_debut), date_fin: planNormDate(r.date_fin), ordre: r.ordre })),
@@ -2187,7 +2209,7 @@ class Component extends DCLogic {
       .catch(e => this.setState({ planProjetError: String(e.message || e) }));
   }
   planDeleteProjet(id) {
-    const usedM = this.state.planMembres.filter(m => String(m.projet_id) === String(id)).length;
+    const usedM = this.state.planMembreProjets.filter(mp => String(mp.projet_id) === String(id)).length;
     if (usedM) {
       this.setState({ planProjetError: usedM + ' ressource(s) rattachée(s) à ce projet : réaffectez-les ou supprimez-les avant de supprimer le projet.' });
       return;
@@ -2197,14 +2219,46 @@ class Component extends DCLogic {
     api.remove('planning_projets', 'id=eq.' + encodeURIComponent(id)).then(() => this.loadPlanning())
       .catch(e => this.setState({ loadError: String(e.message || e) }));
   }
-  planAddMembre() {
+  planToggleNewMembreProjet(projetId) {
+    this.setState(s => {
+      const cur = s.planNewMembreProjets || [];
+      const has = cur.includes(projetId);
+      return { planNewMembreProjets: has ? cur.filter(id => id !== projetId) : cur.concat([projetId]) };
+    });
+  }
+  async planAddMembre() {
     const nom = (this.state.planNewMembreNom || '').trim();
-    const projetId = this.state.planNewMembreProjet ? Number(this.state.planNewMembreProjet) : null;
-    if (!nom || !projetId) return;
+    const projetIds = this.state.planNewMembreProjets || [];
+    if (!nom || !projetIds.length) return;
     const role = (this.state.planNewMembreRole || '').trim() || null;
-    this.setState({ planNewMembreNom: '', planNewMembreRole: '', planNewMembreProjet: '', planMembreError: '' });
-    api.insert('planning_membres', { nom, role, projet_id: projetId }).then(() => this.loadPlanning())
-      .catch(e => this.setState({ planMembreError: String(e.message || e) }));
+    this.setState({ planNewMembreNom: '', planNewMembreRole: '', planNewMembreProjets: [], planMembreError: '' });
+    try {
+      const membre = await api.insert('planning_membres', { nom, role });
+      await Promise.all(projetIds.map(projetId => api.insert('planning_membre_projets', { membre_id: membre.id, projet_id: projetId })));
+      await this.loadPlanning();
+    } catch (e) {
+      this.setState({ planMembreError: String(e.message || e) });
+    }
+  }
+  planAddMembreProjet(membreId, projetId) {
+    if (!projetId) return;
+    const already = this.state.planMembreProjets.some(mp => mp.membre_id === membreId && String(mp.projet_id) === String(projetId));
+    if (already) return;
+    api.insert('planning_membre_projets', { membre_id: membreId, projet_id: Number(projetId) }).then(() => this.loadPlanning())
+      .catch(e => this.setState({ loadError: String(e.message || e) }));
+  }
+  planRemoveMembreProjet(membreId) {
+    return (projetId) => {
+      const mine = this.state.planMembreProjets.filter(mp => mp.membre_id === membreId);
+      if (mine.length <= 1) {
+        this.setState({ planMembreError: 'Une ressource doit rester rattachée à au moins un projet.' });
+        return;
+      }
+      const row = mine.find(mp => String(mp.projet_id) === String(projetId));
+      if (!row) return;
+      this.setState(s => ({ planMembreProjets: s.planMembreProjets.filter(mp => mp.id !== row.id) }));
+      api.remove('planning_membre_projets', 'id=eq.' + encodeURIComponent(row.id)).catch(e => this.setState({ loadError: String(e.message || e) }));
+    };
   }
   planDeleteMembre(id) {
     if (!window.confirm('Supprimer cette ressource ? Son historique de congés sera perdu.')) return;
@@ -2711,15 +2765,21 @@ class Component extends DCLogic {
     st.teams.forEach(t => { planEquipeNomById[t.id] = t.name; });
     const planProjetById = {};
     st.planProjets.forEach(p => { planProjetById[p.id] = p; });
-    const planEquipeIdByMembreId = {};
+    const planProjetsByMembreId = {};
+    st.planMembreProjets.forEach(mp => {
+      const projet = planProjetById[mp.projet_id];
+      if (!projet) return;
+      (planProjetsByMembreId[mp.membre_id] = planProjetsByMembreId[mp.membre_id] || []).push(projet);
+    });
+    const planEquipeIdsByMembreId = {};
     st.planMembres.forEach(m => {
-      const projet = m.projet_id ? planProjetById[m.projet_id] : null;
-      planEquipeIdByMembreId[m.id] = projet ? String(projet.equipe_id) : null;
+      const projets = planProjetsByMembreId[m.id] || [];
+      planEquipeIdsByMembreId[m.id] = Array.from(new Set(projets.map(p => String(p.equipe_id))));
     });
 
     const planEquipeOptions = st.teams.map(t => ({ value: t.id, label: t.name }));
     const planEquipeFilterOptions = [{ value: 'toutes', label: 'Toutes les équipes' }].concat(planEquipeOptions);
-    const planMembresFiltres = st.planMembres.filter(m => st.planEquipeFiltre === 'toutes' || planEquipeIdByMembreId[m.id] === String(st.planEquipeFiltre));
+    const planMembresFiltres = st.planMembres.filter(m => st.planEquipeFiltre === 'toutes' || (planEquipeIdsByMembreId[m.id] || []).includes(String(st.planEquipeFiltre)));
 
     const planColonnes = planJoursDuMois(st.planAnnee, st.planMois);
     const planMoisLabel = PLAN_MOIS_FR[st.planMois] + ' ' + st.planAnnee;
@@ -2755,7 +2815,8 @@ class Component extends DCLogic {
           onKeyDownCell: (e) => this.planCellKeyDown(e, m.id, c.date, special)
         };
       });
-      return { id: m.id, nom: m.nom, equipeNom: planEquipeNomById[planEquipeIdByMembreId[m.id]] || '—', cells };
+      const equipeNom = (planEquipeIdsByMembreId[m.id] || []).map(id => planEquipeNomById[id]).filter(Boolean).join(', ') || '—';
+      return { id: m.id, nom: m.nom, equipeNom, cells };
     });
     const planLegend = PLAN_TYPES_ABSENCE.map(t => ({ label: t.label, couleur: t.couleur, onClick: () => this.planAppliquerType(t.value) }));
 
@@ -2878,8 +2939,8 @@ class Component extends DCLogic {
 
     const planRessourcesSearch = (st.planRessourcesSearch || '').trim().toLowerCase();
     const planMembresCountByProjet = {};
-    st.planMembres.forEach(m => {
-      const key = String(m.projet_id);
+    st.planMembreProjets.forEach(mp => {
+      const key = String(mp.projet_id);
       planMembresCountByProjet[key] = (planMembresCountByProjet[key] || 0) + 1;
     });
     const planProjetsByEquipe = {};
@@ -2902,15 +2963,30 @@ class Component extends DCLogic {
       });
     });
     const planAdminMembres = st.planMembres.map(m => {
-      const projet = m.projet_id ? st.planProjets.find(p => p.id === m.projet_id) : null;
-      const equipeNom = projet ? (planEquipeNomById[projet.equipe_id] || '—') : '—';
+      const projets = (planProjetsByMembreId[m.id] || []).slice().sort((a, b) => a.nom.localeCompare(b.nom));
+      const equipeNoms = Array.from(new Set(projets.map(p => planEquipeNomById[p.equipe_id]).filter(Boolean))).join(', ') || '—';
+      const removeFn = this.planRemoveMembreProjet(m.id);
+      const projetChips = projets.map(p => ({ id: p.id, nom: p.nom, onRemove: () => removeFn(p.id) }));
+      const available = st.planProjets.filter(p => !projets.some(pp => pp.id === p.id));
       return {
-        id: m.id, nom: m.nom,
-        meta: [equipeNom, projet ? projet.nom : null, m.role || null].filter(Boolean).join(' · '),
+        id: m.id, nom: m.nom, role: m.role || '', equipeNoms,
+        projetChips,
+        hasAvailable: !!available.length,
+        addProjetOptions: [{ value: '', label: '+ Projet…' }].concat(available.map(p => ({ value: String(p.id), label: p.nom }))),
+        onAddProjet: (e) => { const v = e.target.value; if (v) this.planAddMembreProjet(m.id, v); },
         onDelete: () => this.planDeleteMembre(m.id)
       };
     });
-    const planNewMembreProjetOptions = st.planProjets.map(p => ({ value: String(p.id), label: p.nom }));
+    const planNewMembreProjetOptions = st.planProjets.map(p => {
+      const selected = (st.planNewMembreProjets || []).includes(p.id);
+      return {
+        value: String(p.id), label: p.nom, selected,
+        border: selected ? '#003CC8' : '#D7DEE7',
+        bg: selected ? '#003CC8' : '#FFFFFF',
+        fg: selected ? '#FFFFFF' : '#003CC8',
+        onToggle: () => this.planToggleNewMembreProjet(p.id)
+      };
+    });
 
     // ---- Pages "à venir" (nouvelle IA, contenu pas encore développé) ----
     const stubPages = {
@@ -2953,11 +3029,11 @@ class Component extends DCLogic {
     const isRoRessourcesCalendrier = st.roRessourcesTab === 'calendrier';
     const isRoRessourcesListe = st.roRessourcesTab === 'liste';
     const roRessourcesRows = st.planMembres.map(m => {
-      const projet = m.projet_id ? st.planProjets.find(p => p.id === m.projet_id) : null;
+      const projets = planProjetsByMembreId[m.id] || [];
       return {
         nom: m.nom, role: m.role || '',
-        equipeNom: projet ? (planEquipeNomById[projet.equipe_id] || '—') : '—',
-        projetNom: projet ? projet.nom : '—'
+        equipeNom: Array.from(new Set(projets.map(p => planEquipeNomById[p.equipe_id]).filter(Boolean))).join(', ') || '—',
+        projetNom: projets.map(p => p.nom).join(', ') || '—'
       };
     });
 
@@ -3012,11 +3088,9 @@ class Component extends DCLogic {
       onPlanNewProjetEquipe: (e) => this.setState({ planNewProjetEquipe: e.target.value }),
       onPlanAddProjet: () => this.planAddProjet(),
       planNewMembreNom: st.planNewMembreNom, planNewMembreRole: st.planNewMembreRole, planMembreError: st.planMembreError,
-      planNewMembreProjet: st.planNewMembreProjet || '',
       planNewMembreProjetOptions,
       onPlanNewMembreNom: (e) => this.setState({ planNewMembreNom: e.target.value, planMembreError: '' }),
       onPlanNewMembreRole: (e) => this.setState({ planNewMembreRole: e.target.value }),
-      onPlanNewMembreProjet: (e) => this.setState({ planNewMembreProjet: e.target.value }),
       onPlanAddMembre: () => this.planAddMembre(),
       teamTabs, teamStats, teamProjects, sel, statusOptions, query: st.query,
       requests, reqFilters, reqStats, reqQuery: st.reqQuery,
