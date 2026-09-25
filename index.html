@@ -30,30 +30,57 @@
       <div style="font-weight:700;font-size:15px;letter-spacing:-0.01em">Roadmaps</div>
     </div>
 
+    <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:22px;padding-right:2px">
+
     <nav style="display:flex;flex-direction:column;gap:2px">
-      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 8px">Planning</div>
-      <button onClick="{{ onPlanningNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ planningNavWeight }};background:{{ planningNavBg }};color:{{ planningNavFg }}">
-        <span style="font-size:12px;opacity:.85">▦</span>
-        <span>Congés & capacité</span>
+      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 8px">Général</div>
+      <button onClick="{{ navDash.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navDash.weight }};background:{{ navDash.bg }};color:{{ navDash.fg }}">
+        <span style="font-size:12px;opacity:.85">◧</span><span>Dashboard général</span>
       </button>
-      <button onClick="{{ onPlanningAdminNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;margin-top:8px;padding:8px 10px;border-radius:9px;font-size:13px;background:{{ planningAdminNavBg }};color:{{ planningAdminNavFg }}">
-        <span style="font-size:12px;opacity:.85">⚙</span>
-        <span>Administration</span>
+      <button onClick="{{ navRoProj.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navRoProj.weight }};background:{{ navRoProj.bg }};color:{{ navRoProj.fg }}">
+        <span style="font-size:12px;opacity:.85">▤</span><span>Projets et Roadmap</span>
+      </button>
+      <button onClick="{{ navRoRes.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navRoRes.weight }};background:{{ navRoRes.bg }};color:{{ navRoRes.fg }}">
+        <span style="font-size:12px;opacity:.85">▦</span><span>Gestion des ressources</span>
+      </button>
+      <button onClick="{{ onAdminGeneralNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ adminGeneralNavWeight }};background:{{ adminGeneralNavBg }};color:{{ adminGeneralNavFg }}">
+        <span style="font-size:12px;opacity:.85">◉</span><span>Administration</span>
+      </button>
+      <button onClick="{{ navTimesheet.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navTimesheet.weight }};background:{{ navTimesheet.bg }};color:{{ navTimesheet.fg }}">
+        <span style="font-size:12px;opacity:.85">◷</span><span>Timesheet</span>
       </button>
     </nav>
 
-    <nav style="display:flex;flex-direction:column;gap:2px">
-      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 8px">Roadmap</div>
-      <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="2">
-        <button onClick="{{ nav.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ nav.weight }};background:{{ nav.bg }};color:{{ nav.fg }}">
-          <span style="font-size:12px;opacity:.85">{{ nav.icon }}</span>
-          <span>{{ nav.label }}</span>
-        </button>
-      </sc-for>
-    </nav>
+    <div style="border-top:1px solid #0A4A94;padding-top:14px;display:flex;flex-direction:column;gap:2px">
+      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 2px">Mon dashboard · PO technique</div>
 
-    <div style="display:flex;flex-direction:column;gap:2px">
-      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 8px">Équipes</div>
+      <div style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:#4A7CB8;padding:10px 8px 2px">Projets et Roadmap</div>
+      <button onClick="{{ navMep.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navMep.weight }};background:{{ navMep.bg }};color:{{ navMep.fg }}">
+        <span style="font-size:12px;opacity:.85">▤</span><span>Suivi MEP</span>
+      </button>
+      <button onClick="{{ navMonRoadmap.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navMonRoadmap.weight }};background:{{ navMonRoadmap.bg }};color:{{ navMonRoadmap.fg }}">
+        <span style="font-size:12px;opacity:.85">◔</span><span>Roadmap</span>
+      </button>
+
+      <div style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:#4A7CB8;padding:10px 8px 2px">Gestion des ressources</div>
+      <button onClick="{{ onPlanningNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ planningNavWeight }};background:{{ planningNavBg }};color:{{ planningNavFg }}">
+        <span style="font-size:12px;opacity:.85">▦</span><span>Congés & capacité</span>
+      </button>
+      <button onClick="{{ onPlanningAdminNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ planningAdminNavWeight }};background:{{ planningAdminNavBg }};color:{{ planningAdminNavFg }}">
+        <span style="font-size:12px;opacity:.85">☰</span><span>Liste des ressources</span>
+      </button>
+
+      <div style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:#4A7CB8;padding:10px 8px 2px">Administration</div>
+      <button onClick="{{ navMonAdmin.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navMonAdmin.weight }};background:{{ navMonAdmin.bg }};color:{{ navMonAdmin.fg }}">
+        <span style="font-size:12px;opacity:.85">⚙</span><span>Administration</span>
+      </button>
+    </div>
+
+    <div style="border-top:1px solid #0A4A94;padding-top:14px;display:flex;flex-direction:column;gap:2px">
+      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 8px">Autres</div>
+      <button onClick="{{ navRequests.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navRequests.weight }};background:{{ navRequests.bg }};color:{{ navRequests.fg }}">
+        <span style="font-size:12px;opacity:.85">☰</span><span>Demandes</span>
+      </button>
       <sc-for list="{{ teamNav }}" as="t" hint-placeholder-count="4">
         <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:9px;font-size:13px;background:{{ t.bg }};color:{{ t.fg }}">
           <span style="display:flex;align-items:center;gap:9px">
@@ -63,18 +90,8 @@
           <span style="font-size:11.5px;color:#6E9BC9">{{ t.count }}</span>
         </button>
       </sc-for>
-      <button onClick="{{ onAdminNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;margin-top:8px;padding:8px 10px;border-radius:9px;font-size:13px;background:{{ adminNavBg }};color:{{ adminNavFg }}">
-        <span style="font-size:12px;opacity:.85">⚙</span>
-        <span>Administration</span>
-      </button>
     </div>
 
-    <div style="margin-top:auto;display:flex;flex-direction:column;gap:2px">
-      <div style="font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:#6E9BC9;padding:0 8px 8px">Administration</div>
-      <button onClick="{{ onAdminGeneralNav }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ adminGeneralNavWeight }};background:{{ adminGeneralNavBg }};color:{{ adminGeneralNavFg }}">
-        <span style="font-size:12px;opacity:.85">◉</span>
-        <span>Administration générale</span>
-      </button>
     </div>
 
     <div style="border-top:1px solid #0A4A94;padding-top:14px;display:flex;align-items:center;gap:10px">
@@ -941,6 +958,73 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ stubPage }}" hint-placeholder-val="{{ false }}">
+        <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
+          <div style="display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#EEF3FA;color:#003CC8">Contenu à venir</div>
+          <h2 style="margin:14px 0 6px;font-size:18px;font-weight:700">{{ stubPage.title }}</h2>
+          <p style="margin:0 0 14px;font-size:13px;color:#5B6472">{{ stubPage.subtitle }}</p>
+          <sc-for list="{{ stubPage.items }}" as="it" hint-placeholder-count="2">
+            <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-top:1px solid #EAEEF3;font-size:13px;color:#14181F">
+              <span style="color:#003CC8;flex:none">→</span><span>{{ it.text }}</span>
+            </div>
+          </sc-for>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ isMonRoadmap }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;gap:8px">
+            <sc-for list="{{ monRoadmapTabs }}" as="t" hint-placeholder-count="2">
+              <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ isMonRoadmapCdo }}" hint-placeholder-val="{{ true }}">
+            <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
+              <h2 style="margin:0 0 6px;font-size:16px;font-weight:700">Roadmap — CDO</h2>
+              <p style="margin:0;font-size:13px;color:#5B6472">À connecter au dashboard Roadmap existant (initiatives, key results, tickets) scopé à l'équipe/projet CDO.</p>
+            </section>
+          </sc-if>
+          <sc-if value="{{ isMonRoadmapIa }}" hint-placeholder-val="{{ false }}">
+            <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
+              <div style="display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#EEF3FA;color:#003CC8">À créer</div>
+              <h2 style="margin:14px 0 6px;font-size:16px;font-weight:700">Roadmap — IA</h2>
+              <p style="margin:0;font-size:13px;color:#5B6472">Le projet IA reste à créer (équipe, initiatives, roadmap).</p>
+            </section>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isMonAdmin }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ monAdminTabs }}" as="t" hint-placeholder-count="4">
+              <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ isMonAdminRes }}" hint-placeholder-val="{{ false }}">
+            <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
+              <div style="display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#EEF3FA;color:#003CC8">Contenu à venir</div>
+              <h2 style="margin:14px 0 6px;font-size:16px;font-weight:700">Configuration Gestion des ressources</h2>
+              <p style="margin:0;font-size:13px;color:#5B6472">Réglages propres à la Gestion des ressources de vos équipes et projets.</p>
+            </section>
+          </sc-if>
+          <sc-if value="{{ isMonAdminDash }}" hint-placeholder-val="{{ false }}">
+            <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
+              <div style="display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#EEF3FA;color:#003CC8">Contenu à venir</div>
+              <h2 style="margin:14px 0 6px;font-size:16px;font-weight:700">Configuration de mon Dashboard</h2>
+              <p style="margin:0;font-size:13px;color:#5B6472">Personnalisation de « Mon dashboard ».</p>
+            </section>
+          </sc-if>
+          <sc-if value="{{ isMonAdminTips }}" hint-placeholder-val="{{ false }}">
+            <section style="background:#FFFFFF;border:1px solid #E1E6ED;border-radius:12px;padding:22px 24px;max-width:640px">
+              <div style="display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:#EEF3FA;color:#003CC8">Contenu à venir</div>
+              <h2 style="margin:14px 0 6px;font-size:16px;font-weight:700">Trucs et astuces</h2>
+              <p style="margin:0;font-size:13px;color:#5B6472">Aide et bonnes pratiques pour utiliser l'outil.</p>
+            </section>
+          </sc-if>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:24px">
 
@@ -1358,6 +1442,7 @@ class Component extends DCLogic {
             planNewProjetNom: '', planNewProjetEquipe: '', planProjetError: '',
             planNewMembreNom: '', planNewMembreRole: '', planNewMembreEquipe: '', planNewMembreProjet: '', planMembreError: '',
             planSprintEditId: null, planSprintDraft: null,
+            monRoadmapTab: 'cdo', monAdminTab: 'proj',
             loading: true, loadError: null };
 
   componentDidMount() {
@@ -1918,26 +2003,34 @@ class Component extends DCLogic {
     const currentTeam = st.teams.find(t => t.id === st.team) || st.teams[0] || { id:'', name:'—', lead:'—', capacity:1, load:0, dot:'#C3D6E8' };
 
     const isRequests = st.view === 'requests';
-    const isAdmin = st.view === 'admin';
+    const isAdmin = st.view === 'mon_admin' && st.monAdminTab === 'proj';
     const isMep = st.view === 'mep';
     const isPlanning = st.view === 'planning';
     const isAdminGeneral = st.view === 'admin_general';
+    const isRoProjRoadmap = st.view === 'ro_proj_roadmap';
+    const isRoRessources = st.view === 'ro_ressources';
+    const isTimesheet = st.view === 'timesheet';
+    const isMonRoadmap = st.view === 'mon_roadmap';
+    const isMonAdmin = st.view === 'mon_admin';
+    const navKey = (key) => ({
+      active: st.view === key,
+      bg: st.view === key ? '#003CC8' : 'transparent',
+      fg: st.view === key ? '#FFFFFF' : '#C3D6E8',
+      weight: st.view === key ? 700 : 500,
+      onClick: () => this.setState({ view: key })
+    });
+    const navDash = navKey('dashboard');
+    const navRoProj = navKey('ro_proj_roadmap');
+    const navRoRes = navKey('ro_ressources');
+    const navTimesheet = navKey('timesheet');
+    const navMep = navKey('mep');
+    const navMonRoadmap = navKey('mon_roadmap');
+    const navMonAdmin = navKey('mon_admin');
+    const navRequests = navKey('requests');
     const onAdminGeneralNav = () => this.setState({ view: 'admin_general' });
     const adminGeneralNavBg = isAdminGeneral ? '#003CC8' : 'transparent';
     const adminGeneralNavFg = isAdminGeneral ? '#FFFFFF' : '#C3D6E8';
     const adminGeneralNavWeight = isAdminGeneral ? 700 : 500;
-    const navDefs = [
-      { key: 'dashboard', label: 'Dashboard', icon: '◧' },
-      { key: 'requests', label: 'Demandes', icon: '☰' },
-      { key: 'mep', label: 'Suivi MEP', icon: '▤' }
-    ];
-    const navItems = navDefs.map(n => ({
-      label: n.label, icon: n.icon,
-      bg: st.view === n.key ? '#003CC8' : 'transparent',
-      fg: st.view === n.key ? '#FFFFFF' : '#C3D6E8',
-      weight: st.view === n.key ? 700 : 500,
-      onClick: () => this.setState({ view: n.key })
-    }));
     const isPlanningAdminActive = isPlanning && st.planningView === 'equipes';
     const isPlanningDataActive = isPlanning && st.planningView !== 'equipes';
     const onPlanningNav = () => this.setState({ view: 'planning', planningView: st.planningView === 'equipes' ? 'grille' : st.planningView });
@@ -1945,8 +2038,9 @@ class Component extends DCLogic {
     const planningNavFg = isPlanningDataActive ? '#FFFFFF' : '#C3D6E8';
     const planningNavWeight = isPlanningDataActive ? 700 : 500;
     const onPlanningAdminNav = () => this.setState({ view: 'planning', planningView: 'equipes' });
-    const planningAdminNavBg = isPlanningAdminActive ? '#0A4A94' : 'transparent';
+    const planningAdminNavBg = isPlanningAdminActive ? '#003CC8' : 'transparent';
     const planningAdminNavFg = isPlanningAdminActive ? '#FFFFFF' : '#C3D6E8';
+    const planningAdminNavWeight = isPlanningAdminActive ? 700 : 500;
 
     const teamNav = st.teams.map(t => ({
       name: t.name, dot: t.dot,
@@ -2512,11 +2606,67 @@ class Component extends DCLogic {
       st.planProjets.filter(p => !st.planNewMembreEquipe || String(p.equipe_id) === String(st.planNewMembreEquipe)).map(p => ({ value: String(p.id), label: p.nom }))
     );
 
+    // ---- Pages "à venir" (nouvelle IA, contenu pas encore développé) ----
+    const stubPages = {
+      ro_proj_roadmap: {
+        title: 'Projets et Roadmap', crumb: 'Vue lecture seule · commune à tous les profils',
+        subtitle: 'Vue en lecture seule, commune à tous les profils.',
+        items: ['Un calendrier style Gantt avec les MEP de tous les projets.', 'Toutes les roadmaps des projets, en lecture seule.']
+      },
+      ro_ressources: {
+        title: 'Gestion des ressources', crumb: 'Vue lecture seule · commune à tous les profils',
+        subtitle: 'Vue en lecture seule, commune à tous les profils.',
+        items: ['Calendrier des congés par équipe et par mois, avec un bascule Calendrier / Liste.', 'Liste des ressources par équipe.']
+      },
+      timesheet: {
+        title: 'Timesheet', crumb: 'À cadrer',
+        subtitle: 'Reste à décider si on le construit ici ou si on s’appuie sur Azure DevOps.',
+        items: ['Heures déclarées par personne et par semaine, avec un workflow de validation.', 'Piste à explorer : lien avec Azure DevOps (Effort / Remaining / Completed Work).']
+      }
+    };
+    const stubPageRaw = stubPages[st.view] || null;
+    const stubPage = stubPageRaw ? Object.assign({}, stubPageRaw, { items: stubPageRaw.items.map(text => ({ text })) }) : null;
+
+    const monRoadmapTabs = [
+      { key: 'cdo', label: 'CDO' },
+      { key: 'ia', label: 'IA' }
+    ].map(t => ({
+      label: t.label,
+      bg: st.monRoadmapTab === t.key ? '#003CC8' : '#FFFFFF',
+      fg: st.monRoadmapTab === t.key ? '#FFFFFF' : '#003CC8',
+      border: st.monRoadmapTab === t.key ? '#003CC8' : '#D7DEE7',
+      onClick: () => this.setState({ monRoadmapTab: t.key })
+    }));
+    const isMonRoadmapCdo = st.monRoadmapTab === 'cdo';
+    const isMonRoadmapIa = st.monRoadmapTab === 'ia';
+
+    const monAdminTabs = [
+      { key: 'proj', label: 'Config. Projets et roadmap' },
+      { key: 'res', label: 'Config. Gestion des ressources' },
+      { key: 'dash', label: 'Config. de mon Dashboard' },
+      { key: 'tips', label: 'Trucs et astuces' }
+    ].map(t => ({
+      label: t.label,
+      bg: st.monAdminTab === t.key ? '#003CC8' : '#FFFFFF',
+      fg: st.monAdminTab === t.key ? '#FFFFFF' : '#003CC8',
+      border: st.monAdminTab === t.key ? '#003CC8' : '#D7DEE7',
+      onClick: () => this.setState({ monAdminTab: t.key })
+    }));
+    const isMonAdminRes = st.monAdminTab === 'res';
+    const isMonAdminDash = st.monAdminTab === 'dash';
+    const isMonAdminTips = st.monAdminTab === 'tips';
+
     return {
       hasLoadError: !!st.loadError, loadError: st.loadError || '',
       onDismissLoadError: () => this.setState({ loadError: null }),
       onRetryLoad: () => { this.setState({ loadError: null }); this.loadAll(); },
-      isDashboard, isTeam, isRequests, isMep, isPlanning, navItems, teamNav, quarters, kpis, rows, capacity, alerts,
+      isDashboard, isTeam, isRequests, isMep, isPlanning, teamNav, quarters, kpis, rows, capacity, alerts,
+      navDash, navRoProj, navRoRes, navTimesheet, navMep, navMonRoadmap, navMonAdmin, navRequests,
+      planningAdminNavWeight,
+      isRoProjRoadmap, isRoRessources, isTimesheet, isMonRoadmap, isMonAdmin,
+      stubPage,
+      monRoadmapTabs, isMonRoadmapCdo, isMonRoadmapIa,
+      monAdminTabs, isMonAdminRes, isMonAdminDash, isMonAdminTips,
       onPlanningNav, planningNavBg, planningNavFg, planningNavWeight,
       onPlanningAdminNav, planningAdminNavBg, planningAdminNavFg,
       planTabs, isPlanGrille, isPlanConges, isPlanCapacite, isPlanEquipes, isPlanEquipesNot,
@@ -2555,7 +2705,7 @@ class Component extends DCLogic {
       onMepNewTeam: (e) => this.setState({ mepNewTeam: e.target.value }),
       onMepNewUrl: (e) => this.setState({ mepNewUrl: e.target.value }),
       onAddMep: () => this.addMep(),
-      quartersShown: (isRequests || isAdmin || isMep || isPlanning || isAdminGeneral) ? [] : quarters,
+      quartersShown: (isRequests || isAdmin || isMep || isPlanning || isAdminGeneral || isRoProjRoadmap || isRoRessources || isTimesheet || isMonRoadmap || isMonAdmin) ? [] : quarters,
       formControls, statusSelectOptions, isAdmin, isAdminGeneral,
       onAdminGeneralNav, adminGeneralNavBg, adminGeneralNavFg, adminGeneralNavWeight,
       adminFields, typeOptions, adminTeams,
@@ -2565,9 +2715,6 @@ class Component extends DCLogic {
       onNewRefCode: (e) => this.setNewRef('code', e.target.value),
       onNewRefLabel: (e) => this.setNewRef('label', e.target.value),
       onAddRef: () => this.addRef(),
-      adminNavBg: isAdmin ? '#0A4A94' : 'transparent',
-      adminNavFg: isAdmin ? '#FFFFFF' : '#C3D6E8',
-      onAdminNav: () => this.setState({ view: 'admin' }),
       newTeamName: nt.name, newTeamLead: nt.lead, newTeamCapacity: nt.capacity,
       teamError: !!st.teamError, teamErrorText: st.teamError || '',
       onNewTeamName: (e) => this.setNewTeam('name', e.target.value),
@@ -2604,9 +2751,15 @@ class Component extends DCLogic {
       onFormNote: (e) => this.setField('note', e.target.value),
       onSubmitRequest: () => this.submitRequest(),
       onReqQuery: (e) => this.setState({ reqQuery: e.target.value }),
-      crumb: isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Administration · Champs du formulaire' : (isMep ? 'Suivi MEP · ' + mepTeamNamesLabel : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter)))))),
-      title: isAdminGeneral ? 'Administration générale' : (isPlanEquipes ? 'Administration' : (isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name)))))),
-      subtitle: isAdminGeneral
+      crumb: stubPage ? stubPage.crumb : (isMonRoadmap ? 'Mon dashboard · PO technique' : (isMonAdmin ? 'Mon dashboard · PO technique' : (isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Mon dashboard · Administration' : (isMep ? 'Suivi MEP · ' + mepTeamNamesLabel : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter))))))))),
+      title: stubPage ? stubPage.title : (isMonRoadmap ? 'Roadmap' : (isMonAdmin ? 'Administration' : (isAdminGeneral ? 'Administration générale' : (isPlanEquipes ? 'Administration' : (isPlanning ? 'Planning' : (isAdmin ? 'Administration' : (isMep ? 'Suivi MEP' : (isRequests ? 'Demandes' : (isDashboard ? 'Suivi des roadmaps' : 'Roadmap ' + currentTeam.name))))))))),
+      subtitle: stubPage
+        ? stubPage.subtitle
+        : (isMonRoadmap
+        ? 'Vos roadmaps, projet CDO et projet IA.'
+        : (isMonAdmin
+        ? 'Réglages propres à vos projets et équipes.'
+        : (isAdminGeneral
         ? 'Créez et gérez les équipes utilisées par le Planning et par la Roadmap.'
         : (isPlanEquipes
         ? 'Gérez les projets et personnes qui apparaissent dans le planning des congés.'
@@ -2620,7 +2773,7 @@ class Component extends DCLogic {
         ? 'Toutes les demandes reçues des autres services, leur priorité, l\u2019équipe pressentie et leur état d\u2019arbitrage.'
         : (isDashboard
         ? 'État des initiatives des quatre équipes, avancement, écart aux dates cibles et charge disponible.'
-        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.')))))),
+        : 'Initiatives, key results et tickets de l\u2019équipe ' + currentTeam.name + ', pilotés par ' + currentTeam.lead + '.'))))))))),
       onQuery: (e) => this.setState({ query: e.target.value }),
       onProgress: (e) => selRaw && this.setProgress(selRaw.id, Number(e.target.value)),
       closeDrawer: () => this.setState({ selId: null })
