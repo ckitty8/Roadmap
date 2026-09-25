@@ -1535,12 +1535,11 @@ function planFormatNombre(n) {
 const DEFAULT_FIELDS = [
   { key:'title',     label:'Intitulé de la demande', type:'text',     required:true,  locked:true,  placeholder:'Ex. Export comptable automatisé', help:'Titre affiché dans la liste' },
   { key:'requester', label:'Demandeur',              type:'text',     required:true,  locked:true,  placeholder:'Service ou personne', help:'Service à l\u2019origine de la demande' },
-  { key:'team',      label:'Équipe pressentie',      type:'select',   required:true,  locked:true,  options:['Produit','Data','Plateforme','Mobile'], help:'Équipe qui porterait la demande' },
+  { key:'team',      label:'Équipe pressentie',      type:'select',   required:true,  locked:true,  options:['AMOA','Applications','Marketing'], help:'Équipe qui porterait la demande' },
   { key:'priority',  label:'Priorité',               type:'select',   required:true,  locked:true,  options:['Haute','Moyenne','Basse'], help:'Niveau d\u2019urgence perçu' },
   { key:'effort',    label:'Estimation',             type:'select',   required:false, locked:false, options:['1 pt','2 pts','3 pts','5 pts','8 pts','13 pts','21 pts'], help:'Charge estimée à la louche' },
   { key:'note',      label:'Contexte',               type:'textarea', required:false, locked:false, placeholder:'Pourquoi cette demande, qui est impacté…', help:'Texte libre affiché au dépliement de la ligne' }
 ];
-const TEAM_BY_LABEL = { 'Produit':'produit', 'Data':'data', 'Plateforme':'plateforme', 'Mobile':'mobile' };
 const PRIO_BY_LABEL = { 'Haute':'haute', 'Moyenne':'moyenne', 'Basse':'basse' };
 
 const DATA_API_URL = '/api';
@@ -1714,10 +1713,12 @@ class Component extends DCLogic {
   deleteTeam(id) {
     const usedP = this.state.projects.filter(p => p.team === id).length;
     const usedR = this.state.requests.filter(r => r.team === id).length;
-    if (usedP || usedR) {
+    const usedPlanP = this.state.planProjets.filter(p => String(p.equipe_id) === String(id)).length;
+    if (usedP || usedR || usedPlanP) {
       const parts = [];
       if (usedP) parts.push(usedP + ' initiative(s)');
       if (usedR) parts.push(usedR + ' demande(s)');
+      if (usedPlanP) parts.push(usedPlanP + ' projet(s) du planning');
       this.setState({ teamError: parts.join(' et ') + ' rattachée(s) : réaffectez-les avant de supprimer.' });
       return;
     }
@@ -2077,7 +2078,12 @@ class Component extends DCLogic {
       .catch(e => this.setState({ planProjetError: String(e.message || e) }));
   }
   planDeleteProjet(id) {
-    if (!window.confirm('Supprimer ce projet ? Ses ressources et leurs congés seront perdus.')) return;
+    const usedM = this.state.planMembres.filter(m => String(m.projet_id) === String(id)).length;
+    if (usedM) {
+      this.setState({ planProjetError: usedM + ' ressource(s) rattachée(s) à ce projet : réaffectez-les ou supprimez-les avant de supprimer le projet.' });
+      return;
+    }
+    if (!window.confirm('Supprimer ce projet ?')) return;
     this.setState(s => ({ planProjets: s.planProjets.filter(p => p.id !== id) }));
     api.remove('planning_projets', 'id=eq.' + encodeURIComponent(id)).then(() => this.loadPlanning())
       .catch(e => this.setState({ loadError: String(e.message || e) }));
@@ -2230,7 +2236,7 @@ class Component extends DCLogic {
       });
 
     const capacity = st.teams.map(t => {
-      const pct = Math.round((t.load / t.capacity) * 100);
+      const pct = Math.round((t.load / (t.capacity || 1)) * 100);
       return {
         name: t.name, label: pct + '%',
         width: Math.min(100, pct) + '%',
@@ -2258,7 +2264,7 @@ class Component extends DCLogic {
 
     const tp = vis.filter(p => p.team === st.team);
     const tAvg = tp.length ? Math.round(tp.reduce((a, p) => a + p.progress, 0) / tp.length) : 0;
-    const tLoadPct = Math.round((currentTeam.load / currentTeam.capacity) * 100);
+    const tLoadPct = Math.round((currentTeam.load / (currentTeam.capacity || 1)) * 100);
     const teamStats = [
       { label: 'Responsable', value: currentTeam.lead, hint: currentTeam.name, color: '#14181F' },
       { label: 'Initiatives', value: tp.length, hint: st.quarter, color: '#14181F' },
@@ -2911,12 +2917,6 @@ class Component extends DCLogic {
       formToggleBg: st.formOpen ? '#FFFFFF' : '#003CC8',
       formToggleFg: st.formOpen ? '#5B6472' : '#FFFFFF',
       formToggleBorder: st.formOpen ? '#D7DEE7' : '#003CC8',
-      onFormTitle: (e) => this.setField('title', e.target.value),
-      onFormRequester: (e) => this.setField('requester', e.target.value),
-      onFormTeam: (e) => this.setField('team', e.target.value),
-      onFormPriority: (e) => this.setField('priority', e.target.value),
-      onFormEffort: (e) => this.setField('effort', e.target.value),
-      onFormNote: (e) => this.setField('note', e.target.value),
       onSubmitRequest: () => this.submitRequest(),
       onReqQuery: (e) => this.setState({ reqQuery: e.target.value }),
       crumb: isRoRessources ? 'Gestion des ressources · lecture seule' : (isRoProjRoadmap ? 'Projets et Roadmap · lecture seule' : (stubPage ? stubPage.crumb : (isMonRoadmap ? 'Mon dashboard · Roadmap · CDO (Demandes)' : (isMonAdmin ? 'Mon dashboard · PO technique' : (isAdminGeneral ? 'Administration générale · Équipes' : (isPlanEquipes ? 'Planning · Administration' : (isPlanning ? 'Planning · Congés et capacité' : (isAdmin ? 'Mon dashboard · Administration' : (isMep ? 'Suivi MEP · ' + mepTeamNamesLabel : (isRequests ? 'Demandes entrantes' : (isDashboard ? 'Vue d\u2019ensemble · ' + st.quarter : currentTeam.name + ' · ' + st.quarter))))))))))),
