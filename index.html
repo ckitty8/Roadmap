@@ -59,6 +59,14 @@
       <button onClick="{{ navMonRessources.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navMonRessources.weight }};background:{{ navMonRessources.bg }};color:{{ navMonRessources.fg }}">
         <span style="font-size:12px;opacity:.85">▦</span><span>Gestion des ressources</span>
       </button>
+      <sc-if value="{{ isPlanning }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ onPlanningNavData }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:7px 10px 7px 32px;border-radius:9px;font-size:13px;font-weight:{{ planningNavWeight }};background:{{ planningNavBg }};color:{{ planningNavFg }}">
+          <span>Congés & capacité</span>
+        </button>
+        <button onClick="{{ onPlanningNavEquipes }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:7px 10px 7px 32px;border-radius:9px;font-size:13px;font-weight:{{ planningAdminNavWeight }};background:{{ planningAdminNavBg }};color:{{ planningAdminNavFg }}">
+          <span>Liste des ressources</span>
+        </button>
+      </sc-if>
       <button onClick="{{ navMonAdmin.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navMonAdmin.weight }};background:{{ navMonAdmin.bg }};color:{{ navMonAdmin.fg }}">
         <span style="font-size:12px;opacity:.85">⚙</span><span>Administration</span>
       </button>
@@ -409,12 +417,6 @@
 
       <sc-if value="{{ isPlanning }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:20px">
-
-          <div style="display:flex;gap:8px">
-            <sc-for list="{{ monRessourcesTabs }}" as="t" hint-placeholder-count="2">
-              <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
-            </sc-for>
-          </div>
 
           <sc-if value="{{ isPlanEquipesNot }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -2196,16 +2198,14 @@ class Component extends DCLogic {
       border: st.monProjRoadmapTab === t.key ? '#003CC8' : '#D7DEE7',
       onClick: () => this.setState({ monProjRoadmapTab: t.key })
     }));
-    const monRessourcesTabs = [
-      { key: 'grille', label: 'Congés & capacité', active: isPlanningDataActive },
-      { key: 'equipes', label: 'Liste des ressources', active: isPlanningAdminActive }
-    ].map(t => ({
-      label: t.label,
-      bg: t.active ? '#003CC8' : '#FFFFFF',
-      fg: t.active ? '#FFFFFF' : '#003CC8',
-      border: t.active ? '#003CC8' : '#D7DEE7',
-      onClick: () => this.setState({ planningView: t.key })
-    }));
+    const onPlanningNavData = () => this.setState({ view: 'planning', planningView: st.planningView === 'equipes' ? 'grille' : st.planningView });
+    const planningNavBg = isPlanningDataActive ? '#003CC8' : 'transparent';
+    const planningNavFg = isPlanningDataActive ? '#FFFFFF' : '#C3D6E8';
+    const planningNavWeight = isPlanningDataActive ? 700 : 500;
+    const onPlanningNavEquipes = () => this.setState({ view: 'planning', planningView: 'equipes' });
+    const planningAdminNavBg = isPlanningAdminActive ? '#003CC8' : 'transparent';
+    const planningAdminNavFg = isPlanningAdminActive ? '#FFFFFF' : '#C3D6E8';
+    const planningAdminNavWeight = isPlanningAdminActive ? 700 : 500;
 
     const quarters = ['T3 2026', 'T4 2026', 'T1 2027'].map(q => ({
       label: q,
@@ -2846,7 +2846,9 @@ class Component extends DCLogic {
       monAdminTabs, isMonAdminRes, isMonAdminDash, isMonAdminTips,
       roRessourcesTabs, isRoRessourcesCalendrier, isRoRessourcesListe, roRessourcesRows,
       roProjRoadmapTabs, isRoProjRoadmapMep, isRoProjRoadmapRoadmap,
-      monProjRoadmapTabs, monRessourcesTabs,
+      monProjRoadmapTabs,
+      onPlanningNavData, planningNavBg, planningNavFg, planningNavWeight,
+      onPlanningNavEquipes, planningAdminNavBg, planningAdminNavFg, planningAdminNavWeight,
       planTabs, isPlanGrille, isPlanConges, isPlanCapacite, isPlanEquipes, isPlanEquipesNot,
       planEquipeFilterOptions, planEquipeFiltre: String(st.planEquipeFiltre),
       onPlanEquipeFiltre: (e) => this.setState({ planEquipeFiltre: e.target.value }),
