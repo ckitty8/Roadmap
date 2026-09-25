@@ -2077,6 +2077,7 @@ class Component extends DCLogic {
       .catch(e => this.setState({ planProjetError: String(e.message || e) }));
   }
   planDeleteProjet(id) {
+    if (!window.confirm('Supprimer ce projet ? Ses ressources et leurs congés seront perdus.')) return;
     this.setState(s => ({ planProjets: s.planProjets.filter(p => p.id !== id) }));
     api.remove('planning_projets', 'id=eq.' + encodeURIComponent(id)).then(() => this.loadPlanning())
       .catch(e => this.setState({ loadError: String(e.message || e) }));
@@ -2091,6 +2092,7 @@ class Component extends DCLogic {
       .catch(e => this.setState({ planMembreError: String(e.message || e) }));
   }
   planDeleteMembre(id) {
+    if (!window.confirm('Supprimer cette ressource ? Son historique de congés sera perdu.')) return;
     this.setState(s => ({ planMembres: s.planMembres.filter(m => m.id !== id) }));
     api.remove('planning_membres', 'id=eq.' + encodeURIComponent(id)).then(() => this.loadPlanning())
       .catch(e => this.setState({ loadError: String(e.message || e) }));
