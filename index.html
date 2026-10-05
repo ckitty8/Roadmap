@@ -43,6 +43,13 @@
       <button onClick="{{ navRoProj.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navRoProj.weight }};background:{{ navRoProj.bg }};color:{{ navRoProj.fg }}">
         <span style="font-size:12px;opacity:.85">▤</span><span>Projets et Roadmap</span>
       </button>
+      <sc-if value="{{ isRoProjRoadmap }}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{ roProjRoadmapSousMenu }}" as="m" hint-placeholder-count="2">
+          <button onClick="{{ m.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:7px 10px 7px 32px;border-radius:9px;font-size:13px;font-weight:{{ m.weight }};background:{{ m.bg }};color:{{ m.fg }}">
+            <span>{{ m.label }}</span>
+          </button>
+        </sc-for>
+      </sc-if>
       <button onClick="{{ navRoRes.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navRoRes.weight }};background:{{ navRoRes.bg }};color:{{ navRoRes.fg }}">
         <span style="font-size:12px;opacity:.85">▦</span><span>Gestion des ressources</span>
       </button>
@@ -62,6 +69,13 @@
       <button onClick="{{ navMonProjRoadmap.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navMonProjRoadmap.weight }};background:{{ navMonProjRoadmap.bg }};color:{{ navMonProjRoadmap.fg }}">
         <span style="font-size:12px;opacity:.85">▤</span><span>Projets et Roadmap</span>
       </button>
+      <sc-if value="{{ isMonProjRoadmap }}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{ monProjRoadmapSousMenu }}" as="m" hint-placeholder-count="2">
+          <button onClick="{{ m.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:7px 10px 7px 32px;border-radius:9px;font-size:13px;font-weight:{{ m.weight }};background:{{ m.bg }};color:{{ m.fg }}">
+            <span>{{ m.label }}</span>
+          </button>
+        </sc-for>
+      </sc-if>
       <button onClick="{{ navMonRessources.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:{{ navMonRessources.weight }};background:{{ navMonRessources.bg }};color:{{ navMonRessources.fg }}">
         <span style="font-size:12px;opacity:.85">▦</span><span>Gestion des ressources</span>
       </button>
@@ -306,12 +320,6 @@
 
       <sc-if value="{{ isMep }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:22px">
-
-          <div style="display:flex;gap:8px">
-            <sc-for list="{{ monProjRoadmapTabs }}" as="t" hint-placeholder-count="2">
-              <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
-            </sc-for>
-          </div>
 
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px">
             <sc-for list="{{ mepTeamStats }}" as="s" hint-placeholder-count="5">
@@ -863,12 +871,6 @@
       <sc-if value="{{ isRoProjRoadmap }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:22px">
 
-          <div style="display:flex;gap:8px">
-            <sc-for list="{{ roProjRoadmapTabs }}" as="t" hint-placeholder-count="2">
-              <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
-            </sc-for>
-          </div>
-
           <sc-if value="{{ isRoProjRoadmapMep }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;flex-direction:column;gap:18px">
               <p style="margin:0;font-size:12.5px;color:#5B6472">Lecture seule — pour ajouter ou modifier une MEP, direction Mon dashboard &gt; Projets et Roadmap.</p>
@@ -1046,12 +1048,6 @@
 
       <sc-if value="{{ isMonRoadmap }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:18px">
-
-          <div style="display:flex;gap:8px">
-            <sc-for list="{{ monProjRoadmapTabs }}" as="t" hint-placeholder-count="2">
-              <button onClick="{{ t.onClick }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
-            </sc-for>
-          </div>
 
         <div style="display:flex;flex-direction:column;gap:22px">
 
@@ -2447,16 +2443,23 @@ class Component extends DCLogic {
     const adminGeneralNavWeight = isAdminGeneral ? 700 : 500;
     const isPlanningAdminActive = isPlanning && st.planningView === 'equipes';
     const isPlanningDataActive = isPlanning && st.planningView !== 'equipes';
-    const monProjRoadmapTabs = [
+    // Sous-menus « Suivi MEP » / « Roadmap » de Projets et Roadmap (Général et Mon dashboard),
+    // dans la barre latérale comme ceux de Gestion des ressources (demande du porteur, 2026-10-05).
+    const sousMenuProjRoadmap = (vue, cleOnglet) => [
       { key: 'mep', label: 'Suivi MEP' },
       { key: 'roadmap', label: 'Roadmap' }
-    ].map(t => ({
-      label: t.label,
-      bg: st.monProjRoadmapTab === t.key ? '#003CC8' : '#FFFFFF',
-      fg: st.monProjRoadmapTab === t.key ? '#FFFFFF' : '#003CC8',
-      border: st.monProjRoadmapTab === t.key ? '#003CC8' : '#D7DEE7',
-      onClick: () => this.setState({ monProjRoadmapTab: t.key })
-    }));
+    ].map(t => {
+      const actif = st.view === vue && st[cleOnglet] === t.key;
+      return {
+        label: t.label,
+        bg: actif ? '#003CC8' : 'transparent',
+        fg: actif ? '#FFFFFF' : '#C3D6E8',
+        weight: actif ? 700 : 500,
+        onClick: () => this.setState({ view: vue, [cleOnglet]: t.key })
+      };
+    });
+    const monProjRoadmapSousMenu = sousMenuProjRoadmap('mon_proj_roadmap', 'monProjRoadmapTab');
+    const roProjRoadmapSousMenu = sousMenuProjRoadmap('ro_proj_roadmap', 'roProjRoadmapTab');
     const onPlanningNavData = () => this.setState({ view: 'planning', planningView: st.planningView === 'equipes' ? 'grille' : st.planningView });
     const planningNavBg = isPlanningDataActive ? '#003CC8' : 'transparent';
     const planningNavFg = isPlanningDataActive ? '#FFFFFF' : '#C3D6E8';
@@ -3190,16 +3193,6 @@ class Component extends DCLogic {
       };
     });
 
-    const roProjRoadmapTabs = [
-      { key: 'mep', label: 'Calendrier des MEP' },
-      { key: 'roadmap', label: 'Roadmap' }
-    ].map(t => ({
-      label: t.label,
-      bg: st.roProjRoadmapTab === t.key ? '#003CC8' : '#FFFFFF',
-      fg: st.roProjRoadmapTab === t.key ? '#FFFFFF' : '#003CC8',
-      border: st.roProjRoadmapTab === t.key ? '#003CC8' : '#D7DEE7',
-      onClick: () => this.setState({ roProjRoadmapTab: t.key })
-    }));
     const isRoProjRoadmapMep = st.roProjRoadmapTab === 'mep';
     const isRoProjRoadmapRoadmap = st.roProjRoadmapTab === 'roadmap';
 
@@ -3220,8 +3213,8 @@ class Component extends DCLogic {
       stubPage,
       monAdminTabs, isMonAdminRes, isMonAdminDash, isMonAdminTips,
       roRessourcesTabs, isRoRessourcesCalendrier, isRoRessourcesListe, roRessourcesRows,
-      roProjRoadmapTabs, isRoProjRoadmapMep, isRoProjRoadmapRoadmap,
-      monProjRoadmapTabs,
+      isRoProjRoadmapMep, isRoProjRoadmapRoadmap,
+      monProjRoadmapSousMenu, roProjRoadmapSousMenu, isMonProjRoadmap,
       onPlanningNavData, planningNavBg, planningNavFg, planningNavWeight,
       onPlanningNavEquipes, planningAdminNavBg, planningAdminNavFg, planningAdminNavWeight,
       planTabs, isPlanGrille, isPlanConges, isPlanCapacite, isPlanEquipes, isPlanEquipesNot,
